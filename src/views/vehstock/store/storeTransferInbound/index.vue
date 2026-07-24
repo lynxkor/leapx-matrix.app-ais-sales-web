@@ -73,6 +73,11 @@ const defaultForm = {
   auditStatus: '',
 };
 
+// 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
+const DEFAULT_SORT_COLUMNS = [
+  { column: 'create_time', sort: 'DESC' }
+];
+
 const pageSize = 20;
 const mockConfig = {
   data: null
@@ -135,9 +140,9 @@ export default {
           { props: 'sourceDealerAddress', label: '源门店地址', visible: true, width: 200 },
           { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200 },
           { props: 'targetDealerAddress', label: '目标门店地址', visible: true, width: 200 },
-          { props: 'moveoutTime', label: '移出时间', visible: true, width: 200 },
-          { props: 'moveinTime', label: '移入时间', visible: true, width: 200 },
-          { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
+          { props: 'moveoutTime', label: '移出时间', visible: true, width: 200, sortable: true },
+          { props: 'moveinTime', label: '移入时间', visible: true, width: 200, sortable: true },
+          { props: 'applyTime', label: '申请时间', visible: true, width: 200, sortable: true },
           { props: 'pdiNo', label: 'PDI单号', visible: true, width: 200 },
           { props: 'isPdiSubmitLabel', label: 'PDI是否完成提交', visible: true, width: 140 },
           { props: 'isUnusualLabel', label: '车辆是否存在异常', visible: true, width: 140 },
@@ -145,7 +150,7 @@ export default {
           { props: 'auditStatusLabel', label: '单据状态', visible: true, width: 100 },
           { props: 'auditRemark', label: '审批意见', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -178,12 +183,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: [...DEFAULT_SORT_COLUMNS]
     };
   },
   created () {
@@ -193,12 +193,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(item => item.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
@@ -221,6 +227,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.sortColumns = [...DEFAULT_SORT_COLUMNS];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();

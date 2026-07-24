@@ -119,7 +119,7 @@
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
         :get-config="getConfig" :save-or-update="saveOrUpdate" @paginationChange="paginationChange"
-        @handleSelect="handleSelectionChange" />
+        @handleSelect="handleSelectionChange" @sortChange="handleSortChange" />
     </div>
     <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
 
@@ -311,7 +311,7 @@ export default {
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 120 },
           { props: 'statusLabel', label: '状态', visible: true, width: 60 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           // { props: 'statusLabel', label: '状态', visible: true, width: 60 },
           // { props: 'statusDesc', label: '说明', visible: true, width: 300 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 180 },
@@ -340,6 +340,12 @@ export default {
         ],
         total: 0
       },
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ],
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -563,6 +569,21 @@ export default {
     handleSelectionChange (selection) {
       this.selectionList = selection;
     },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
     getFormData () {
       const data = { ...this.form };
 
@@ -579,7 +600,8 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
+      // 排序字段
+      data.sortColumns = this.sortColumns;
       return data;
     },
     async fetchOptions (code) {

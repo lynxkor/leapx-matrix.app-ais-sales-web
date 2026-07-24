@@ -53,6 +53,49 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="取消配车类型">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_wholesale_order_cancel_allocate_vehicle_type"
+          v-model="form.cancelAllocateVehicleTypes"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="取消结算说明">
+        <el-input v-model="form.remarkLike" placeholder="请输入" clearable />
+      </el-form-item>
+      <el-form-item label="零售订单号">
+        <tag-input v-model="form.retailOrderCodes" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="结算时间">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.settleTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+      <el-form-item label="配车时间">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.allocationTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
         <el-form-item label="销售门店">
            <fetch-select
           filterable
@@ -181,6 +224,11 @@ const defaultForm = {
   cooperateType: '',
   settleFundType: '',
   financialOrganizationId: '',
+  cancelAllocateVehicleTypes: [],
+  remarkLike: '',
+  retailOrderCodes: [],
+  settleTime: '',
+  allocationTime: '',
 };
 
 const pageSize = 20;
@@ -431,6 +479,22 @@ export default {
         if (this.form.cancelSettleTime.length > 1) {
           data.cancelSettleTimeStart = this.form.cancelSettleTime[0];
           data.cancelSettleTimeEnd = this.form.cancelSettleTime[1];
+        }
+      }
+      // 配车时间
+      if (this.form.allocationTime) {
+        delete data.allocationTime;
+        if (this.form.allocationTime.length > 1) {
+          data.allocationTimeStart = this.form.allocationTime[0];
+          data.allocationTimeEnd = this.form.allocationTime[1];
+        }
+      }
+      // 结算时间
+      if (this.form.settleTime) {
+        delete data.settleTime;
+        if (this.form.settleTime.length > 1) {
+          data.settleTimeStart = this.form.settleTime[0];
+          data.settleTimeEnd = this.form.settleTime[1];
         }
       }
       // 排序字段

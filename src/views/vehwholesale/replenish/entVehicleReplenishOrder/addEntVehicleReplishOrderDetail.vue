@@ -1,94 +1,55 @@
 <template>
   <el-dialog :title="title" width="1000px" :visible.sync="dialogVisible" :before-close="handleClose">
     <div class="page-common">
-      <el-form
-        ref="materialsForm"
-        :model="materialsform"
-        label-width="150px"
-        :inline="true"
-        size="small"
-        label-position="right"
-        class="ais-search-form three-col-form"
-        :rules="rules"
-      >
+      <el-form ref="materialsForm" :model="materialsform" label-width="150px" :inline="true" size="small"
+        label-position="right" class="ais-search-form three-col-form" :rules="rules">
         <el-form-item label="整车物料编码：" prop="materialsCode">
-          <fetch-select
-            filterable
-            clearable
-            remote
-            v-model="materialsform.materialsCode"
-            :remote-method="getVehicleMaterialsList"
-            value-key="id"
-            label-key="materialsCode"
-            @change="materialsSelect"
-            style="width: 100%;"
-          />
+          <fetch-select filterable clearable remote v-model="materialsform.materialsCode"
+            :remote-method="getVehicleMaterialsList" value-key="id" label-key="materialsCode" @change="materialsSelect"
+            style="width: 100%;">
+            <template #option="{ item }">
+              <div>
+                <span>{{ item.materialsCode }}</span>
+                <br />
+                <span style="color: #999; font-size: 12px;">{{ item.materialsDesc }}</span>
+              </div>
+            </template>
+          </fetch-select>
         </el-form-item>
-        <el-form-item label="标准价格：">
-          <el-input-number
-            placeholder="请输入"
-            v-model="materialsform.standardPrice"
-            :precision="2"
-            :step="0.01"
-            :min="0"
-            :controls="false"
-            disabled
-            style="width: 100%;"
-          />
+
+        <el-form-item label="标准价格：" prop="standardPrice">
+          <el-input-number :controls="false" style="width: 100%;" placeholder="请输入"
+            v-model="materialsform.standardPrice" clearable :precision="4" disabled />
         </el-form-item>
-        <el-form-item label="企业客户补货订单：">
-          <el-input
-            v-model="materialsform.entReplenishOrderId"
-            placeholder="请输入"
-            disabled
-            style="width: 100%;"
-          />
+
+        <el-form-item label="物料描述：" prop="materialsDesc">
+          <el-input placeholder="请输入" v-model="materialsform.materialsDesc" clearable disabled />
         </el-form-item>
+
         <el-form-item label="销售价格：" prop="salesPrice">
-          <el-input-number
-            placeholder="请输入"
-            v-model="materialsform.salesPrice"
-            :precision="2"
-            :step="0.01"
-            :min="0"
-            :controls="false"
-            style="width: 100%;"
-          />
+          <el-input-number placeholder="请输入" v-model="materialsform.salesPrice" :precision="2" :step="0.01" :min="0"
+            :controls="false" style="width: 100%;" />
         </el-form-item>
+
+        <el-form-item label="企业客户补货订单：">
+          <el-input v-model="materialsform.entReplenishOrderId" placeholder="请输入" disabled style="width: 100%;" />
+        </el-form-item>
+
         <el-form-item label="关联交易不含税价：">
-          <el-input-number
-            placeholder="请输入"
-            v-model="materialsform.relatedTxnExTaxPrice"
-            :precision="2"
-            :step="0.01"
-            :min="0"
-            :controls="false"
-            disabled
-            style="width: 100%;"
-          />
+          <el-input-number placeholder="请输入" v-model="materialsform.relatedTxnExTaxPrice" :precision="2" :step="0.01"
+            :min="0" :controls="false" disabled style="width: 100%;" />
         </el-form-item>
-        <el-form-item label="关联交易价格比例：">
-          <el-input-number
-            placeholder="请输入"
-            v-model="materialsform.relatedTxnPriceRate"
-            :precision="2"
-            :step="0.01"
-            :min="0"
-            :controls="false"
-            disabled
-            style="width: 100%;"
-          />
-        </el-form-item>
+
         <el-form-item label="数量：" prop="qty">
-          <el-input-number
-            placeholder="请输入"
-            v-model="materialsform.qty"
-            :step="1"
-            :min="0"
-            :controls="false"
-            style="width: 100%;"
-          />
+          <el-input-number placeholder="请输入" v-model="materialsform.qty" :step="1" :min="0" :controls="false"
+            style="width: 100%;" />
         </el-form-item>
+
+        <el-form-item label="关联交易价格比例：">
+          <el-input-number placeholder="请输入" v-model="materialsform.relatedTxnPriceRate" :precision="2" :step="0.01"
+            :min="0" :controls="false" disabled style="width: 100%;" />
+        </el-form-item>
+
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -106,6 +67,7 @@ import { getList as taxGetList } from '@/api/vehwholesale/entorder/entTransactio
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   materialsCode: '',
+  materialsDesc: '',
   standardPrice: '',
   salesPrice: '',
   materialsId: '',
@@ -150,7 +112,7 @@ export default {
       },
       rules: {
         materialsCode: [
-          { required: true, message: '请输入整车物料编码', trigger: 'change' }
+          { required: true, message: '请输入整车物料编码或物料描述', trigger: 'change' }
         ],
         standardPrice: [
           { required: true, message: '请输入标准价格', trigger: 'change' }
@@ -230,10 +192,11 @@ export default {
       });
     },
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20, allowCustomerSales: true });
+      return vehicleMaterials({ keyWord: params, status: 1, pageSize: 20, allowCustomerSales: true });
     },
     materialsSelect (val, row) {
       this.materialsform.materialsId = row.id;
+      this.materialsform.materialsDesc = row.materialsDesc || '';
       if (this.orderInfo.orderCategory === 1 || this.orderInfo.orderCategory === 8) {
         this.materialsform.standardPrice = row.price;
       }
@@ -278,6 +241,33 @@ export default {
     handleSubmit () {
       this.$refs.materialsForm.validate((valid) => {
         if (valid) {
+          // 折扣校验：销售价格 / 标准价格
+          const salesPrice = parseFloat(this.materialsform.salesPrice) || 0;
+          const standardPrice = parseFloat(this.materialsform.standardPrice) || 0;
+
+          if (standardPrice > 0 && salesPrice > 0) {
+            const discount = salesPrice / standardPrice;
+            // 折扣不在 0.85 到 1 范围内
+            if (discount < 0.85 || discount > 1) {
+              this.$confirm(
+                '销售价格不在常规折扣0.85到1的范围内，是否继续录入',
+                '提示',
+                {
+                  confirmButtonText: '是',
+                  cancelButtonText: '否',
+                  type: 'warning'
+                }
+              ).then(() => {
+                // 用户选择【是】，继续保存
+                this.$emit('addConfirm', this.materialsform);
+              }).catch(() => {
+                // 用户选择【否】，取消保存，不做任何操作
+              });
+              return;
+            }
+          }
+
+          // 折扣在允许范围内，直接保存
           this.$emit('addConfirm', this.materialsform);
         }
       });
@@ -298,6 +288,7 @@ export default {
   ::v-deep .el-select {
     width: 100%;
   }
+
   ::v-deep .fetch-select {
     width: 100%;
   }

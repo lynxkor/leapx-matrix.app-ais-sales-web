@@ -30,9 +30,10 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_status"
-          v-model="form.orderStatus"
+          v-model="form.orderStatusList"
           placeholder="请选择"
           clearable
+          multiple
           filterable
         />
       </el-form-item>
@@ -40,7 +41,8 @@
           <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="销售门店">
-          <fetch-select
+          <tag-input v-model="form.saleDealerNameList" clearable placeholder="请输入" />
+          <!-- <fetch-select
             filterable
             clearable
             remote
@@ -48,7 +50,7 @@
             :remote-method="getIsSalesCode"
             value-key="storeCode"
             label-key="storeName"
-          />
+          /> -->
         </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodeList" clearable placeholder="请输入" />
@@ -63,17 +65,28 @@
         <el-form-item label="车系名称">
           <fetch-select
             :remote-method="remoteMethods.series"
-            v-model="form.seriesId"
+            v-model="form.seriesIdList"
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
             clearable
             filterable
-            remote
-            @change="seriesListChange" />
+            multiple
+            remote/>
+            <!-- @change="seriesListChange"  -->
         </el-form-item>
         <el-form-item label="车型名称">
-          <el-select
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelIdList"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            filterable
+            multiple
+            remote/>
+          <!-- <el-select
             v-model="form.modelId"
             clearable
             filterable
@@ -85,10 +98,20 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"/>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="年款名称">
-          <el-select
+          <fetch-select
+            :remote-method="remoteMethods.yearType"
+            v-model="form.yearTypeIdList"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            filterable
+            multiple
+            remote/>
+          <!-- <el-select
             v-model="form.yearTypeId"
             clearable
             filterable
@@ -100,14 +123,15 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"/>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="大区">
           <fetch-select
             filterable
             clearable
             remote
-            v-model="form.regionCode"
+            multiple
+            v-model="form.regionCodeList"
             :remote-method="remoteMethods.region"
             value-key="orgCode"
             label-key="orgName"
@@ -134,10 +158,11 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_order_status"
-            v-model="form.wholesaleOrderStatus"
+            v-model="form.wholesaleOrderStatusList"
             placeholder="请选择"
             clearable
             filterable
+            multiple
           />
         </el-form-item>
         <el-form-item label="订单排序时间">
@@ -244,6 +269,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -287,6 +313,8 @@ import {
   getEnum,
   listOrgStoreInfo,
   vehicleSeriesList,
+  listVehicleModel,
+  listVehicleYearType,
   vehicleModelList,
   vehicleModelYearTypeRelationDistinctYeayType,
   getRigion,
@@ -325,13 +353,13 @@ const defaultForm = {
   depositAmount: '',
   agentName: '',
   cooperationTypeLabel: '',
-  saleDealerCode: '',
+  saleDealerNameList: [],
   provinceName: '',
   cityName: '',
   regionName: '',
   dealerCompanyName: '',
   deliveryDealerName: '',
-  seriesId: '',
+  seriesIdList: [],
   modelName: '',
   yearTypeName: '',
   materialsDesc: '',
@@ -400,6 +428,7 @@ export default {
       },
       areaOptions: getAreaTree(),
       selectionList: [],
+      sortColumns: [],
       yes_no_enum: YES_NO_ENUM,
       activeTab: 'all',
       show: false,
@@ -412,6 +441,12 @@ export default {
       remoteMethods: {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query, status: 1 });
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
         },
         region: async (query) => {
           return await getRigion({ seriesNameLike: query, status: 1 });
@@ -479,7 +514,7 @@ export default {
           },
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
-          { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
+          { props: 'lockTime', label: '锁单时间', visible: true, width: 180, sortable: true },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
           { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
           { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140, align: 'right' },
@@ -507,7 +542,7 @@ export default {
           { props: 'retailOrderCode', label: '订单编码', visible: true, width: 200 },
           { props: 'outTradeNo', label: '外部订单号', visible: true, width: 200 },
           { props: 'orderTime', label: '商城下单时间', visible: true, width: 200 },
-          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
+          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200, sortable: true },
           { props: 'rightsEnjoyDate', label: '权益享受日期', visible: true, width: 200 },
           { props: 'wholesaleOrderStatusLabel', label: '批售订单状态', visible: true, width: 160 },
           { props: 'unlockCount', label: '解绑次数', visible: true, width: 120 },
@@ -516,8 +551,8 @@ export default {
           { props: 'deliveryCycleMaxWeek', label: '交付周期上限', visible: true, width: 160 },
           { props: 'initialDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 180 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 180 },
-          { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160 },
-          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
+          { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160, sortable: true },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200, sortable: true },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'idCardTypeLabel', label: '证据类型', visible: true, width: 200 },
@@ -761,8 +796,24 @@ export default {
     onReset () {
       this.form = { ...defaultForm };
       this.activeTab = 'all';
+      this.sortColumns = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.getData();
+    },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     exportExcel () {
@@ -884,6 +935,8 @@ export default {
           data.cityCode = this.form.area[1];
         }
       }
+
+      data.sortColumns = this.sortColumns;
 
       return data;
     },

@@ -135,12 +135,14 @@
     <div class="ais-table-c" v-if="activeName === 'homePage'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
         :get-config="getConfig" :save-or-update="saveOrUpdate" @paginationChange="paginationChange"
-        @handleSelect="handleSelectionChange" />
+        @handleSelect="handleSelectionChange"
+        @sortChange="handleSortChange" />
     </div>
     <div class="ais-table-c" v-if="activeName === 'lowBattery'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionDdl"
         :get-config="getConfigDl" :save-or-update="saveOrUpdate" @paginationChange="paginationChangeDl"
-        @handleSelect="handleSelectionChange" />
+        @handleSelect="handleSelectionChange"
+        @sortChange="handleSortChange" />
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
@@ -277,6 +279,7 @@ export default {
             label: 'VDC入库时间',
             visible: true,
             width: 160,
+            sortable: true
           },
           { props: 'stockAge', label: '库龄（天）', visible: true, align: 'right', width: 120 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
@@ -311,7 +314,7 @@ export default {
           { props: 'exteriorName', label: '外观', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
           { props: 'interiorName', label: '内饰', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
+          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200, sortable: true },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 140 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
           { props: 'lastInboundTime', label: '最近入库时间', visible: true, width: 200 },
@@ -325,7 +328,7 @@ export default {
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -397,12 +400,7 @@ export default {
               type: 'primary'
             }]
           },
-          {
-            props: 'inboundDateTime',
-            label: 'VDC入库时间',
-            visible: true,
-            width: 200,
-          },
+          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200, sortable: true },
           { props: 'stockAge', label: '库龄（天）', visible: true, align: 'right', width: 120 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
@@ -434,7 +432,7 @@ export default {
           { props: 'interiorName', label: '内饰', visible: true, width: 120 },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140 },
           { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 120 },
-          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
+          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200, sortable: true },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 140 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
           { props: 'lastInboundTime', label: '最近入库时间', visible: true, width: 200 },
@@ -446,7 +444,7 @@ export default {
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -489,6 +487,20 @@ export default {
         ],
         total: 0
       },
+      sortColumns: [
+        {
+          column: 'inbound_date_time',
+          sort: 'DESC'
+        },
+        // {
+        //   column: 'create_time',
+        //   sort: 'DESC'
+        // },
+        // {
+        //   column: 'outbound_date_time',
+        //   sort: 'DESC'
+        // }
+      ],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -531,6 +543,21 @@ export default {
     this.refreshTableData();
   },
   methods: {
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.refreshTableData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.refreshTableData();
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -576,6 +603,7 @@ export default {
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
+      this.sortColumns = [{ column: 'inbound_date_time', sort: 'DESC' }];
       this.$nextTick(() => {
         this.getData();
       });
@@ -767,6 +795,7 @@ export default {
       if (data.stockAgeLe === 0 || data.stockAgeLe === null || data.stockAgeLe === undefined || data.stockAgeLe === '') {
         delete data.stockAgeLe;
       }
+      data.sortColumns = this.sortColumns;
 
       return data;
     },

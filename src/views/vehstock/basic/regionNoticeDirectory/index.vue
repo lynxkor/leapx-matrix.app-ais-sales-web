@@ -19,18 +19,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="销售公告车型名称">
-        <fetch-select
-          v-model="form.vehicleRegisteredModelId"
-          filterable
-          clearable
-          remote
-          reserve-keyword
-          :options="modelOptions"
-          placeholder="请选择"
-          :remote-method="serchModel"
-          value-key="value"
-          label-key="label"
-        />
+        <tag-input v-model="form.vehicleRegisteredModelNameList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="状态" v-if="visibleCount === 3 || show">
           <fetch-select
@@ -108,9 +97,10 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/regionNoticeDirectory/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, cityPage, vehicleSalesVersionList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, cityPage } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
+import TagInput from '@/libs/components/TagInput';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -121,7 +111,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   code: '',
   cityCodeList: '',
-  vehicleRegisteredModelId: '',
+  vehicleRegisteredModelNameList: [],
   statusIncludeList: '',
   createTime: '',
 };
@@ -137,7 +127,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -154,7 +145,6 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       options: [],
-      modelOptions: [],
       optionObj: {
         id: 'regionNoticeDirectoryTable',
         dataList: [],
@@ -359,17 +349,7 @@ export default {
         };
       });
     },
-    // 公告销售车型
-    async serchModel (query) {
-      const res = await vehicleSalesVersionList({ registeredModelNameLike: query, size: 100 });
-      this.modelOptions = res?.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id,
-        };
-      });
-    },
+
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
       this.getData();
@@ -404,7 +384,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (Array.isArray(data[key]) && data[key].length === 0)) {
           delete data[key];
         }
       });
