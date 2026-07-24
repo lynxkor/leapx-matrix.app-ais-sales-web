@@ -1274,18 +1274,21 @@ export default {
         return getDetail(id).then((res) => {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
-          const uniqueLabels = new Set();
+          // 使用 Map 以 fundType 作为去重 key（Set 对对象引用无法去重）
+          const uniqueLabelsMap = new Map();
 
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
               if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
-                uniqueLabels.add(
-                  {
-                    fundType: String(account.fundType),
+                // 除【返利】之外 【有效】的其他资金类型，按 fundType 去重
+                const fundTypeKey = String(account.fundType);
+                if (!uniqueLabelsMap.has(fundTypeKey)) {
+                  uniqueLabelsMap.set(fundTypeKey, {
+                    fundType: fundTypeKey,
                     fundTypeLabel: account.fundTypeLabel,
-                  }
-                );
+                  });
+                }
               }
               if (account.fundType === 2010 && account.financialOrganizationId && account.financialOrganizationName) {
                 // 检查是否已存在，避免重复
@@ -1297,7 +1300,6 @@ export default {
                   });
                 }
               }
-              this.fundTypeList = Array.from(uniqueLabels);
               // 原有的映射逻辑
               return {
                 ...account,
@@ -1309,6 +1311,8 @@ export default {
               };
             });
           }
+          // 遍历结束后统一赋值，避免在 map 回调里被反复覆盖
+          this.fundTypeList = Array.from(uniqueLabelsMap.values());
           return res;
         }).catch(() => { });
       }

@@ -236,7 +236,10 @@ export default {
           { props: 'regionName', label: '大区', visible: true, width: 150 },
           { props: 'provinceName', label: '省份', visible: true, width: 180 },
           { props: 'cityName', label: '城市', visible: true, width: 150 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); }, type: 'primary' }] },
+          {
+            props: 'dealerParentOrgName', label: '母公司', visible: true, width: 280,
+            // buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); },type: 'primary' }]
+          },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
           { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },

@@ -23,7 +23,8 @@
                   {{ form.rebateBillDetailCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>

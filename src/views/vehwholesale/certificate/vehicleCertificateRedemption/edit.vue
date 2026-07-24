@@ -136,7 +136,8 @@
                   <el-link type="primary" :href="'/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode" target="_blank">{{ form.entVehicleOrderCode }}</el-link>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="'/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode" target="_blank">{{ form.dealerCompanyName }}</el-link>
+                  <!-- <el-link type="primary" :href="'/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   <el-link type="primary" :href="'/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode" target="_blank">{{ form.saleDealerName }}</el-link>
