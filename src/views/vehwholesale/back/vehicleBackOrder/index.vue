@@ -251,14 +251,14 @@ export default {
             label: '经销商',
             visible: true,
             width: 240,
-            buttons: [{
-              click: (rowIndex, row) => {
-                if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
-                }
-              },
-              type: 'primary'
-            }]
+            // buttons: [{
+            //   click: (rowIndex, row) => {
+            //     if (row.dealerCompanyCode) {
+            //       window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
+            //     }
+            //   },
+            //   type: 'primary'
+            // }]
           },
           { props: 'regionName', label: '所属大区', visible: true, width: 120 },
           {
@@ -266,14 +266,14 @@ export default {
             label: '企业客户',
             visible: true,
             width: 120,
-            buttons: [{
-              click: (rowIndex, row) => {
-                if (row.entCustomerCode) {
-                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank');
-                }
-              },
-              type: 'primary'
-            }]
+            // buttons: [{
+            //   click: (rowIndex, row) => {
+            //     if (row.entCustomerCode) {
+            //       window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank');
+            //     }
+            //   },
+            //   type: 'primary'
+            // }]
           },
           { props: 'backTypeLabel', label: '退车类型', visible: true, width: 120 },
           { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 120 },

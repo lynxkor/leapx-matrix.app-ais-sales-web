@@ -158,7 +158,8 @@
                   {{ form.spotWholesaleEnabledLabel }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerParentOrgCode}`" target="_blank">{{ form.dealerParentOrgName }}</el-link>
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerParentOrgCode}`" target="_blank">{{ form.dealerParentOrgName }}</el-link> -->
+                  {{ form.dealerParentOrgName }}
                 </el-form-item>
               </el-form>
             </div>
