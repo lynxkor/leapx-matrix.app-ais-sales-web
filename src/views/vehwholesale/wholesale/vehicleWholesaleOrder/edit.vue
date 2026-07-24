@@ -98,8 +98,7 @@
                   </el-form-item>
                   <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                     <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail"
-                      placeholder="请选择" clearable filterable
-                      :disabled='form.orderStatus === 99 || form.orderStatus === "99" || accountFlag' />
+                      placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
