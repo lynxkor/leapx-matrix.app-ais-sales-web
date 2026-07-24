@@ -346,7 +346,11 @@ export default {
       this.$refs.parentItemSelect.loadRemoteMethod();
     },
     getOptionalName (val, obj) {
-      this.form.optionPackageName = obj.name;
+      if (val) {
+        this.form.optionPackageName = obj.name;
+      } else {
+        this.form.optionPackageName = '';
+      }
     },
     getYearName (val, obj) {
       this.form.yearTypeName = obj.name;
