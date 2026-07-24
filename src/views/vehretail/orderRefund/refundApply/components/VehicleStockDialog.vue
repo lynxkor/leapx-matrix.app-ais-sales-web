@@ -112,9 +112,9 @@ export default {
         pageNum: this.optionObj.form.page,
         vehicleDeliveryStatus: 3,
         vdcInventoryStatus: 3,
-        carAllocated: 1,
-        logisticsReserved: 1,
-        reserved: 1,
+        carAllocated: 0,
+        logisticsReserved: 0,
+        reserved: 0,
         pageSize: this.optionObj.form.size
       };
       // 过滤空值

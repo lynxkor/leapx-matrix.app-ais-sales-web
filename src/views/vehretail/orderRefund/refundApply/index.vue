@@ -401,7 +401,7 @@ export default {
           { props: 'preApproveTime', label: '初审时间', visible: true, width: 200, sortable: true },
           { props: 'approveUser', label: '审核人', visible: true, width: 200, sortable: false },
           { props: 'approveTime', label: '审核时间', visible: true, width: 200, sortable: true },
-          { props: 'finalApproveUser', label: '终审人', visible: true, width: 200, sortable: false },
+          { props: 'finalApproveUserEncrypt', label: '终审人', visible: true, width: 200, sortable: false },
           { props: 'finalApproveTime', label: '终审时间', visible: true, width: 200, sortable: true },
           { props: 'orderRefundTypeLabel', label: '退订方式', visible: true, width: 200 },
           { props: 'cateName', label: '退订原因分类', visible: true, width: 200, sortable: true },
