@@ -88,6 +88,7 @@
                     :remote-method="remoteMethods.optional"
                     :params="form.optionPackageName"
                     @change="getOptionalName"
+                    clearable
                   />
                 </el-form-item>
                 <el-form-item label="检查方式：" prop="checkMethod">
