@@ -55,7 +55,8 @@
                   {{ form.month }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerParentOrgCode)">{{ form.dealerParentOrgName }}</el-button>
+                  <!-- <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerParentOrgCode)">{{ form.dealerParentOrgName }}</el-button> -->
+                  {{ form.dealerParentOrgName }}
                 </el-form-item>
                 <el-form-item label="大区：">
                   {{ form.regionName }}
