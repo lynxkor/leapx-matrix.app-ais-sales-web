@@ -88,6 +88,7 @@
                     :remote-method="remoteMethods.optional"
                     :params="form.optionPackageName"
                     @change="getOptionalName"
+                    clearable
                   />
                 </el-form-item>
                 <el-form-item label="检查方式：" prop="checkMethod">
@@ -346,7 +347,11 @@ export default {
       this.$refs.parentItemSelect.loadRemoteMethod();
     },
     getOptionalName (val, obj) {
-      this.form.optionPackageName = obj.name;
+      if (val) {
+        this.form.optionPackageName = obj.name;
+      } else {
+        this.form.optionPackageName = '';
+      }
     },
     getYearName (val, obj) {
       this.form.yearTypeName = obj.name;

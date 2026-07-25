@@ -90,7 +90,8 @@
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="所属母公司：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="批售总金额：" prop="totalWholesaleAmount">
                   {{ form.totalWholesaleAmount }}

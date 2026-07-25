@@ -6,7 +6,7 @@
     :defaultNewRow="defaultNewRow"
     :show-toolbar="false"
     :options="options"
-    :auth="tableType === 'detail' ? {} : { edit: canAddOrUpdate, delete: canAddOrUpdate }"
+    :auth="isReadOnly ? {} : { edit: canAddOrUpdate, delete: canAddOrUpdate }"
     :isFocusNewRow="false"
     :enableSingleRowSave="true"
     :showPagination="true"
@@ -43,6 +43,11 @@ export default {
     id: {
       type: String,
     },
+    // 只读模式：商品状态为 1 时禁用编辑/删除
+    readonly: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
     EditTable,
@@ -51,27 +56,19 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id;
-    }
-  },
-  data () {
-    return {
-      defaultNewRow: {
-        attributeSort: '',
-        attributeName: '',
-        attributeValue: ''
-      },
-      current: 1,
-      pageSize: 20,
-      total: 0,
-      tableData: [],
-      options: {
-      },
-      columns: [
+    },
+    // readonly 优先级高于 tableType
+    isReadOnly () {
+      return this.readonly || this.tableType === 'detail';
+    },
+    // 只读时所有列都不可编辑
+    columns () {
+      const cols = [
         {
           field: 'attributeSort',
           title: '属性序号',
           width: '20%',
-          editable: true,
+          editable: !this.isReadOnly,
           editRender: {
             name: 'ElInputNumber',
             props: {
@@ -92,7 +89,7 @@ export default {
         {
           field: 'attributeName',
           title: '属性名称',
-          editable: true,
+          editable: !this.isReadOnly,
           width: '30%',
           editRender: {
             name: 'ElInput',
@@ -113,7 +110,7 @@ export default {
         {
           field: 'attributeValue',
           title: '属性值',
-          editable: true,
+          editable: !this.isReadOnly,
           width: '33%',
           editRender: {
             name: 'ElInput',
@@ -130,8 +127,24 @@ export default {
               trigger: 'blur'
             }
           ]
-        },
-      ],
+        }
+      ];
+      return cols;
+    }
+  },
+  data () {
+    return {
+      defaultNewRow: {
+        attributeSort: '',
+        attributeName: '',
+        attributeValue: ''
+      },
+      current: 1,
+      pageSize: 20,
+      total: 0,
+      tableData: [],
+      options: {
+      },
       selectedRow: {},
     };
   },
