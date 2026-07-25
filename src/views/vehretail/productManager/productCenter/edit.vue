@@ -181,7 +181,7 @@
             </div>
             <div class="common-section-body">
               <div style="padding-bottom: 12px;">
-                <el-button size="small" @click="handleAddRow" type="primary" plain :disabled="isReadOnly"><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
+                <el-button v-if="!isReadOnly && canSaleAttributeAddOrUpdate" size="small" @click="handleAddRow" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
               </div>
               <div class="common-section-table">
                 <attributeable-table
@@ -189,6 +189,7 @@
                   ref="attributeable"
                   @replace="replace"
                   :readonly="isReadOnly"
+                  :canEdit="canSaleAttributeAddOrUpdate"
                   :id="_id" />
               </div>
             </div>
@@ -200,14 +201,15 @@
             </div>
             <div class="common-section-body">
               <div style="padding-bottom: 12px;">
-                <el-button size="small" @click="addReplace" type="primary" plain :disabled="isReadOnly"><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
-                <el-button size="small" @click="updatePrice" :disabled="isReadOnly || selection.length === 0">修改市场指导价</el-button>
+                <el-button v-if="!isReadOnly && canSkuAddOrUpdate" size="small" @click="addReplace" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
+                <el-button v-if="!isReadOnly && canSkuAddOrUpdate" size="small" @click="updatePrice" :disabled="selection.length === 0">修改市场指导价</el-button>
               </div>
                 <pricing-table
                   :module-key="moduleKey"
                   ref="pricing"
                   :id="_id"
                   :readonly="isReadOnly"
+                  :canEdit="canSkuAddOrUpdate"
                   :tableType="isReadOnly ? 'detail' : 'edit'"
                   @replace="updateReplace"
                   @checkboxChange="checkboxChange" />
@@ -365,6 +367,9 @@ export default {
       pageTitle: '销售管理-商品管理-商品中心',
       pageType: 'edit',
       moduleKey: 'AISVR-productInfo',
+      // 销售属性新增/编辑权限、商品定价新增/编辑权限
+      canSaleAttributeAddOrUpdate: false,
+      canSkuAddOrUpdate: false,
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -400,6 +405,9 @@ export default {
     };
   },
   mounted () {
+    // 销售属性 / 商品定价 新增编辑权限
+    this.canSaleAttributeAddOrUpdate = this.permissions.has(`${this.moduleKey}-saleAttributeaddOrUpdate`);
+    this.canSkuAddOrUpdate = this.permissions.has(`${this.moduleKey}-skuaddOrUpdate`);
   },
   methods: {
     detailRequest () {

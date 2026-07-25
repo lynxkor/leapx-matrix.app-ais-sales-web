@@ -319,6 +319,7 @@
                   :businessId="_id"
                   configCode="vehicle_back_order"
                   ref="attachment"
+                  :readonly="!isEditing"
                 />
               </div>
             </div>

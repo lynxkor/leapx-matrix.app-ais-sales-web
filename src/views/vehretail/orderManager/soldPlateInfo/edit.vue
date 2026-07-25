@@ -32,25 +32,25 @@
           <el-button
             @click="handleSubmit"
             :loading="submitLoading"
-            v-if="form.status === 1010 || form.status === 1040"
+            v-if="canSubmit && (form.status === 1010 || form.status === 1040)"
             size="small">
             提交审核
           </el-button>
           <el-button
             @click="openRevocationSubmitShow"
-            v-if="form.status === 1020"
+            v-if="canRevocation && form.status === 1020"
             size="small">
             撤回提交
           </el-button>
           <el-button
             @click="openRevocationShow"
-            v-if="form.status === 1030"
+            v-if="canRevocation && form.status === 1030"
             size="small">
             撤回
           </el-button>
           <el-button
             @click="openAuditShow "
-            v-if="form.status === 1020"
+            v-if="canAudit && form.status === 1020"
             size="small">
             审核
           </el-button>
@@ -901,6 +901,10 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRFDI-soldPlateInfo',
+      // 按钮权限
+      canSubmit: false, // 提交审核
+      canRevocation: false, // 撤回提交/撤回
+      canAudit: false, // 审核
       loading: false,
       submitLoading: false,
       uploadLoading: false,
@@ -1135,10 +1139,19 @@ export default {
       }
     };
   },
+  created () {
+    this.initPermissions();
+  },
   mounted () {
     this.loadAttachmentConfig();
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canSubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.canRevocation = this.permissions.has(`${this.moduleKey}-revocation`);
+      this.canAudit = this.permissions.has(`${this.moduleKey}-audit`);
+    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {

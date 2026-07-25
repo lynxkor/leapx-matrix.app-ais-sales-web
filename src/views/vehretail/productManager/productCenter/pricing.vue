@@ -50,6 +50,11 @@ export default {
     readonly: {
       type: Boolean,
       default: false
+    },
+    // 是否拥有 SKU 新增/编辑权限
+    canEdit: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -60,9 +65,9 @@ export default {
     _id () {
       return this.id || this.$route.query.id;
     },
-    // readonly 优先级高于 tableType
+    // readonly 优先级最高；当缺少新增/编辑权限时也视为只读
     isReadOnly () {
-      return this.readonly || this.tableType === 'detail';
+      return this.readonly || this.tableType === 'detail' || !this.canEdit;
     }
   },
   data () {
