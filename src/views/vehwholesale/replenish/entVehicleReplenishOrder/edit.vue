@@ -481,6 +481,7 @@
                   :businessId="_id"
                   configCode="ent_vehicle_replenish_order"
                   ref="attachment"
+                  :readonly="!isEditing"
                 />
               </div>
             </div>

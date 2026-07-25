@@ -20,8 +20,8 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if="form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
-          <el-button v-if="form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
+          <el-button v-if="canAddSoldPlateInfo && form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
+          <el-button v-if="canVehicleAttribute && form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>-->
           <el-button v-if="form.status === 0" size="small" :loading="submitLoading" @click="handleSubmit">提交</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleCancel">作废</el-button>-->
@@ -615,6 +615,9 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRFDI-specialVehicleSalesReport',
+      // 按钮权限
+      canAddSoldPlateInfo: false, // 添加上牌信息
+      canVehicleAttribute: false, // 调整车辆属性
       loading: false,
       submitLoading: false,
       uploadOperate: false,
@@ -796,10 +799,18 @@ export default {
       }
     };
   },
+  created () {
+    this.initPermissions();
+  },
   mounted () {
     this.loadAttachmentConfig();
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canAddSoldPlateInfo = this.permissions.has(`${this.moduleKey}-addSoldPlateInfo`);
+      this.canVehicleAttribute = this.permissions.has(`${this.moduleKey}-vehicleAttribute`);
+    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {
