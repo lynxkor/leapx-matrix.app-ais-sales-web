@@ -1,14 +1,14 @@
 <template>
   <expand-table
     ref="editTable"
-    :dynamic-buttons="tableType === 'detail' ? [] : dynamicButtons"
+    :dynamic-buttons="isReadOnly ? [] : dynamicButtons"
     :columns="columns"
     :data="tableData"
     :defaultNewRow="defaultNewRow"
     :show-toolbar="false"
-    :checkbox="tableType !== 'detail'"
+    :checkbox="!isReadOnly"
     :options="options"
-    :auth="tableType === 'detail' ? {} : { delete: canAddOrUpdate }"
+    :auth="isReadOnly ? {} : { delete: canAddOrUpdate }"
     :isFocusNewRow="false"
     :enableSingleRowSave="true"
     :showPagination="true"
@@ -46,6 +46,11 @@ export default {
     id: {
       type: String,
     },
+    // 只读模式：商品状态为 1 时禁用编辑/删除/勾选
+    readonly: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
     expandTable,
@@ -54,6 +59,10 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id;
+    },
+    // readonly 优先级高于 tableType
+    isReadOnly () {
+      return this.readonly || this.tableType === 'detail';
     }
   },
   data () {
@@ -92,14 +101,13 @@ export default {
           field: 'saleAttribute',
           title: '销售属性',
           editable: false,
-          width: 200,
         },
         {
           field: 'marketGuidePrice',
           title: '市场指导价',
           editable: false,
           align: 'right',
-          width: 120,
+          width: 220,
         },
         {
           field: 'materialsCode',
