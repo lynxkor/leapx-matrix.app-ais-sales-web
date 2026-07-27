@@ -32,9 +32,10 @@
                   {{ form.fundAccountCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
                     {{ form.dealerCompanyName }}
-                  </el-link>
+                  </el-link> -->
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
@@ -45,9 +46,10 @@
                   </el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
                     {{ form.dealerCompanyCode }}
-                  </el-link>
+                  </el-link> -->
+                  {{ form.dealerCompanyCode }}
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   <fetch-select
@@ -95,9 +97,10 @@
                   {{ form.fundAccountCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
                     {{ form.dealerCompanyName }}
-                  </el-link>
+                  </el-link> -->
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
@@ -108,9 +111,10 @@
                    </el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
                     {{ form.dealerCompanyCode }}
-                  </el-link>
+                  </el-link> -->
+                  {{ form.dealerCompanyCode }}
                 </el-form-item>
                 <!-- <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}

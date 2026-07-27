@@ -1,4 +1,5 @@
 <template>
+  <div>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
@@ -9,8 +10,30 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <!-- 提交：仅源门店用户在待提交/驳回时可见 -->
+          <el-button
+            v-if="canSubmit"
+            size="small"
+            @click="handleSubmitTransfer"
+          >
+            <i class="iconfont icon-lxppc-submit"></i>提交
+          </el-button>
+          <!-- 调出审批：状态为调出审批中且源门店权限范围内 -->
+          <el-button
+            v-if="canApproveOut"
+            size="small"
+            @click="handleApproval('outApproval')"
+          >
+            调出审批
+          </el-button>
+          <!-- 调入审批：状态为调入审批中且目标门店权限范围内 -->
+          <el-button
+            v-if="canApproveIn"
+            size="small"
+            @click="handleApproval('inApproval')"
+          >
+            调入审批
+          </el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -144,10 +167,13 @@
       </div>
     </template>
   </edit-page-layout>
+  <!-- 调拨审批弹窗 -->
+  <ApprovalDialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData" @update:visible="val => approvalVisible = val" @submit="handleApprovalDone" />
+</div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeInventoryTransfer/index';
+import { getDetail, addOrUpdate, storeSubmit } from '@/api/vehstock/store/storeInventoryTransfer/index';
 import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import BaseSearch from '@/libs/components/BaseSearch';
@@ -159,6 +185,8 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { listOrgStoreInfo } from '@/libs/api/common';
+import ApprovalDialog from './ApprovalDialog.vue';
+import axios from 'axios';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -213,7 +241,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    BaseSearch
+    BaseSearch,
+    ApprovalDialog,
   },
   computed: {
     _id () {
@@ -232,8 +261,26 @@ export default {
     directOrgCodes () {
       return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
     },
+    allOrgCodes () {
+      return [...new Set([...this.directOrgCodes, ...this.descendantOrgCodes])];
+    },
     showEditBtn () {
       return (this.form.auditStatus === 1 || this.form.auditStatus === 5) && this.directOrgCodes.includes(this.form.sourceDealerCode);
+    },
+    canSubmit () {
+      return (this.form.auditStatus === 1 || this.form.auditStatus === 5) &&
+        this.permissions.has(`${this.moduleKey}-submit`) &&
+        this.directOrgCodes.includes(this.form.sourceDealerCode);
+    },
+    canApproveOut () {
+      return this.form.auditStatus === 2 &&
+        this.permissions.has(`${this.moduleKey}-approveOut`) &&
+        this.allOrgCodes.includes(this.form.sourceDealerCode);
+    },
+    canApproveIn () {
+      return this.form.auditStatus === 3 &&
+        this.permissions.has(`${this.moduleKey}-approveIn`) &&
+        this.allOrgCodes.includes(this.form.targetDealerCode);
     }
   },
   watch: {
@@ -270,6 +317,9 @@ export default {
       storeName: '', // 目标门店仓库名称
       emptyText: '若要启用此内容，请创建记录',
       warehouseOptions: [], // 门店仓库编码或名称选项
+      descendantOrgCodes: [], // 子级组织编码
+      approvalVisible: false, // 调拨审批弹窗
+      approvalData: {},
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
@@ -302,6 +352,8 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
+        // 详情加载完成后取一次子级组织编码，保证审批按钮的 show 判断可用
+        this.fetchDescendantOrgCodes();
         return getDetail(id);
       }
     },
@@ -423,6 +475,69 @@ export default {
       this.form.targetDealerWarehouseName = record.warehouseName || '';
       this.form.targetDealerWarehouseAddress = record.warehouseDetailAddress || '';
     },
+    // 提交按钮
+    handleSubmitTransfer () {
+      this.$confirm('是否要提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const id = this._id;
+        if (!id) return;
+        storeSubmit(id).then(() => {
+          this.$message.success('提交成功!');
+          this.$emit('refresh');
+          this.$refs.containerRef && this.$refs.containerRef.loadDetail();
+        }).catch(() => {
+          this.$message.error('提交失败!');
+        });
+      }).catch(() => {});
+    },
+    // 打开调拨审批弹窗
+    handleApproval (type) {
+      this.approvalData = {
+        id: this._id,
+        type: type
+      };
+      this.approvalVisible = true;
+    },
+    // 审批提交后刷新
+    handleApprovalDone () {
+      this.$refs.containerRef && this.$refs.containerRef.loadDetail();
+    },
+    // 获取子级组织编码
+    async fetchDescendantOrgCodes () {
+      const orgPostUserList = this.userInfo.orgPostUserList || [];
+      const orgIds = orgPostUserList.map(item => item.orgId).filter(Boolean);
+      if (orgIds.length === 0) return;
+
+      const instance = axios.create();
+      const token = this.$store.state.user.token;
+      const headers = token ? {
+        Authorization: 'Bearer ' + token,
+        'X-CROSS-NODE-ID': localStorage.getItem('token'),
+        Accepte: 'application/vnd.leapx.v2+json'
+      } : {};
+
+      try {
+        const results = await Promise.all(orgIds.map(orgId =>
+          instance.get(`${window.APP_AIS_WEB_CONFIG.VUE_APP_WORK_ORDER_URL}/accountService/orgInfo/findDescendant`, {
+            params: { orgId },
+            headers
+          })
+        ));
+
+        const allCodes = results.reduce((acc, res) => {
+          const data = res.data;
+          const list = Array.isArray(data) ? data : (data?.data || data?.records || data?.result || data?.rows || []);
+          return [...acc, ...list.map(item => item.orgCode)];
+        }, []);
+
+        this.descendantOrgCodes = [...new Set(allCodes)];
+      } catch (e) {
+        console.error('fetchDescendantOrgCodes error:', e);
+      }
+    }
   }
 };
 </script>

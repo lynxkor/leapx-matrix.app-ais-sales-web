@@ -98,8 +98,7 @@
                   </el-form-item>
                   <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                     <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail"
-                      placeholder="请选择" clearable filterable
-                      :disabled='form.orderStatus === 99 || form.orderStatus === "99"' />
+                      placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
@@ -610,7 +609,7 @@ import { getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateV
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM, TRUE_FALSE_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -807,6 +806,7 @@ export default {
       perbatchCancelSettle: false,
       perbatchCancel: false,
       canAddOrUpdate: false,
+      accountFlag: null, // 是否是厂端 true店端 false是厂端
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
         { field: 'gtext', title: '资金类型' },
@@ -868,8 +868,15 @@ export default {
   },
   created () {
     this.initPermissions();
+    this.loginUserGet();
   },
   methods: {
+    loginUserGet () {
+      loginUserGet().then(res => {
+        // true 店端 false厂端
+        this.accountFlag = res.accountFlag;
+      }).catch(() => {});
+    },
     initPermissions () {
       this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`);
       this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`);
@@ -1151,18 +1158,21 @@ export default {
         return getDetail(id).then((res) => {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
-          const uniqueLabels = new Set();
+          // 使用 Map 以 fundType 作为去重 key（Set 对对象引用无法去重）
+          const uniqueLabelsMap = new Map();
+
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
               if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
-                // 除【返利】之外 【有效】的其他资金类型
-                uniqueLabels.add(
-                  {
-                    fundType: String(account.fundType),
+                // 除【返利】之外 【有效】的其他资金类型，按 fundType 去重
+                const fundTypeKey = String(account.fundType);
+                if (!uniqueLabelsMap.has(fundTypeKey)) {
+                  uniqueLabelsMap.set(fundTypeKey, {
+                    fundType: fundTypeKey,
                     fundTypeLabel: account.fundTypeLabel,
-                  }
-                );
+                  });
+                }
               }
               if ((account.fundType === '2010' || account.fundType === 2010) && account.financialOrganizationId && account.financialOrganizationName) {
                 // 检查是否已存在，避免重复
@@ -1174,7 +1184,6 @@ export default {
                   });
                 }
               }
-              this.fundTypeList = Array.from(uniqueLabels);
               // 原有的映射逻辑
               return {
                 ...account,
@@ -1186,6 +1195,8 @@ export default {
               };
             });
           }
+          // 遍历结束后统一赋值，避免在 map 回调里被反复覆盖
+          this.fundTypeList = Array.from(uniqueLabelsMap.values());
           console.log('Processed financialOrganizationList:', this.financialOrganizationList);
           return res;
         }).catch(() => { });

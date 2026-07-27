@@ -19,7 +19,7 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" :loading="printLoading" v-if="canOperateOrder && canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button size="small" :loading="setSpecialMarkLoading" v-if="canSetSpecialRemark" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
@@ -611,6 +611,7 @@ export default {
       qualityIssueLoading: false, // 质量问题解绑申请的 loading 状态
       unlockLoading: false, // 取消锁车的 loading 状态
       // 权限控制
+      canGetUnbindContractUrl: false, // 打印合同解除协议
       canSetSpecialRemark: false, // 设置特殊标识
       canChangeOrderMaterials: false, // 修改配置
       canManualLock: false, // 手工配车
@@ -878,6 +879,7 @@ export default {
     },
     // 初始化权限
     initPermissions () {
+      this.canGetUnbindContractUrl = this.permissions.has(`${this.moduleKey}-getUnbindContractUrl`);
       this.canSetSpecialRemark = this.permissions.has(`${this.moduleKey}-setSpecialRemark`);
       this.canChangeOrderMaterials = this.permissions.has(`${this.moduleKey}-changeOrderMaterials`);
       this.canManualLock = this.permissions.has(`${this.moduleKey}-manualLock`);

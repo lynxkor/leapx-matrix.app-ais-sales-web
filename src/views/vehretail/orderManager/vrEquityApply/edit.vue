@@ -176,13 +176,14 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="提交人：">
-                  <el-link
+                  <!-- <el-link
                     v-if="form.submitterUserId"
                     type="primary"
                     :underline="false"
                     @click="$userDialog.show({ userId: form.submitterUserId })"
                   >{{ form.submitterName }}</el-link>
-                  <span v-else>{{ form.submitterName }}</span>
+                  <span v-else>{{ form.submitterName }}</span> -->
+                  {{ form.submitterName }}
                 </el-form-item>
                 <el-form-item label="提交时间：">
                   {{ form.submitTime }}

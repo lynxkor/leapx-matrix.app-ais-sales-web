@@ -273,14 +273,14 @@ export default {
             label: '母公司名称',
             visible: true,
             width: 150,
-            buttons: [{
-              click: (rowIndex, row) => {
-                if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
-                }
-              },
-              type: 'primary'
-            }]
+            // buttons: [{
+            //   click: (rowIndex, row) => {
+            //     if (row.dealerCompanyCode) {
+            //       window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
+            //     }
+            //   },
+            //   type: 'primary'
+            // }]
           },
           {
             props: 'modelName',
