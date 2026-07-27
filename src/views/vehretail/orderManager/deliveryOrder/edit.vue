@@ -19,8 +19,9 @@
         </template>
         <template #extraButtons>
           <!-- 交车状态： 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废 -->
+          <!-- deliveryConfirmStatus 交车确认单状态 5-待生成 10-已生成待签署 15-已签署 99-已失效 -->
           <el-button v-if="canAppointment && form.status === 1" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
-          <el-button v-if="canDeliveryConfirm && form.status === 5" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button v-if="canDeliveryConfirm && form.status === 5 && (form.deliveryConfirmStatus === 5 || form.deliveryConfirmStatus === 10)" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
           <el-button v-if="canChangeAppointmentTime && form.status === 4" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
           <el-button v-if="canCancelOrderRights && form.status === 4" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
           <el-button v-if="canRevertCancelOrderRights && form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>

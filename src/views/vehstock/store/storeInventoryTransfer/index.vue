@@ -55,7 +55,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, storeSubmit, storeInvalid, postExport } from '@/api/vehstock/store/storeInventoryTransfer/index';
+import { getList, deleteItem, enableItem, storeSubmit, storeInvalid } from '@/api/vehstock/store/storeInventoryTransfer/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';

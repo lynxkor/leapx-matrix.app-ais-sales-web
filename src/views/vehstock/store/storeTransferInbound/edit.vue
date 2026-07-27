@@ -9,8 +9,8 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <!-- 入库：与列表行内按钮同条件（auditStatus=1 且有 inbound 权限） -->
+          <el-button v-if="canInbound" size="small" @click="handleInboundClick">入库</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeTransferInbound/index';
+import { getDetail, addOrUpdate, inboundItem } from '@/api/vehstock/store/storeTransferInbound/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -189,6 +189,11 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
+    },
+    // 入库按钮显示条件：与列表行内按钮保持一致
+    canInbound () {
+      return this.form.auditStatus === 1 &&
+        this.permissions.has(`${this.moduleKey}-inbound`);
     }
   },
   watch: {
@@ -231,6 +236,20 @@ export default {
     },
     submitRequest () {
       return addOrUpdate({ ...this.form });
+    },
+    // 入库按钮点击：弹通用确认弹窗，确认后调入库接口
+    handleInboundClick () {
+      const id = this._id;
+      if (!id) return;
+      this.$confirmExport(null, { message: '确认入库吗?', title: '提示', type: 'warning' }).then(() => {
+        inboundItem([id]).then(() => {
+          this.$message.success('入库成功!');
+          // 后端入库接口同步返回成功，但状态更新存在延迟，延迟一下再查询
+          setTimeout(() => {
+            this.$refs.containerRef && this.$refs.containerRef.loadDetail();
+          }, 800);
+        });
+      }).catch(() => { });
     },
     // 打开侧边栏
     openPane () {
