@@ -11,15 +11,13 @@
         </template>
         <template #extraButtons>
           <!-- 提交：仅源门店用户在待提交/驳回时可见 -->
-          <el-popconfirm
+          <el-button
             v-if="canSubmit"
-            title="是否要提交?"
-            @confirm="handleSubmitTransfer"
+            size="small"
+            @click="handleSubmitTransfer"
           >
-            <el-button slot="reference" size="small">
-              <i class="iconfont icon-lxppc-submit"></i>提交
-            </el-button>
-          </el-popconfirm>
+            <i class="iconfont icon-lxppc-submit"></i>提交
+          </el-button>
           <!-- 调出审批：状态为调出审批中且源门店权限范围内 -->
           <el-button
             v-if="canApproveOut"
@@ -479,15 +477,21 @@ export default {
     },
     // 提交按钮
     handleSubmitTransfer () {
-      const id = this._id;
-      if (!id) return;
-      storeSubmit(id).then(() => {
-        this.$message.success('提交成功!');
-        this.$emit('refresh');
-        this.$refs.containerRef && this.$refs.containerRef.loadDetail();
-      }).catch(() => {
-        this.$message.error('提交失败!');
-      });
+      this.$confirm('是否要提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const id = this._id;
+        if (!id) return;
+        storeSubmit(id).then(() => {
+          this.$message.success('提交成功!');
+          this.$emit('refresh');
+          this.$refs.containerRef && this.$refs.containerRef.loadDetail();
+        }).catch(() => {
+          this.$message.error('提交失败!');
+        });
+      }).catch(() => {});
     },
     // 打开调拨审批弹窗
     handleApproval (type) {
