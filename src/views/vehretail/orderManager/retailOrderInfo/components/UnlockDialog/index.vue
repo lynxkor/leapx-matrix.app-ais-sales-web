@@ -37,7 +37,7 @@
       <!-- <span>{{ form.materialsCode }}</span> -->
     </el-form-item>
     <el-form-item label="处理方式：" prop="orderHandleType" v-if="shouldShowHandleTypeField">
-      <el-select v-model="form.orderHandleType" style="width: 100%">
+      <el-select v-model="form.orderHandleType" style="width: 100%" @change="handleOrderHandleTypeChange">
         <el-option label="手动选择现车" :value="10" />
         <el-option label="系统自动匹配批售单" :value="20" />
       </el-select>
@@ -215,6 +215,14 @@ export default {
       this.form.bindVin = '';
       this.form.remark = '';
       this.form.orderUnlockFileReqList = [];
+    },
+    // 处理方式变更时，清空已绑定的VIN号
+    handleOrderHandleTypeChange () {
+      this.form.bindVin = '';
+      // 清空 VIN 后，同步重置其校验状态，避免沿用旧值留下的红字提示
+      if (this.$refs.form) {
+        this.$refs.form.clearValidate(['bindVin']);
+      }
     },
     getList (params) {
       return new Promise((resolve) => {

@@ -771,9 +771,7 @@ export default {
       const submitForm = { ...this.form };
       if (submitForm.allowLockRetail === '') submitForm.allowLockRetail = null;
       if (submitForm.allowLockNode === '') submitForm.allowLockNode = null;
-      return addOrUpdate(submitForm).then(() => {
-        this.getList();
-      });
+      return addOrUpdate(submitForm);
     },
     // 打开侧边栏
     openPane () {
