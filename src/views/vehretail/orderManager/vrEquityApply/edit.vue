@@ -79,20 +79,29 @@
                   />
                 </el-form-item>
                 <el-form-item label="权益大类：" prop="equityCategoryId">
-                  <fetch-select
-                    filterable
-                    clearable
-                    remote
-                    reserve-keyword
-                    :options="equityCategoryOptions"
-                    v-model="form.equityCategoryId"
-                    :param="form.equityCategoryName"
-                    value-key="id"
-                    label-key="name"
-                    placeholder="请选择权益大类"
-                    @change="handleEquityCategoryChange"
-                    :disabled="!form.permissions.draft && isEditing"
-                  />
+                  <template v-if="!form.permissions.draft && isEditing">
+                    <el-input
+                      placeholder="请输入"
+                      v-model="form.equityCategoryName"
+                      :disabled="true"
+                    />
+                  </template>
+                  <template v-else>
+                    <fetch-select
+                      filterable
+                      clearable
+                      remote
+                      reserve-keyword
+                      :options="equityCategoryOptions"
+                      v-model="form.equityCategoryId"
+                      :param="form.equityCategoryName"
+                      value-key="id"
+                      label-key="name"
+                      placeholder="请选择权益大类"
+                      @change="handleEquityCategoryChange"
+                      :disabled="!form.permissions.draft && isEditing"
+                    />
+                  </template>
                 </el-form-item>
                 <el-form-item label="置换类型：" prop="replacementType" v-if="form.equityCategoryName === '增换购券'">
                   <fetch-select
