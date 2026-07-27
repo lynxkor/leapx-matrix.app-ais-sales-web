@@ -16,7 +16,8 @@ export const retailOrderDisplayFields = [
     paramKey: 'saleDealerCode',
     paramName: 'dealerCode'
   },
-  { key: 'saleUserName', label: '订单销售顾问', eventName: 'viewUser', paramKey: 'saleUserId' },
+  // { key: 'saleUserName', label: '订单销售顾问', eventName: 'viewUser', paramKey: 'saleUserId' },
+  { key: 'saleUserName', label: '订单销售顾问' },
   {
     key: 'deliveryDealerName',
     label: '订单交付门店',
@@ -24,7 +25,8 @@ export const retailOrderDisplayFields = [
     paramKey: 'deliveryDealerCode',
     paramName: 'dealerCode'
   },
-  { key: 'deliveryUserName', label: '订单交付顾问', eventName: 'viewUser', paramKey: 'deliveryUserId' },
+  // { key: 'deliveryUserName', label: '订单交付顾问', eventName: 'viewUser', paramKey: 'deliveryUserId' },
+  { key: 'deliveryUserName', label: '订单交付顾问' },
   { key: 'preSaleOrderLabel', label: '是否预售订单' },
   { key: 'blindOrderLabel', label: '是否盲订订单' },
   { key: 'orderRemark', label: '订单备注' },
@@ -127,7 +129,7 @@ export const wholesaleDisplayFields = [
 
 // 订单取消信息字段配置
 export const refundDisplayFields = [
-  { key: 'cancelReason', label: '订单取消原因' },
+  { key: 'cancelReasonLabel', label: '订单取消原因' },
   { key: 'cancelExplain', label: '订单取消说明' },
   { key: 'cancelTime', label: '订单取消时间' }
 ];
@@ -242,8 +244,8 @@ export const orderCancellationRecordDisplayFields = [
   { key: 'applyTime', label: '申请时间' },
   { key: 'creatorName', label: '申请人' },
   { key: 'orderRefundTypeLabel', label: '退订方式' },
-  { key: 'subCateName', label: '退订原因分类' },
-  { key: 'refundReason', label: '退订原因说明' }
+  { key: 'cateName', label: '退订原因分类' },
+  { key: 'orderCancelDescp', label: '退订原因说明' }
 ];
 
 // 订单收款记录字段配置

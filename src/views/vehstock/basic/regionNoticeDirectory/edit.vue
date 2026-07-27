@@ -44,11 +44,11 @@
                 <el-form-item label="销售公告车型名称：" prop="registeredModelName">
                   <fetch-select
                     v-model="form.vehicleRegisteredModelId"
+                    :params="form.registeredModelName"
                     filterable
                     clearable
                     remote
                     reserve-keyword
-                    :options="modelOptions"
                     placeholder="请选择"
                     :remote-method="serchModel"
                     @change="handleChangeModel"
@@ -185,7 +185,6 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       options: [],
-      modelOptions: [],
       rules: {
         cityCode: [
           { required: true, message: '请选择城市', trigger: 'change' }
@@ -203,10 +202,11 @@ export default {
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    detailRequest () {
+    async detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        const detail = await getDetail(id);
+        return detail;
       }
       return {};
     },
@@ -228,23 +228,16 @@ export default {
       return res.records || [];
     },
     async serchModel (query) {
-      const res = await vehicleSalesVersionList({ registeredModelNameLike: query, size: 100 });
-      this.modelOptions = res?.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id,
-        };
-      }) || [];
+      return await vehicleSalesVersionList({ registeredModelNameLike: query });
     },
     handleChangeCity (val, selectedOption) {
       this.form.cityName = selectedOption?.areaName || '';
     },
-    handleChangeModel (val) {
-      const item = this.modelOptions.find(item => item.value === val);
-      if (item) {
-        this.form.vehicleRegisteredModelId = item.value;
-        this.form.registeredModelName = item.name;
+    handleChangeModel (val, row) {
+      if (val) {
+        this.form.registeredModelName = row.name;
+      } else {
+        this.form.registeredModelName = '';
       }
     },
     getDefautlForm () {

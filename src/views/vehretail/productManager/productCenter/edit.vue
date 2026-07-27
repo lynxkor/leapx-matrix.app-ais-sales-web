@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="!isReadOnly"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -40,6 +41,7 @@
                     placeholder="请输入"
                     v-model="form.productName"
                     clearable
+                    :disabled="isReadOnly"
                   />
                 </el-form-item>
                 <el-form-item label="商品类型：" prop="productType">
@@ -78,6 +80,7 @@
                     v-model="form.needPayStatus"
                     placeholder="请选择"
                     clearable
+                    :disabled="isReadOnly"
                   />
                 </el-form-item>
                 <el-form-item label="支付方式：" prop="payMethod">
@@ -88,11 +91,12 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="isReadOnly"
                   />
                 </el-form-item>
                 <el-form-item label="支付定金金额：" prop="depositAmount">
                   <el-input-number placeholder="请输入" v-model="form.depositAmount" clearable :controls="false"
-                  :precision="2" :min="0.00" :step="0.01"/>
+                  :precision="2" :min="0.00" :step="0.01" :disabled="isReadOnly"/>
                 </el-form-item>
                 <el-form-item label="是否需要支付定金：" prop="needDepositStatus">
                   <fetch-select
@@ -100,6 +104,7 @@
                     v-model="form.needDepositStatus"
                     placeholder="请选择"
                     clearable
+                    :disabled="isReadOnly"
                   />
                 </el-form-item>
                 <el-form-item label="简介：">
@@ -108,6 +113,7 @@
                     v-model="form.introduction"
                     clearable
                     maxlength="100"
+                    :disabled="isReadOnly"
                   />
                 </el-form-item>
                 <el-form-item label="描述：">
@@ -116,6 +122,7 @@
                     v-model="form.description"
                     clearable
                     maxlength="100"
+                    :disabled="isReadOnly"
                   />
                 </el-form-item>
               </el-form>
@@ -174,13 +181,15 @@
             </div>
             <div class="common-section-body">
               <div style="padding-bottom: 12px;">
-                <el-button size="small" @click="handleAddRow" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
+                <el-button v-if="!isReadOnly && canSaleAttributeAddOrUpdate" size="small" @click="handleAddRow" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
               </div>
               <div class="common-section-table">
                 <attributeable-table
                   :moduleKey="moduleKey"
                   ref="attributeable"
                   @replace="replace"
+                  :readonly="isReadOnly"
+                  :canEdit="canSaleAttributeAddOrUpdate"
                   :id="_id" />
               </div>
             </div>
@@ -192,14 +201,16 @@
             </div>
             <div class="common-section-body">
               <div style="padding-bottom: 12px;">
-                <el-button size="small" @click="addReplace" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
-                <el-button size="small" @click="updatePrice" :disabled="selection.length === 0">修改市场指导价</el-button>
+                <el-button v-if="!isReadOnly && canSkuAddOrUpdate" size="small" @click="addReplace" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
+                <el-button v-if="!isReadOnly && canSkuAddOrUpdate" size="small" @click="updatePrice" :disabled="selection.length === 0">修改市场指导价</el-button>
               </div>
                 <pricing-table
                   :module-key="moduleKey"
                   ref="pricing"
                   :id="_id"
-                  :tableType="'edit'"
+                  :readonly="isReadOnly"
+                  :canEdit="canSkuAddOrUpdate"
+                  :tableType="isReadOnly ? 'detail' : 'edit'"
                   @replace="updateReplace"
                   @checkboxChange="checkboxChange" />
             </div>
@@ -320,6 +331,10 @@ export default {
     },
     title () {
       return '商品编码：' + this.form.productCode;
+    },
+    // 商品状态为 1 时不允许编辑
+    isReadOnly () {
+      return String(this.form.productStatus) === '1';
     }
   },
   watch: {
@@ -330,6 +345,12 @@ export default {
         }
       },
       immediate: true
+    },
+    // 商品状态变为 1 时，强制退出编辑模式
+    'form.productStatus' (val) {
+      if (String(val) === '1' && this.isEditing) {
+        this.isEditing = false;
+      }
     }
   },
   data () {
@@ -346,6 +367,9 @@ export default {
       pageTitle: '销售管理-商品管理-商品中心',
       pageType: 'edit',
       moduleKey: 'AISVR-productInfo',
+      // 销售属性新增/编辑权限、商品定价新增/编辑权限
+      canSaleAttributeAddOrUpdate: false,
+      canSkuAddOrUpdate: false,
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -381,6 +405,9 @@ export default {
     };
   },
   mounted () {
+    // 销售属性 / 商品定价 新增编辑权限
+    this.canSaleAttributeAddOrUpdate = this.permissions.has(`${this.moduleKey}-saleAttributeaddOrUpdate`);
+    this.canSkuAddOrUpdate = this.permissions.has(`${this.moduleKey}-skuaddOrUpdate`);
   },
   methods: {
     detailRequest () {
@@ -392,6 +419,10 @@ export default {
         return getDetail({ productId: id }).then(res => {
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          // 商品状态为 1 时，强制以查看模式展示，不允许编辑
+          if (String(this.form.productStatus) === '1') {
+            this.isEditing = false;
+          }
           if (this.$refs.attributeable) {
             this.$refs.attributeable.getDetailPageApi();
           }
@@ -403,6 +434,11 @@ export default {
       }
     },
     submitRequest () {
+      // 商品状态为 1 时禁止提交
+      if (this.isReadOnly) {
+        this.$message.warning('商品状态不允许编辑');
+        return Promise.reject(new Error('readonly'));
+      }
       return addOrUpdate({ ...this.form });
     },
     checkboxChange (selection) {

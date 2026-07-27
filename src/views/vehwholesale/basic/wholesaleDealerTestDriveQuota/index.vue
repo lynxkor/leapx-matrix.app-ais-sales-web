@@ -317,6 +317,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '配额调整',
+              show: (row) => {
+                return this.permissions.has(`${this.moduleKey}-updateTestDriveQuota`);
+              },
               click: (rowIndex, row) => {
                 this.openAdjustmentDialog(row);
               },

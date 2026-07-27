@@ -170,10 +170,12 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
+                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
+                  {{ form.entCustomerName }}
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -317,6 +319,7 @@
                   :businessId="_id"
                   configCode="vehicle_back_order"
                   ref="attachment"
+                  :readonly="!isEditing"
                 />
               </div>
             </div>
