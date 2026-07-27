@@ -14,9 +14,9 @@
         :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
       >
         <template #extraButtons>
-          <el-button v-permission="moduleKey+'-voided'" size="small" @click="handleBatchVoided" v-if="form.applyStatus === 1010 || form.applyStatus === 1040">作废</el-button>
-          <el-button v-permission="moduleKey+'-submit'" size="small" @click="handleBatchSubmit" v-if="form.applyStatus === 1010 || form.applyStatus === 1040">提交</el-button>
-          <el-button v-permission="moduleKey+'-audit'" size="small" @click="handleBatchAudit" v-if="form.applyStatus === 1020">审核</el-button>
+          <el-button v-if="canVoided" size="small" @click="handleBatchVoided">作废</el-button>
+          <el-button v-if="canSubmit" size="small" @click="handleBatchSubmit">提交</el-button>
+          <el-button v-if="canAudit" size="small" @click="handleBatchAudit">审核</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -545,6 +545,18 @@ export default {
     },
     title () {
       return '申请单号：' + this.form.unlockApplyCode;
+    },
+    canVoided () {
+      return (this.form.applyStatus === 1010 || this.form.applyStatus === 1040) &&
+        this.permissions.has(`${this.moduleKey}-voided`);
+    },
+    canSubmit () {
+      return (this.form.applyStatus === 1010 || this.form.applyStatus === 1040) &&
+        this.permissions.has(`${this.moduleKey}-submit`);
+    },
+    canAudit () {
+      return this.form.applyStatus === 1020 &&
+        this.permissions.has(`${this.moduleKey}-audit`);
     },
   },
   watch: {

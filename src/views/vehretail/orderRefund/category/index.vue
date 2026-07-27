@@ -149,7 +149,7 @@ export default {
       pageTitle: '退订原因分类',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVRROCA-retailOrderChangeReason',
+      moduleKey: 'AISVR-orderRefundCategory',
       form: {
         ...defaultForm
       },
