@@ -19,7 +19,7 @@
           <span v-else class="status success">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
+          <el-button v-if = "isShowAuditorBtn && perQueryAuditor" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
           <el-button v-if = "form.permissions.cancel && perCancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit && perSubmit" size="small" @click="handleSubmitApproval">提交审批</el-button>
           <el-button v-if = "form.permissions.firstApprove && perFirstApprove" size="small" @click="handleAudit(1)">初审</el-button>
@@ -817,6 +817,7 @@ export default {
       auditorDialogVisible: false, // 审核人员弹窗可见性
       auditorLoading: false, // 审核人员加载状态
       buttonType: 1,
+      perQueryAuditor: false,
       perEdit: false,
       perCancel: false,
       perSubmit: false,
@@ -1161,6 +1162,7 @@ export default {
       this.perFirstApprove = this.permissions.has(`${this.moduleKey}-firstApprove`);
       this.perSecondApprove = this.permissions.has(`${this.moduleKey}-secondApprove`);
       this.perFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
+      this.perQueryAuditor = this.permissions.has(`${this.moduleKey}-queryAuditor`);
     }
   }
 };

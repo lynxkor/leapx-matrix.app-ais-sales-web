@@ -271,7 +271,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.auditStatus === 0 || row.auditStatus === 2;
+                return (row.auditStatus === 0 || row.auditStatus === 2) && this.permissions.has(`${this.moduleKey}-addOrUpdate`);
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -286,7 +286,7 @@ export default {
             }, {
               name: '提交',
               show: (row) => {
-                return row.auditStatus === 0 || row.auditStatus === 2;
+                return (row.auditStatus === 0 || row.auditStatus === 2) && this.permissions.has(`${this.moduleKey}-submit`);
               },
               // popconfirmTitle: '是否对配置编号为' + row.configCode + '的数据进行提交?',
               click: (rowIndex, row) => {

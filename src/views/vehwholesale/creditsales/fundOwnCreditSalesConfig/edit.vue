@@ -15,8 +15,8 @@
         <template #status>
         </template>
         <template #extraButtons>
-          <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" :loading="submitLoading" @click="handleSubmit">提交</el-button>
-          <el-button v-if="form.auditStatus === 1" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
+          <el-button v-if="(form.auditStatus === 0 || form.auditStatus === 2 ) && preSubmit" size="small" type="primary" :loading="submitLoading" @click="handleSubmit">提交</el-button>
+          <el-button v-if="form.auditStatus === 1 && preReview" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -325,6 +325,8 @@ export default {
       submitLoading: false,
       form: { ...form },
       originalForm: { ...form },
+      perSubmit: false,
+      preReview: false,
       rules: {
         dealerCompanyName: [
           { required: true, message: '请选择母公司名称', trigger: 'change' }
@@ -351,6 +353,7 @@ export default {
     };
   },
   mounted () {
+    this.initPermissions();
   },
   methods: {
     openWindow (url) {
@@ -473,6 +476,10 @@ export default {
         console.error('Error fetching parent company list:', error);
         return [];
       }
+    },
+    initPermissions () {
+      this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.preReview = this.permissions.has(`${this.moduleKey}-review`);
     }
   }
 };

@@ -307,6 +307,7 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '批售编辑',
+              show: this.permissions.has(`${this.moduleKey}-editByWholeSale`),
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
@@ -320,6 +321,7 @@ export default {
             },
             {
               name: '零售编辑',
+              show: this.permissions.has(`${this.moduleKey}-editByRetail`),
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
