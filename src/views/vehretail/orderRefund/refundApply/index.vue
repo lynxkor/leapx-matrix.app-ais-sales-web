@@ -31,6 +31,16 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="定金退回方式" prop="depositRefundType">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="order_fund_return_type"
+            v-model="form.depositRefundType"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="购车人姓名">
           <el-input v-model="form.buyerName" placeholder="请输入"  clearable/>
         </el-form-item>

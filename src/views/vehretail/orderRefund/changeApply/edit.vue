@@ -1165,8 +1165,8 @@ export default {
       this.form.originalMaterialsCode = selectedOption.materialsCode;
       this.form.paymentTime = selectedOption.paymentTime;
       this.form.deliveryTime = selectedOption.deliveryTime;
-      this.form.deliveryStatus = selectedOption.deliveryTime ? 1 : 0;
-      this.form.deliveryStatusLabel = selectedOption.deliveryTime ? '是' : '否';
+      this.form.deliveryStatus = selectedOption.deliveryTime ? 1 : null;
+      this.form.deliveryStatusLabel = selectedOption.deliveryTime ? '是' : '';
       this.form.dataSource = selectedOption.dataSource;
       this.form.originalOrderStatus = selectedOption.orderStatus;
       this.form.originalOrderStatusLabel = selectedOption.orderStatusLabel;
