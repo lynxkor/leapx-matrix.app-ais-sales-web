@@ -187,7 +187,11 @@ export default {
   },
   methods: {
     showVinDialog () {
-      this.$refs.vinDialog.show(this.vinForm, this.row);
+      const params = {
+        meterlsCode: this.shouldShowMaterialField ? this.form.materialsCode : this.form.materialsCode,
+        saleDealerCode: this.form.saleDealerCode
+      };
+      this.$refs.vinDialog.show(params, this.row);
     },
     handleUnlockReasonCodeChange (val, row) {
       if (this.mode === 'batch') {
