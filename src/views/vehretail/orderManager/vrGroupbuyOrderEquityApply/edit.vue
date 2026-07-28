@@ -152,7 +152,7 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="整车订单号：">
-                  {{ form.vehicleOrderNo || '-' }}
+                  {{ form.vehicleOrderNo }}
                 </el-form-item>
                 <el-form-item label="订单物料码：">
                   {{ form.materialsCode }}
@@ -161,13 +161,13 @@
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：">
-                  {{ form.cooperationTypeLabel || '-' }}
+                  {{ form.cooperationTypeLabel }}
                 </el-form-item>
                 <el-form-item label="车型：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName || '-' }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName || '-' }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="购车人姓名：">
                   {{ form.buyerName }}
@@ -236,7 +236,7 @@
                   {{ form.dealerCode }}
                 </el-form-item>
                 <el-form-item label="合作类型：">
-                  {{ form.cooperationTypeLabel || '-' }}
+                  {{ form.cooperationTypeLabel }}
                 </el-form-item>
                 <el-form-item label="所属区域或部门：">
                   {{ form.regionName }}
@@ -516,7 +516,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车订单状态：">
-                  {{ form.vehicleOrderStatusLabel || '-' }}
+                  {{ form.vehicleOrderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="商城下单时间：">
                   {{ form.mallOrderTime }}
@@ -525,7 +525,7 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="订单来源：">
-                  {{ form.orderSource || '-' }}
+                  {{ form.orderSource }}
                 </el-form-item>
                 <el-form-item label="用户ID：">
                   {{ form.userId }}
@@ -537,7 +537,7 @@
                   {{ form.buyerPhone }}
                 </el-form-item>
                 <el-form-item label="证件类型：">
-                  {{ form.idTypeLabel || '-' }}
+                  {{ form.idTypeLabel }}
                 </el-form-item>
                 <el-form-item label="证件号码：">
                   {{ form.idNumber }}
@@ -686,14 +686,14 @@
         <div style="padding: 20px;">
           <h3>申请概况</h3>
           <div style="margin-top: 10px; padding: 15px; background: #f5f7fa; border-radius: 4px;">
-            <div><strong>申请单号:</strong> {{ form.code || '-' }}</div>
+            <div><strong>申请单号:</strong> {{ form.code }}</div>
             <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ form.auditStatusLabel }}</div>
-            <div style="margin-top: 8px;"><strong>销售门店:</strong> {{ form.dealerName || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>合作类型:</strong> {{ form.cooperationTypeLabel || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>商城订单号:</strong> <el-link type="primary" @click="handleViewMallOrderDetail">{{ form.mallOrderCode || '-' }}</el-link></div>
-            <div style="margin-top: 8px;"><strong>购车人:</strong> {{ form.buyerName || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>公司名称:</strong> {{ form.companyName || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>销售门店:</strong> {{ form.dealerName }}</div>
+            <div style="margin-top: 8px;"><strong>合作类型:</strong> {{ form.cooperationTypeLabel }}</div>
+            <div style="margin-top: 8px;"><strong>商城订单号:</strong> <el-link type="primary" @click="handleViewMallOrderDetail">{{ form.mallOrderCode }}</el-link></div>
+            <div style="margin-top: 8px;"><strong>购车人:</strong> {{ form.buyerName }}</div>
+            <div style="margin-top: 8px;"><strong>公司名称:</strong> {{ form.companyName }}</div>
+            <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount }}</div>
           </div>
         </div>
       </div>
@@ -867,10 +867,10 @@ export default {
       const id = this._id;
       if (id) {
         const detail = await getDetail(id);
-        this.fillOrderInfo(detail.retailOrderId);
+        const detailExtra = this.fillOrderInfoForDetail(detail.retailOrderId, detail);
         this.getStepInfo(this._id);
         this.getApprovalDetail(this._id);
-        return detail;
+        return detailExtra;
       }
     },
     async submitRequest () {
@@ -987,7 +987,7 @@ export default {
         this.form.mallOrderCode = '';
         return;
       }
-      this.fillOrderInfo(record.id);
+      this.fillOrderInfoForEdit(record.id);
     },
 
     // 处理公司选择变化
@@ -1102,7 +1102,7 @@ export default {
       return [];
     },
     // 根据订单号填充订单信息
-    async fillOrderInfo (id) {
+    async fillOrderInfoForDetail (id, detail) {
       // 根据商城订单号获取订单详情
       if (!id) {
         return;
@@ -1110,7 +1110,45 @@ export default {
       const order = await getRetailOrderDetail(
         { retailOrderId: id }
       );
-      // 填充订单相关字段（公司信息除外）
+      // 以下字段始终使用数据库中保存的值，不从远程更新
+      // - 门店相关：dealerName, dealerCode, cooperationType, regionName
+      // - 公司相关：companyName, discountAmount, couponName
+      // - 物料相关：materialsCode, materialsId, materialsDesc
+      // - 订单相关：mallOrderCode, retailOrderId
+      // - 人员相关：applicant, buyerName, buyerPhone, userId
+      // - 车辆相关：modelName, modelId, seriesName, seriesId
+      // 这些字段保持数据库原始值，避免与远程数据产生差异
+      detail.vehicleOrderNo = order?.orderInfo?.retailOrderCode || '';
+      detail.vehicleOrderStatus = order?.orderInfo?.orderStatus || '';
+      detail.vehicleOrderStatusLabel = order?.orderInfo?.orderStatusLabel || '';
+      detail.orderSource = order?.orderInfo?.orderSource || '';
+      detail.mallOrderTime = order?.orderInfo?.orderTime || '';
+      detail.idType = order?.orderCarOwner?.idCardType;
+      detail.idTypeLabel = order?.orderCarOwner?.idCardTypeLabel;
+      detail.idNumber = order?.orderCarOwner?.idCardNo;
+      detail.discountedPrice = order?.orderFund?.guidePrice;
+      detail.depositAmount = order?.orderFund?.depositAmount;
+      detail.deliveryTime = order?.orderInfo?.deliveryTime;
+      detail.allocationMaterialsCode = order?.orderInfo?.allocationMaterialCode;
+      detail.saleDealerCode = order?.orderInfo?.saleDealerCode;
+      detail.saleDealerName = order?.orderInfo?.saleDealerName;
+      detail.deliveryDealerCode = order?.orderInfo?.deliveryDealerCode;
+      detail.deliveryDealerName = order?.orderInfo?.deliveryDealerName;
+      detail.deliveryVin = order?.orderInfo?.deliveryVin;
+      detail.agentContact = order?.orderCarOwner?.agentName;
+      detail.regionCode = order?.orderInfo?.regionCode || '';
+      return detail;
+    },
+    // 根据订单号填充订单信息
+    async fillOrderInfoForEdit (id) {
+      // 根据商城订单号获取订单详情
+      if (!id) {
+        return;
+      }
+      const order = await getRetailOrderDetail(
+        { retailOrderId: id }
+      );
+
       this.$set(this.form, 'ownerOrgId', order?.orderInfo?.saleOrgId || '');
       this.$set(this.form, 'vehicleOrderNo', order?.orderInfo?.retailOrderCode || '');
       this.$set(this.form, 'materialsCode', order?.orderMaterials?.materialsCode || '');
