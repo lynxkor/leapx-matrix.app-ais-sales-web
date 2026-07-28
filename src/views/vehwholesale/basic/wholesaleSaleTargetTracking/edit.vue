@@ -19,7 +19,7 @@
         <!-- 仅 detail 模式显示批售编辑/零售编辑按钮，替代默认的"编辑"按钮 -->
         <template v-if="mode === 'detail'" #extraButtons>
           <el-button
-            v-if="canAddOrUpdate"
+            v-if="preEditByRetail"
             size="small"
             type="primary"
             plain
@@ -28,7 +28,7 @@
             <i class="iconfont icon-lxppc-edit"></i>批售编辑
           </el-button>
           <el-button
-            v-if="canAddOrUpdate"
+            v-if="preEditByWholeSale"
             size="small"
             type="primary"
             plain
@@ -396,12 +396,17 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       isEditing: this.computeInitialEditing(),
+      preEditByWholeSale: false,
+      preEditByRetail: false
     };
   },
   watch: {
     '$route.query.isEditing' () {
       this.isEditing = this.computeInitialEditing();
     }
+  },
+  mounted () {
+    this.initPermissions();
   },
   methods: {
     openPane () {
@@ -458,6 +463,10 @@ export default {
       const id = this.id || this.$route.query.id;
       if (this.$route.query.isEditing === undefined) return !id;
       return this.$route.query.isEditing === 'true' || this.$route.query.isEditing === true;
+    },
+    initPermissions () {
+      this.preEditByWholeSale = this.permissions.has(`${this.moduleKey}-editByWholeSale`);
+      this.preEditByRetail = this.permissions.has(`${this.moduleKey}-editByRetail`);
     }
   }
 };

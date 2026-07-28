@@ -439,7 +439,7 @@ export default {
             width: 150,
             buttons: [{
               name: '编辑',
-              show: (row) => row.permissions.edit,
+              show: (row) => row.permissions.edit && this.permissions.has(`${this.moduleKey}-addOrUpdate`),
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/orderManager/vrEquityApply/edit',

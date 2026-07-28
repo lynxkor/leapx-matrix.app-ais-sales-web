@@ -295,7 +295,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.status !== 99 && row.status !== 7;
+                return row.status !== 99 && row.status !== 7 && this.permissions.has(`${this.moduleKey}-addOrUpdate`);
               },
               click: (rowIndex, row) => {
                 this.$router.push({

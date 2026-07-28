@@ -228,6 +228,9 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
+              show: (row) => {
+                return this.permissions.has(`${this.moduleKey}-export`);
+              },
               name: '下载',
               click: (rowIndex, row) => {
                 this.handleDownload(row);
@@ -236,7 +239,7 @@ export default {
             }, {
               name: '确认',
               show: (row) => {
-                return row.reconStatusLabel === '待门店对账确认';
+                return row.reconStatusLabel === '待门店对账确认' && this.permissions.has(`${this.moduleKey}-confirm`);
               },
               click: (rowIndex, row) => {
                 this.handleConfirm(row);
@@ -245,7 +248,7 @@ export default {
             }, {
               name: '作废',
               show: (row) => {
-                return row.reconStatusLabel === '待门店对账确认' || row.reconStatusLabel === '门店已对账确认';
+                return (row.reconStatusLabel === '待门店对账确认' || row.reconStatusLabel === '门店已对账确认') && this.permissions.has(`${this.moduleKey}-cancel`);
               },
               click: (rowIndex, row) => {
                 this.handleCancel(row);
@@ -254,7 +257,7 @@ export default {
             }, {
               name: '重新生成对账单',
               show: (row) => {
-                return row.reconStatusLabel === '已作废';
+                return row.reconStatusLabel === '已作废' && this.permissions.has(`${this.moduleKey}-rebuild`);
               },
               click: (rowIndex, row) => {
                 this.handleRegenerate(row);
