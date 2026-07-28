@@ -24,7 +24,7 @@
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && canAutoLock && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
-          <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" v-permission="moduleKey+'-perUnlock'" @click="handleUnlock">取消锁车</el-button>
+          <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
           <el-button size="small" :loading="changeApplyLoading" v-if="canRetailOrderChangeApply && form.orderStatus !== 10 && form.orderStatus !== 99" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
@@ -566,8 +566,8 @@ export default {
       return this.form.carOwner || {};
     },
     canPerUnlock () {
-      // 订单处于是否绑定批售（wholesaleBindStatus === 1）时才显示取消锁车按钮
-      return this.form.wholesaleBindStatus === 1;
+      // 订单处于是否绑定批售（wholesaleBindStatus === 1）且具备 perUnlock 权限时才显示取消锁车按钮
+      return this.form.wholesaleBindStatus === 1 && this.permissions.has(`${this.moduleKey}-perUnlock`);
     }
   },
   watch: {
