@@ -509,11 +509,11 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, networkParentCompanyItem, listDealersForParentCompany, addOrUpdateDetail, batchCancel, batchSubmitAudit, batchAudit, deleteItem, getGeoLocationByFullAddress, detailDelete } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getDetail, addOrUpdate, listDealersForParentCompany, addOrUpdateDetail, batchCancel, batchSubmitAudit, batchAudit, deleteItem, getGeoLocationByFullAddress, detailDelete } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, cityListByName, getProvinceTree } from '@/api/common';
+import { getEnum, cityListByName, getProvinceTree, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -1222,7 +1222,7 @@ export default {
       return list;
     },
     async listNetworkParentCompany (query) {
-      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+      return getParentCompany({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
       // 安全赋值门店信息
