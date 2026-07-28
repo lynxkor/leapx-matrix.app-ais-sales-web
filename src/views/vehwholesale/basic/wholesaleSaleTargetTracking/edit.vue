@@ -402,12 +402,17 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       isEditing: this.computeInitialEditing(),
+      preEditByWholeSale: false,
+      preEditByRetail: false
     };
   },
   watch: {
     '$route.query.isEditing' () {
       this.isEditing = this.computeInitialEditing();
     }
+  },
+  mounted () {
+    this.initPermissions();
   },
   methods: {
     openPane () {
@@ -464,6 +469,10 @@ export default {
       const id = this.id || this.$route.query.id;
       if (this.$route.query.isEditing === undefined) return !id;
       return this.$route.query.isEditing === 'true' || this.$route.query.isEditing === true;
+    },
+    initPermissions () {
+      this.preEditByWholeSale = this.permissions.has(`${this.moduleKey}-editByWholeSale`);
+      this.preEditByRetail = this.permissions.has(`${this.moduleKey}-editByRetail`);
     }
   }
 };

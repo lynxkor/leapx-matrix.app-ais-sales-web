@@ -13,19 +13,19 @@
         :detailRequest="detailRequest"
       >
         <template #extraButtons>
-          <el-button size="small" :loading="downloadLoading" @click="handleDownload">下载</el-button>
+          <el-button v-if="preExport" size="small" :loading="downloadLoading" @click="handleDownload">下载</el-button>
           <el-button
-            v-if="form.reconStatusLabel === '待门店对账确认'"
+            v-if="form.reconStatusLabel === '待门店对账确认' && preConfirm"
             size="small"
             @click="handleConfirm"
             type="primary">确认</el-button>
           <el-button
-            v-if="form.reconStatusLabel === '待门店对账确认' || form.reconStatusLabel === '门店已对账确认'"
+            v-if="(form.reconStatusLabel === '待门店对账确认' || form.reconStatusLabel === '门店已对账确认') && preCancel"
             size="small"
             @click="handleCancel"
             type="primary">作废</el-button>
           <el-button
-            v-if="form.reconStatusLabel === '已作废'"
+            v-if="form.reconStatusLabel === '已作废' && preRebuild"
             size="small"
             @click="handleRegenerate"
             type="primary">重新生成对账单</el-button>
@@ -439,10 +439,15 @@ export default {
       vehicleRebateLoading: false,
       vehicleCashLoading: false,
       spareCashLoading: false,
-      spareRebateLoading: false
+      spareRebateLoading: false,
+      preCancel: false,
+      preRebuild: false,
+      preConfirm: false,
+      preExport: false,
     };
   },
   mounted () {
+    this.initPermissions();
     // 当进入编辑页面时，如果ID存在，通过detailRequest加载主表数据，然后加载子表数据
     // 注：主表数据加载完成后会在detailRequest中调用loadSubTableData，不需要在此处重复调用
     if (this._id) {
@@ -721,6 +726,12 @@ export default {
           this.$refs.containerRef && this.$refs.containerRef.loadDetail();
         });
       });
+    },
+    initPermissions () {
+      this.preRebuild = this.permissions.has(`${this.moduleKey}-rebuild`);
+      this.perCancel = this.permissions.has(`${this.moduleKey}-cancel`);
+      this.preConfirm = this.permissions.has(`${this.moduleKey}-confirm`);
+      this.preExport = this.permissions.has(`${this.moduleKey}-export`);
     }
   }
 };

@@ -873,9 +873,9 @@ export default {
         console.error('获取资金账户失败:', error);
       }
     },
-    async storeWarehouseSearch () {
+    async storeWarehouseSearch (val) {
       if (this.form.deliveryDealerCode) {
-        return await listOrgWarehouseStoreInfo({ storeCode: this.form.deliveryDealerCode });
+        return await listOrgWarehouseStoreInfo({ storeCode: this.form.deliveryDealerCode, keyword: val, freeze: 0 });
       }
     },
     handleChangeDealerWarehouse (val, record) {
@@ -912,8 +912,12 @@ export default {
         this.form.deliveryDealerName = dealerResponse?.exclusiveDeliveryStoreName || '';
         if (this.form.deliveryDealerCode) {
           const warehouseList = await this.storeWarehouseSearch();
-          if (warehouseList.records && warehouseList.records.length > 0) {
-            this.handleChangeDealerWarehouse(null, warehouseList.records[0]);
+          if (warehouseList.records?.length > 0) {
+            // 优先取 isDefault === 1 的仓库
+            const defaultWarehouse = warehouseList.records.find(item => item.isDefault === 1);
+            // 如果存在默认仓库则使用，否则使用第一个
+            const selectedWarehouse = defaultWarehouse || warehouseList.records[0];
+            this.handleChangeDealerWarehouse(null, selectedWarehouse);
           }
         }
       } catch (error) {

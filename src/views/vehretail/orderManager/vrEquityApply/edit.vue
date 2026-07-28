@@ -19,7 +19,7 @@
           <span v-else class="status success">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="auditLog">申请记录</el-button>
+          <el-button v-if = "perApproveRecord" size="small" @click="auditLog">申请记录</el-button>
           <el-button v-if = "form.permissions.cancel && perCancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit && perSubmit" size="small" :loading="submitLoading" :disabled="submitLoading" @click="handleSubmitApproval">提交审批</el-button>
           <el-button v-if = "form.permissions.firstAudit && perFirstAudit" size="small" @click="handleAudit(1)">初审</el-button>
@@ -870,6 +870,7 @@ export default {
       yes_no_enum_map: {},
       form: { ...form },
       originalForm: { ...form },
+      perApproveRecord: false,
       perEdit: false,
       perCancel: false,
       perSubmit: false,
@@ -1371,6 +1372,7 @@ export default {
       this.perFirstAudit = this.permissions.has(`${this.moduleKey}-firstApprove`);
       this.perAudit = this.permissions.has(`${this.moduleKey}-approve`);
       this.perAuditRevoke = this.permissions.has(`${this.moduleKey}-cancelApprove`);
+      this.perApproveRecord = this.permissions.has(`${this.moduleKey}-approveRecord`);
     }
 
   }
