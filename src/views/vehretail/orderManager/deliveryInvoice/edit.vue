@@ -24,14 +24,13 @@
           <el-button size="small">按钮2</el-button> -->
           <el-button
             @click="openDialogShow"
-            v-if="form.status === 0"
+            v-if="canConfirmUpload"
             size="small">
             确认上传
           </el-button>
           <el-button
             @click="openDeleteShow"
-            v-if="form.status === 0"
-            v-permission="moduleKey + '-delete'"
+            v-if="form.status === 0 && canDelete"
             size="small">
             删除
           </el-button>
@@ -806,6 +805,10 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
+    },
+    canConfirmUpload () {
+      return this.form.status === 0 &&
+        this.permissions.has(`${this.moduleKey}-confirmUpload`);
     }
   },
   watch: {

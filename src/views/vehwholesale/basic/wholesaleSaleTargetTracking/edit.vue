@@ -19,7 +19,7 @@
         <!-- 仅 detail 模式显示批售编辑/零售编辑按钮，替代默认的"编辑"按钮 -->
         <template v-if="mode === 'detail'" #extraButtons>
           <el-button
-            v-if="preEditByRetail"
+            v-if="canEditByWholeSale"
             size="small"
             type="primary"
             plain
@@ -28,7 +28,7 @@
             <i class="iconfont icon-lxppc-edit"></i>批售编辑
           </el-button>
           <el-button
-            v-if="preEditByWholeSale"
+            v-if="canEditByRetail"
             size="small"
             type="primary"
             plain
@@ -382,6 +382,12 @@ export default {
     showEditBtn () {
       // detail 模式不显示默认的"编辑"按钮（用 extraButtons 替代）
       return this.mode !== 'detail';
+    },
+    canEditByWholeSale () {
+      return this.permissions.has(`${this.moduleKey}-editByWholeSale`);
+    },
+    canEditByRetail () {
+      return this.permissions.has(`${this.moduleKey}-editByRetail`);
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
