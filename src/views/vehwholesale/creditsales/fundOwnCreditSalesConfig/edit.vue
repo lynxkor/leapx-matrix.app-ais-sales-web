@@ -308,7 +308,7 @@ export default {
         const effectiveDay = new Date(this.form.effectiveTime);
         effectiveDay.setHours(0, 0, 0, 0);
         if (expireDay < effectiveDay) {
-          callback(new Error('失效日期必须大于生效日期'));
+          callback(new Error('失效日期必须大于或等于生效日期'));
           return;
         }
       }
