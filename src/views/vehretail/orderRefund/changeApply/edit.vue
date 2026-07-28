@@ -54,7 +54,7 @@
                     :remote-method="retailOrderSearch"
                     v-model="form.mallOrderCode"
                     @change="retailOrderChange"
-                    :disabled="form.changeApplyCode"
+                    :disabled="form.changeApplyCode && form.changeApplyCode !== ''"
                   />
                 </el-form-item>
                 <el-form-item label="门店整车订单：" prop="retailOrderCode">
@@ -326,7 +326,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="变更后代办人：" prop="newAgentName">
+                <el-form-item
+                  label="变更后代办人："
+                  :rules="form.newIdCardType && (Number(form.newIdCardType) === 6 || Number(form.newIdCardType) === 7) ? rules.newAgentName : []"
+                  prop="newAgentName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.newAgentName"
@@ -924,7 +927,7 @@ export default {
         ],
         newAgentName: [
           {
-            required: false,
+            required: true,
             message: '请输入变更后代办人',
             trigger: 'change',
           },
