@@ -89,15 +89,6 @@ export function getGeoLocationByFullAddress (data) {
 }
 
 /**
- * 企业客户名称，模糊查询【网发门店母公司信息】
- * @param {Object} data
- */
-const prefixNetwork = 'network/portal/parentCompany/';
-export function networkParentCompanyItem (data) {
-  return api.jsonPost(prefixNetwork + 'page', data);
-}
-
-/**
  * 企业客户补货明细
  * @param {Object} data
  */
