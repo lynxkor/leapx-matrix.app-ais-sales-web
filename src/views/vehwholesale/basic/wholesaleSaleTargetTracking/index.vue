@@ -307,6 +307,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '批售编辑',
+              show: (row) => {
+                return this.permissions.has(`${this.moduleKey}-editByWholeSale`);
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
@@ -320,6 +323,9 @@ export default {
             },
             {
               name: '零售编辑',
+              show: (row) => {
+                return this.permissions.has(`${this.moduleKey}-editByRetail`);
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
@@ -332,6 +338,9 @@ export default {
               type: 'info'
             }, {
               name: '日志',
+              show: (row) => {
+                return this.canLog;
+              },
               click: (rowIndex, row) => {
                 this.$auditLog.show({ id: row.id });
               },
