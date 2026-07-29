@@ -128,6 +128,10 @@ export default {
       }
     },
     handleRadioClick (row) {
+      // 无权限时不响应
+      if (!this.permissions.has(`${this.moduleKey}-setDefaultWarehouse`)) {
+        return;
+      }
       // 点击当前已选中的默认仓库，不做操作
       if (row.warehouseCode === this.defaultWarehouseCode) {
         return;
