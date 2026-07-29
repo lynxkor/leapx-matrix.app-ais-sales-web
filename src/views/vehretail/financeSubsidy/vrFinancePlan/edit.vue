@@ -345,7 +345,7 @@ export default {
     goToVehicleDetail (vehicleId) {
       // 实现跳转到车型详情页面的逻辑
       this.navigateToRoute({
-        path: '/sales/datacenter/materials/vehicleModel/detail',
+        path: '/sales/datacenter/materials/vehicleModel/edit',
         query: { id: vehicleId }
       }, true);
     },

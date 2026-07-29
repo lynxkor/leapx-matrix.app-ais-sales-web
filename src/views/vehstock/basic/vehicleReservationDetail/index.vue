@@ -175,7 +175,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/basic/vehicleReservationDetail/detail',
+                  path: '/vehstock/basic/vehicleReservationDetail/edit',
                   query: {
                     id: row.id
                   }

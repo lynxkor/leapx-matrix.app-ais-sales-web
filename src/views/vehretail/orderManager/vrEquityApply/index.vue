@@ -391,7 +391,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/sales/datacenter/materials/vehicleMaterials/detail',
+                  path: '/sales/datacenter/materials/vehicleMaterials/edit',
                   query: {
                     id: row.materialsId
                   }

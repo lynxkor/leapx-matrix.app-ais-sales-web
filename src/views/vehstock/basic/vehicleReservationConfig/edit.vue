@@ -167,7 +167,7 @@
             <template #code="{ row }">
               <el-link
                 type="primary"
-                :href="'/vehstock/basic/vehicleReservationDetail/detail?id=' + row.id"
+                :href="'/vehstock/basic/vehicleReservationDetail/edit?id=' + row.id"
                 target="_blank"
               >{{ row.code }}</el-link>
             </template>
