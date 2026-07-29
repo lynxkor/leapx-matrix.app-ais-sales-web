@@ -437,7 +437,7 @@
                     v-model="form.plateDate"
                     type="date"
                     :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                   />
                 </el-form-item>
                 <el-form-item label="上牌省份：" prop="provinceCode">
