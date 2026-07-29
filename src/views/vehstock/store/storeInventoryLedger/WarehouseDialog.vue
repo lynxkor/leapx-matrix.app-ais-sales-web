@@ -25,12 +25,13 @@
       <el-table-column label="操作" width="120" align="center">
         <template slot-scope="{ row }">
           <el-button
-            v-if="row.isDefault !== 1"
+            v-if="row.isDefault !== 1 && permissions.has(`${moduleKey}-setDefaultWarehouse`)"
             type="text"
             size="small"
             :loading="row._settingDefault"
             @click="handleSetDefault(row)"
           >设为默认</el-button>
+          <span v-else-if="row.isDefault !== 1" style="color: #999">无权限</span>
           <span v-else style="color: #999">已默认</span>
         </template>
       </el-table-column>
@@ -45,9 +46,11 @@
 
 <script>
 import { listWarehouse, setDefaultWarehouse } from '@/api/vehstock/store/storeInventoryLedger/index';
+import permissions from '@/libs/mixins/permissions';
 
 export default {
   name: 'WarehouseDialog',
+  mixins: [permissions],
   props: {
     visible: {
       type: Boolean,
@@ -61,6 +64,7 @@ export default {
       currentStoreCode: '',
       storeList: [],
       warehouseList: [],
+      moduleKey: 'AISVS-storeInventoryLedger',
       warehouseName: ''
     };
   },
