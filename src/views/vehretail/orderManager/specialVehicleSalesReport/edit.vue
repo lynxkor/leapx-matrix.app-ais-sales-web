@@ -419,7 +419,7 @@
                 <el-form-item label="开票日期：" prop="invoiceDate">
                   <el-date-picker
                     type="date"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                     v-model="form.invoiceDate"
                     placeholder="请选日期"
                   />
@@ -566,7 +566,7 @@ const defaultForm = {
   exclusiveServiceStoreCode: '',
   exclusiveServiceStoreName: '',
   invoiceNo: '',
-  invoiceDate: '',
+  invoiceDate: null,
   invoiceAmount: '',
   documentCode: '',
   dataSource: '',
