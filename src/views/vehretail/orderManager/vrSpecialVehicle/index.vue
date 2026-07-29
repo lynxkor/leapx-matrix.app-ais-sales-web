@@ -220,7 +220,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/sales/datacenter/materials/vehicleModel/detail',
+                  path: '/sales/datacenter/materials/vehicleModel/edit',
                   query: {
                     id: row.modelId
                   }

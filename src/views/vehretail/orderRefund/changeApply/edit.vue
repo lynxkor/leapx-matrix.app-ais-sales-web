@@ -238,7 +238,7 @@
                     class="link"
                     v-if="form.originalMaterialsCode"
                     @click="navigateToRoute({
-                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        path: '/datacenter/materials/vehicleMaterials/edit',
                         query: { id: form.originalMaterialsId }
                     })"
                     type="text">{{ form.originalMaterialsCode }}</el-button>
@@ -267,7 +267,7 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleModel/detail',
+                      path: '/datacenter/materials/vehicleModel/edit',
                       query: {
                         id: form.modelId,
                       }
