@@ -54,7 +54,7 @@
                     :remote-method="retailOrderSearch"
                     v-model="form.mallOrderCode"
                     @change="retailOrderChange"
-                    :disabled="form.changeApplyCode"
+                    :disabled="form.changeApplyCode && form.changeApplyCode !== ''"
                   />
                 </el-form-item>
                 <el-form-item label="门店整车订单：" prop="retailOrderCode">
@@ -326,7 +326,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="变更后代办人：" prop="newAgentName">
+                <el-form-item
+                  label="变更后代办人："
+                  :rules="form.newIdCardType && (Number(form.newIdCardType) === 6 || Number(form.newIdCardType) === 7) ? rules.newAgentName : []"
+                  prop="newAgentName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.newAgentName"
@@ -924,7 +927,7 @@ export default {
         ],
         newAgentName: [
           {
-            required: false,
+            required: true,
             message: '请输入变更后代办人',
             trigger: 'change',
           },
@@ -1162,8 +1165,8 @@ export default {
       this.form.originalMaterialsCode = selectedOption.materialsCode;
       this.form.paymentTime = selectedOption.paymentTime;
       this.form.deliveryTime = selectedOption.deliveryTime;
-      this.form.deliveryStatus = selectedOption.deliveryTime ? 1 : 0;
-      this.form.deliveryStatusLabel = selectedOption.deliveryTime ? '是' : '否';
+      this.form.deliveryStatus = selectedOption.deliveryTime ? 1 : null;
+      this.form.deliveryStatusLabel = selectedOption.deliveryTime ? '是' : '';
       this.form.dataSource = selectedOption.dataSource;
       this.form.originalOrderStatus = selectedOption.orderStatus;
       this.form.originalOrderStatusLabel = selectedOption.orderStatusLabel;

@@ -160,10 +160,10 @@
                     value-format="yyyy-MM-dd"
                   />
                 </el-form-item>
-                <el-form-item label="车主证件号码：" prop="carIdCardNo">
+                <el-form-item label="发票证件号：" prop="invoiceCardNo">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.carIdCardNo"
+                    v-model="form.invoiceCardNo"
                     clearable
                   />
                 </el-form-item>
@@ -236,8 +236,8 @@
                 <el-form-item label="开票日期：">
                   {{ form.invoiceTime }}
                 </el-form-item>
-                <el-form-item label="车主证件号码：">
-                  {{ form.carIdCardNo }}
+                <el-form-item label="发票证件号：">
+                  {{ form.invoiceCardNo }}
                 </el-form-item>
                 <el-form-item label="开票金额：">
                   {{ form.deliveryOrderInvoiceAmount }}
@@ -741,6 +741,7 @@ const defaultForm = {
   invoiceName: '',
   invoiceTime: '',
   invoiceAmount: '',
+  invoiceCardNo: null,
   vin: '',
   certificateNo: '',
   engineNumber: '',
@@ -969,7 +970,7 @@ export default {
     },
     doComparisonData () {
       const comparisonData = [];
-      // i.发票VIN=配车VIN,ii.开票名称=购车人姓名,iii.车主证件号码=证件号码,发票金额=开票金额,证件识别的客户姓名=购车人姓名,证件识别的证件号码=证件号码,车主证件类型=证件类型
+      // i.发票VIN=配车VIN,ii.开票名称=购车人姓名,iii.发票证件号=证件号码,发票金额=开票金额,证件识别的客户姓名=购车人姓名,证件识别的证件号码=证件号码,车主证件类型=证件类型
       // 固定7行，不根据判空条件限制
       comparisonData.push({
         fieldKey: 'vin',
@@ -1013,11 +1014,11 @@ export default {
       });
       comparisonData.push({
         fieldKey: 'carIdCardNo',
-        fieldName: '车主证件号码',
-        recognizedValue: this.form.carIdCardNo,
+        fieldName: '发票证件号',
+        recognizedValue: this.form.invoiceCardNo,
         checkField: '证件号码',
         checkValue: this.form.orderIdCardNo,
-        isHighlighted: !this.form.carIdCardNo || !this.form.orderIdCardNo || this.form.carIdCardNo !== this.form.orderIdCardNo,
+        isHighlighted: !this.form.invoiceCardNo || !this.form.orderIdCardNo || this.form.invoiceCardNo !== this.form.orderIdCardNo,
         disabled: false
       });
       comparisonData.push({

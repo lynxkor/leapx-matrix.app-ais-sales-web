@@ -312,7 +312,7 @@
                     v-model="form.invoiceTime"
                     type="date"
                     :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                   />
                 </el-form-item>
                 <el-form-item label="开票金额：" prop="invoiceAmount">

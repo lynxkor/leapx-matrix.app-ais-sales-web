@@ -1,3 +1,4 @@
+
 <template>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
@@ -418,7 +419,7 @@
                 <el-form-item label="开票日期：" prop="invoiceDate">
                   <el-date-picker
                     type="date"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                     v-model="form.invoiceDate"
                     placeholder="请选日期"
                   />
@@ -565,7 +566,7 @@ const defaultForm = {
   exclusiveServiceStoreCode: '',
   exclusiveServiceStoreName: '',
   invoiceNo: '',
-  invoiceDate: '',
+  invoiceDate: null,
   invoiceAmount: '',
   documentCode: '',
   dataSource: '',
@@ -785,7 +786,7 @@ export default {
           { required: false, message: '请输入发票号码', trigger: 'change' }
         ],
         invoiceDate: [
-          { required: false, message: '请选择开票日期', trigger: 'change' }
+          { required: true, message: '请选择开票日期', trigger: 'change' }
         ],
         invoiceAmount: [
           { required: false, message: '请输入发票金额', trigger: 'change' }
@@ -984,6 +985,10 @@ export default {
       if (!valid) {
         this.$message.error(errors.join('；'));
         return Promise.reject(new Error('附件校验未通过'));
+      }
+      if (!this.form.invoiceDate) {
+        this.$message.error('开票日期为空，不允许提交');
+        return Promise.reject(new Error('开票日期为空，不允许提交'));
       }
       // 确保门店库存信息已加载
       if (this.form.vin && !this.form.reservationStatus) {
