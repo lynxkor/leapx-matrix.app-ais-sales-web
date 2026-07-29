@@ -90,3 +90,20 @@ export function getRecord (data) {
 export function batchConvertType (data) {
   return api.jsonPost(prefix + 'batchConvertType', data);
 }
+
+/**
+ * 根据门店编码查询仓库信息
+ * @param {String} storeCode
+ */
+export function listWarehouse (storeCode) {
+  return api.post(prefix + 'listWarehouse', { storeCode });
+}
+
+/**
+ * 设置默认仓库
+ * @param {String} storeCode
+ * @param {String} warehouseCode
+ */
+export function setDefaultWarehouse (storeCode, warehouseCode) {
+  return api.post(prefix + 'setDefaultWarehouse', { storeCode, warehouseCode });
+}
