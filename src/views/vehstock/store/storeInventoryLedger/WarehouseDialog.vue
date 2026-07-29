@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="m-warehouse-dialog" title="仓库管理" width="60%" :visible.sync="dialogVisible" @close="close">
+  <el-dialog class="m-warehouse-dialog" title="调整默认仓库" width="60%" :visible.sync="dialogVisible" @close="close">
     <el-form :inline="true" size="small" label-width="100px">
       <el-form-item label="门店：">
         <el-select v-model="currentStoreCode" placeholder="请选择门店" filterable clearable style="width: 260px" @change="handleStoreChange">
@@ -8,23 +8,15 @@
       </el-form-item>
     </el-form>
     <el-table :data="warehouseList" v-loading="loading" border size="small" style="width: 100%">
-      <el-table-column prop="isDefaultLabel" label="是否默认" width="100" align="center">
+      <el-table-column label="是否默认仓库" width="120" align="center">
         <template slot-scope="{ row }">
-          <el-tag v-if="row.isDefault === 1" type="success" size="mini">默认</el-tag>
-          <el-tag v-else type="info" size="mini">非默认</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="120" align="center">
-        <template slot-scope="{ row }">
-          <el-button
-            v-if="row.isDefault !== 1 && permissions.has(`${moduleKey}-setDefaultWarehouse`)"
-            type="text"
-            size="small"
-            :loading="row._settingDefault"
-            @click="handleSetDefault(row)"
-          >设为默认</el-button>
-          <span v-else-if="row.isDefault !== 1" style="color: #999">无权限</span>
-          <span v-else style="color: #999">已默认</span>
+          <span
+            class="warehouse-radio"
+            :class="{ 'is-checked': row.warehouseCode === defaultWarehouseCode, 'is-disabled': !permissions.has(`${moduleKey}-setDefaultWarehouse`) }"
+            @click="handleRadioClick(row)"
+          >
+            <span class="warehouse-radio__inner" />
+          </span>
         </template>
       </el-table-column>
       <el-table-column prop="warehouseCode" label="仓库编码" width="160" />
@@ -65,7 +57,8 @@ export default {
       storeList: [],
       warehouseList: [],
       moduleKey: 'AISVS-storeInventoryLedger',
-      warehouseName: ''
+      warehouseName: '',
+      defaultWarehouseCode: ''
     };
   },
   watch: {
@@ -118,6 +111,8 @@ export default {
           ...item,
           _settingDefault: false
         }));
+        const defaultItem = this.warehouseList.find(item => item.isDefault === 1);
+        this.defaultWarehouseCode = defaultItem ? defaultItem.warehouseCode : '';
         // 切换门店时校验默认仓库是否存在
         if (checkDefault) {
           const hasDefault = this.warehouseList.some(item => item.isDefault === 1);
@@ -132,12 +127,27 @@ export default {
         this.loading = false;
       }
     },
-    async handleSetDefault (row) {
+    handleRadioClick (row) {
+      // 点击当前已选中的默认仓库，不做操作
+      if (row.warehouseCode === this.defaultWarehouseCode) {
+        return;
+      }
+      const content = '调整后生成的批售单按默认仓库发运，已产生的批售单需前往整车批售订单手动修改';
+      this.$confirm(content, '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.doSetDefault(row);
+      }).catch(() => {
+        // 取消操作，恢复单选状态
+      });
+    },
+    async doSetDefault (row) {
       this.$set(row, '_settingDefault', true);
       try {
         await setDefaultWarehouse(this.currentStoreCode, row.warehouseCode);
         this.$message.success('设置默认仓库成功');
-        // 刷新列表
         await this.fetchWarehouseList();
       } catch (e) {
         console.error('设置默认仓库失败:', e);
@@ -161,6 +171,41 @@ export default {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+  }
+  .warehouse-radio {
+    display: inline-block;
+    cursor: pointer;
+    .warehouse-radio__inner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #dcdfe6;
+      border-radius: 50%;
+      background-color: #fff;
+      position: relative;
+      &::after {
+        content: '';
+        display: none;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #409eff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+    &.is-checked .warehouse-radio__inner {
+      border-color: #409eff;
+      &::after {
+        display: block;
+      }
+    }
+    &.is-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
   }
 }
 </style>

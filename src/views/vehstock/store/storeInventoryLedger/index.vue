@@ -173,7 +173,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
         :disabled="selectionList.length === 0">批量停用</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-permission="moduleKey+'-listWarehouse'" size="small" @click="warehouseDialog = true">仓库管理</el-button>
+      <el-button v-permission="moduleKey+'-listWarehouse'" size="small" @click="warehouseDialog = true">调整默认仓库</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -297,7 +297,7 @@ export default {
       selectionListIds: [], // 批量操作选中的行
       moveDialog: false, // 同门店移库弹窗
       convertTypeDialog: false, // 批量车辆类型转换弹窗
-      warehouseDialog: false, // 仓库管理弹窗
+      warehouseDialog: false, // 调整默认仓库弹窗
       dealerCode: '', // 销售门店编码
       clickItemId: '',
       optionObj: {
