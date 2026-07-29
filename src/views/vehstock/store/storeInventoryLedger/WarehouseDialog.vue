@@ -9,7 +9,13 @@
     </el-form>
     <el-table :data="warehouseList" v-loading="loading" border size="small" style="width: 100%">
       <el-table-column prop="warehouseCode" label="仓库编码" width="160" />
-      <el-table-column prop="warehouseName" label="仓库名称" min-width="200" />
+      <el-table-column prop="warehouseName" label="仓库名称" min-width="160" />
+      <el-table-column prop="provinceName" label="省" width="100" />
+      <el-table-column prop="cityName" label="市" width="100" />
+      <el-table-column prop="districtName" label="区" width="100" />
+      <el-table-column prop="address" label="地址" min-width="200" show-overflow-tooltip />
+      <el-table-column prop="contactName" label="联系人" width="120" />
+      <el-table-column prop="contactPhone" label="电话号码" width="140" />
       <el-table-column prop="isDefaultLabel" label="是否默认" width="100" align="center">
         <template slot-scope="{ row }">
           <el-tag v-if="row.isDefault === 1" type="success" size="mini">默认</el-tag>
@@ -54,7 +60,8 @@ export default {
       loading: false,
       currentStoreCode: '',
       storeList: [],
-      warehouseList: []
+      warehouseList: [],
+      warehouseName: ''
     };
   },
   watch: {
@@ -80,19 +87,40 @@ export default {
     },
     handleStoreChange (val) {
       if (val) {
-        this.fetchWarehouseList();
+        this.warehouseName = '';
+        this.fetchWarehouseList(true);
       } else {
         this.warehouseList = [];
       }
     },
-    async fetchWarehouseList () {
+    handleSearch () {
+      if (!this.currentStoreCode) {
+        this.$message.warning('请先选择门店');
+        return;
+      }
+      this.fetchWarehouseList();
+    },
+    handleReset () {
+      this.warehouseName = '';
+      if (this.currentStoreCode) {
+        this.fetchWarehouseList();
+      }
+    },
+    async fetchWarehouseList (checkDefault = false) {
       this.loading = true;
       try {
-        const res = await listWarehouse(this.currentStoreCode);
+        const res = await listWarehouse(this.currentStoreCode, this.warehouseName || undefined);
         this.warehouseList = (res || []).map(item => ({
           ...item,
           _settingDefault: false
         }));
+        // 切换门店时校验默认仓库是否存在
+        if (checkDefault) {
+          const hasDefault = this.warehouseList.some(item => item.isDefault === 1);
+          if (!hasDefault) {
+            this.$message.warning('当前门店未设置默认仓库');
+          }
+        }
       } catch (e) {
         console.error('查询仓库信息失败:', e);
         this.warehouseList = [];
@@ -115,6 +143,7 @@ export default {
     },
     close () {
       this.currentStoreCode = '';
+      this.warehouseName = '';
       this.warehouseList = [];
       this.$emit('close');
     }
