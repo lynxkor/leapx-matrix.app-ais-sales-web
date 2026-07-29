@@ -103,6 +103,9 @@
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
                   </el-form-item>
+                  <el-form-item label="充电桩编码：" prop="chargingPortCode">
+                    <el-input placeholder="请输入" v-model="form.chargingPortCode" clearable disabled />
+                  </el-form-item>
                 </el-form>
                 <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                   <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
@@ -190,6 +193,9 @@
                     <el-button class="link" style="padding: 0;" type="text"
                       @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailId)">{{
                         form.replenishApplyDetailCode }}</el-button>
+                  </el-form-item>
+                  <el-form-item label="充电桩编码：" prop="chargingPortCode">
+                    {{ form.chargingPortCode }}
                   </el-form-item>
                    <el-form-item label="创建时间：" prop="createTime">
                     {{ form.createTime }}
@@ -690,6 +696,7 @@ const defaultForm = {
   exteriorId: '',
   saleTargetTrackingId: '',
   replenishApplyDetailCode: '',
+  chargingPortCode: '',
   id: '',
   creator: '',
   creatorName: '',
