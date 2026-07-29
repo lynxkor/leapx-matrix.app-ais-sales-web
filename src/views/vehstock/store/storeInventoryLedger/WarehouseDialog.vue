@@ -8,14 +8,6 @@
       </el-form-item>
     </el-form>
     <el-table :data="warehouseList" v-loading="loading" border size="small" style="width: 100%">
-      <el-table-column prop="warehouseCode" label="仓库编码" width="160" />
-      <el-table-column prop="warehouseName" label="仓库名称" min-width="160" />
-      <el-table-column prop="provinceName" label="省" width="100" />
-      <el-table-column prop="cityName" label="市" width="100" />
-      <el-table-column prop="districtName" label="区" width="100" />
-      <el-table-column prop="address" label="地址" min-width="200" show-overflow-tooltip />
-      <el-table-column prop="contactName" label="联系人" width="120" />
-      <el-table-column prop="contactPhone" label="电话号码" width="140" />
       <el-table-column prop="isDefaultLabel" label="是否默认" width="100" align="center">
         <template slot-scope="{ row }">
           <el-tag v-if="row.isDefault === 1" type="success" size="mini">默认</el-tag>
@@ -35,6 +27,14 @@
           <span v-else style="color: #999">已默认</span>
         </template>
       </el-table-column>
+      <el-table-column prop="warehouseCode" label="仓库编码" width="160" />
+      <el-table-column prop="warehouseName" label="仓库名称" min-width="160" />
+      <el-table-column prop="provinceName" label="省" width="100" />
+      <el-table-column prop="cityName" label="市" width="100" />
+      <el-table-column prop="countyName" label="区" width="100" />
+      <el-table-column prop="warehouseDetailAddress" label="地址" min-width="200" show-overflow-tooltip />
+      <el-table-column prop="contacts" label="联系人" width="120" />
+      <el-table-column prop="contactPhone" label="电话号码" width="140" />
     </el-table>
     <template v-slot:footer>
       <div class="dialog-footer">
