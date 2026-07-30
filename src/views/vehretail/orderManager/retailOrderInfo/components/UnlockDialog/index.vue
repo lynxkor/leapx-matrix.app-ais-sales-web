@@ -187,7 +187,11 @@ export default {
   },
   methods: {
     showVinDialog () {
-      this.$refs.vinDialog.show(this.vinForm, this.row);
+      const params = {
+        materialsCode: this.shouldShowMaterialField ? this.form.materialsCode : this.vinForm.materialsCode,
+        saleDealerCode: this.vinForm.saleDealerCode
+      };
+      this.$refs.vinDialog.show(params, this.row);
     },
     handleUnlockReasonCodeChange (val, row) {
       if (this.mode === 'batch') {
@@ -215,6 +219,15 @@ export default {
       this.form.bindVin = '';
       this.form.remark = '';
       this.form.orderUnlockFileReqList = [];
+      // 重置受影响的字段校验态，避免沿用旧值留下的红字提示
+      if (this.$refs.form) {
+        this.$refs.form.clearValidate([
+          'materialsCode',
+          'orderHandleType',
+          'bindVin',
+          'remark'
+        ]);
+      }
     },
     // 处理方式变更时，清空已绑定的VIN号
     handleOrderHandleTypeChange () {
@@ -222,6 +235,15 @@ export default {
       // 清空 VIN 后，同步重置其校验状态，避免沿用旧值留下的红字提示
       if (this.$refs.form) {
         this.$refs.form.clearValidate(['bindVin']);
+      }
+    },
+    // 物料（更换后配置）变更：清空依赖物料的下游字段
+    handleMaterialsChange () {
+      // 下游字段均依赖当前物料，物料一变全部失效
+      this.form.orderHandleType = null;
+      this.form.bindVin = '';
+      if (this.$refs.form) {
+        this.$refs.form.clearValidate(['orderHandleType', 'bindVin']);
       }
     },
     getList (params) {
@@ -247,9 +269,14 @@ export default {
     },
     // 物料选择确认回调
     onMaterialsSelected (material) {
+      const prevCode = this.form.materialsCode;
       this.form.materialsDesc = material.materialsDesc;
       this.form.materialsCode = material.materialsCode;
       this.form.changeProductSkuPriceId = material.id;
+      // 物料实际变更时，级联清理下游字段（处理方式、已绑 VIN）
+      if (prevCode !== material.materialsCode) {
+        this.handleMaterialsChange();
+      }
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {

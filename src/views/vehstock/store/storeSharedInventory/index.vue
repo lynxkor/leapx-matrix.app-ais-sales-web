@@ -171,7 +171,7 @@ export default {
               {
                 name: '发布',
                 show: (row) => {
-                  return this.dealerList.includes(row.dealerCode) && row.sharedVehicleStatus === 5;
+                  return this.dealerList.includes(row.dealerCode) && row.sharedVehicleStatus === 5 && this.permissions.has(`${this.moduleKey}-publish`);
                 },
                 popconfirmTitle: '是否确定发布?',
                 click: (rowIndex, row) => {
@@ -192,7 +192,7 @@ export default {
               }, {
                 name: '作废',
                 show: (row) => {
-                  return this.dealerList.includes(row.dealerCode) && (row.sharedVehicleStatus === 5 || row.sharedVehicleStatus === 10);
+                  return this.dealerList.includes(row.dealerCode) && (row.sharedVehicleStatus === 5 || row.sharedVehicleStatus === 10) && this.permissions.has(`${this.moduleKey}-invalid`);
                 },
                 popconfirmTitle: '是否确定作废?',
                 click: (rowIndex, row) => {
@@ -213,7 +213,7 @@ export default {
               }, {
                 name: '下架',
                 show: (row) => {
-                  return this.dealerList.includes(row.dealerCode) && row.sharedVehicleStatus === 10;
+                  return this.dealerList.includes(row.dealerCode) && row.sharedVehicleStatus === 10 && this.permissions.has(`${this.moduleKey}-offShelf`);
                 },
                 popconfirmTitle: '是否确定下架?',
                 click: (rowIndex, row) => {
