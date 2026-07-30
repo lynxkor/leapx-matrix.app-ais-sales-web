@@ -246,7 +246,7 @@ export default {
       },
       // 交付顾问远程搜索
       async handleDeliveryUserSearch (query) {
-        const dealerCode = this.$store.state.user.userInfo.orgPostUserList[0].orgCode;
+        const dealerCode = this.$store.state.user.userInfo?.orgPostUserList[0]?.orgCode;
         if (!dealerCode) {
           this.deliveryUserOptions = [];
           return;
@@ -367,7 +367,6 @@ export default {
     // 提前在 model 上赋值，保证查询时默认带上时间段；展开后 dateranges 挂载也会再次同步）
     const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
     this.form.createTime = [startTime, endTime];
-    console.log('this.$store.state.user.userInfo:', this.$store.state.user.userInfo.orgPostUserList[0].orgCode);
 
     this.getData();
   },
