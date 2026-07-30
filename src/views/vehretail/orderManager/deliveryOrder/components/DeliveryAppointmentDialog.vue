@@ -94,7 +94,6 @@
             v-model="appointmentForm.appointmentTime"
             placeholder="选择时间"
             clearable
-            :disabled-options="isTimeDisabled"
             style="width: 220px; margin-left: 12px;"
             @change="handleTimeChange"
           >
@@ -103,6 +102,7 @@
               :key="slot"
               :label="slot"
               :value="slot"
+              :disabled="isTimeDisabled(slot)"
             />
           </el-select>
         </el-form-item>
@@ -299,13 +299,34 @@ export default {
     isSameAsCreateDate () {
       return this.appointmentForm.appointmentDate === this.createDateStr;
     },
-    // 过滤后的时间选项（禁用早于订单创建时间的时间）
+    // 今天的日期（yyyy-MM-dd 格式）
+    todayDateStr () {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    },
+    // 当前时间的小时和分钟（HH:mm 格式）
+    nowHM () {
+      const today = new Date();
+      const hh = String(today.getHours()).padStart(2, '0');
+      const mm = String(today.getMinutes()).padStart(2, '0');
+      return `${hh}:${mm}`;
+    },
+    // 当前选择的日期是否是今天
+    isToday () {
+      return this.appointmentForm.appointmentDate === this.todayDateStr;
+    },
+    // 时间选项的禁用阈值：当天取当前时间，否则为 ''
+    disabledTimeThreshold () {
+      // 仅在选择日期是今天时限制
+      if (!this.isToday) return '';
+      return this.nowHM;
+    },
+    // 过滤后的时间选项（全部展示，禁用态由 isTimeDisabled 决定）
     filteredTimeSlots () {
-      if (!this.isSameAsCreateDate || !this.createTimeHM) {
-        return this.timeSlots;
-      }
-      // 过滤掉早于订单创建时间的时间选项
-      return this.timeSlots.filter(slot => slot >= this.createTimeHM);
+      return this.timeSlots;
     },
     // 日期选择器配置（额外禁用创建日期之前的日期）
     datePickerOptionsWithCreateDate () {
@@ -344,11 +365,11 @@ export default {
   methods: {
     // 判断时间是否应该被禁用
     isTimeDisabled (time) {
-      // 只有当选择的日期等于订单创建日期时，才禁用早于订单创建时间的时间
-      if (!this.isSameAsCreateDate || !this.createTimeHM) {
+      // 仅在选择日期是今天时，禁用早于阈值的时间
+      if (!this.disabledTimeThreshold) {
         return false;
       }
-      return time < this.createTimeHM;
+      return time < this.disabledTimeThreshold;
     },
     findByCityCode () {
       findByCityCode(this.cityCode).then((res) => {
@@ -486,9 +507,9 @@ export default {
         await this.loadScheduleCount();
         this.checkTimeout();
 
-        // 如果选择的日期等于订单创建日期，且当前已选时间早于订单创建时间，则清空时间选择
-        if (this.isSameAsCreateDate && this.appointmentForm.appointmentTime && this.createTimeHM) {
-          if (this.appointmentForm.appointmentTime < this.createTimeHM) {
+        // 如果已选时间不满足禁用阈值（当天 + 当前时间/订单创建时间），则清空时间选择
+        if (this.disabledTimeThreshold && this.appointmentForm.appointmentTime) {
+          if (this.appointmentForm.appointmentTime < this.disabledTimeThreshold) {
             this.appointmentForm.appointmentTime = '';
           }
         }
