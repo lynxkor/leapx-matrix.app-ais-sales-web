@@ -22,8 +22,8 @@
           <el-button size="small" :loading="printLoading" v-if="canOperateOrder && canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button size="small" :loading="setSpecialMarkLoading" v-if="canSetSpecialRemark" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && canAutoLock && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="canManualLock && form.wholesaleBindStatus !== 1 && this.form.orderStatus === 3" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" :loading="autoLockLoading" v-if="canAutoLock && form.wholesaleBindStatus !== 1 && this.form.orderStatus === 3" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
@@ -559,7 +559,8 @@ export default {
     },
     // 订单状态为9或99时不可操作
     canOperateOrder () {
-      return this.form.orderStatus !== 9 && this.form.orderStatus !== 99;
+      // 零售订单状态 3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;9-交车完成;10-退订中;15-退款中;99-作废
+      return this.form.orderStatus !== 9 && this.form.orderStatus !== 10 && this.form.orderStatus !== 15 && this.form.orderStatus !== 99;
     },
     // 购车人信息 formData：直接指向 form.carOwner 引用，便于 LPEncrypted 解密后同步回 form
     carOwnerFormData () {
@@ -567,6 +568,8 @@ export default {
     },
     canPerUnlock () {
       // 订单处于是否绑定批售（wholesaleBindStatus === 1）且具备 perUnlock 权限时才显示取消锁车按钮
+      // wholesaleBindStatus 是否绑定批售 1-是;0-否
+      // 订单状态为3（订单确认）时才显示取消锁车按钮
       return this.form.wholesaleBindStatus === 1 && this.permissions.has(`${this.moduleKey}-perUnlock`);
     }
   },
