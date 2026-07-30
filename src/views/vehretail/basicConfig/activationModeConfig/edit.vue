@@ -168,6 +168,7 @@
                   ref="attachment"
                   configCode="mcs_activationmodelsetting"
                   attachType="功能演示视频"
+                  :readonly="!permissions.has('AISVR-activationModeConfig-addOrUpdate')"
                 />
               </div>
             </div>

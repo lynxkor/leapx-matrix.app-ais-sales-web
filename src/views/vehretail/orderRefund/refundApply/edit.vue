@@ -386,7 +386,7 @@
               <AisAttachment
                 ref="attachment"
                 :businessId="_id"
-                :readonly="!_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
+                :readonly="!permissions.has('AISVRRO-retailOrderRefund-addOrUpdate')  || !_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
                 configCode="mcs_vehorderrefund"
               />
             </div>
