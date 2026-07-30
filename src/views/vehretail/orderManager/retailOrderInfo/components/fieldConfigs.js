@@ -173,7 +173,12 @@ export const modificationRecordDisplayFields = [
 
 // 订单信息变更申请字段配置
 export const orderChangeApplicationDisplayFields = [
-  { key: 'changeApplyCode', label: '订单变更申请编号' },
+  {
+    key: 'changeApplyCode',
+    label: '订单变更申请编号',
+    link: '/sales/vehretail/orderRefund/changeApply/edit',
+    paramKey: 'id'
+  },
   { key: 'applyStatusLabel', label: '申请状态' },
   { key: 'changeTypeLabel', label: '变更类型' },
   { key: 'changeReason', label: '变成原因' },
@@ -239,7 +244,12 @@ export const orderTransparencyTrackingDisplayFields = [
 
 // 订单退订记录字段配置
 export const orderCancellationRecordDisplayFields = [
-  { key: 'refundCode', label: '退订申请单号' },
+  {
+    key: 'refundCode',
+    label: '退订申请单号',
+    link: '/sales/vehretail/orderRefund/refundApply/edit',
+    paramKey: 'id'
+  },
   { key: 'refundStatusLabel', label: '申请单状态' },
   { key: 'applyTime', label: '申请时间' },
   { key: 'creatorName', label: '申请人' },
