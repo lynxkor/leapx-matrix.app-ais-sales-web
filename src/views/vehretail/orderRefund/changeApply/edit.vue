@@ -400,7 +400,7 @@
               <AisAttachment
                 ref="attachment"
                 :businessId="_id"
-                :readonly="!_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
+                :readonly="!permissions.has('AISVRROCA-retailOrderChangeApply-addOrUpdate') || !_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
                 configCode="mcs_vehorderapplylog"
               />
             </div>
