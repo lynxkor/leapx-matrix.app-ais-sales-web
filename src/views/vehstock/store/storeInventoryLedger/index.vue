@@ -173,6 +173,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
         :disabled="selectionList.length === 0">批量停用</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-permission="moduleKey+'-listWarehouse'" size="small" @click="warehouseDialog = true">调整默认仓库</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -201,6 +202,10 @@
       @close="closeConvertTypeDialog"
       @submit="submitBatchConvertType"
     />
+    <WarehouseDialog
+      :visible="warehouseDialog"
+      @close="warehouseDialog = false"
+    />
   </div>
 </template>
 
@@ -220,6 +225,7 @@ import EditPage from './edit.vue';
 import BatchDialog from './BatchDialog.vue';
 import MoveDialog from './MoveDialog.vue';
 import ConvertTypeDialog from './ConvertTypeDialog.vue';
+import WarehouseDialog from './WarehouseDialog.vue';
 import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
@@ -268,6 +274,7 @@ export default {
     BatchDialog,
     MoveDialog,
     ConvertTypeDialog,
+    WarehouseDialog,
     TagInput
   },
   data () {
@@ -290,6 +297,7 @@ export default {
       selectionListIds: [], // 批量操作选中的行
       moveDialog: false, // 同门店移库弹窗
       convertTypeDialog: false, // 批量车辆类型转换弹窗
+      warehouseDialog: false, // 调整默认仓库弹窗
       dealerCode: '', // 销售门店编码
       clickItemId: '',
       optionObj: {
