@@ -5,11 +5,6 @@
                 <el-radio v-model="form.auditStatus" :label="1">通过</el-radio>
                 <el-radio v-model="form.auditStatus" :label="2">驳回</el-radio>
             </el-form-item>
-            <el-form-item label="退回至：" v-if="name === 'headquarters' && form.auditStatus === 2" prop="auditStatusBack">
-                <el-radio v-model="form.auditStatusBack" :label="1">提交人</el-radio>
-                <el-radio v-model="form.auditStatusBack" :label="2">零售经理审</el-radio>
-                <el-radio v-model="form.auditStatusBack" :label="3">大区审</el-radio>
-            </el-form-item>
             <el-form-item label="审批意见：" prop="auditOpinion">
                 <el-input v-model="form.approvalOpinion" type="textarea" :rows="3" maxlength="500" placeholder="请输入" show-word-limit
                 clearable />
@@ -125,12 +120,6 @@ export default {
       if (!this.form.auditStatus) {
         this.$message.warning('请选择审批');
         return;
-      }
-      if (this.name === 'headquarters' && this.form.auditStatus === 2) {
-        if (!this.form.auditStatusBack) {
-          this.$message.warning('请选择退回至');
-          return;
-        }
       }
       this.submitLoading = true;
       // 定义映射关系
