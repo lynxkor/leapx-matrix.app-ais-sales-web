@@ -333,16 +333,16 @@ export default {
   mounted () {},
   methods: {
     getExteriorName (val, obj) {
-      this.form.exteriorName = obj.name;
+      this.form.exteriorName = obj ? obj.name : '';
     },
     getInteriorName (val, obj) {
-      this.form.interiorName = obj.name;
+      this.form.interiorName = obj ? obj.name : '';
     },
     getWheelName (val, obj) {
-      this.form.wheelHubName = obj.name;
+      this.form.wheelHubName = obj ? obj.name : '';
     },
     getOptionalName (val, obj) {
-      this.form.optionPackageName = obj.name;
+      this.form.optionPackageName = obj ? obj.name : '';
     },
     getYearName (val, obj) {
       this.form.yearTypeName = obj.name;
