@@ -12,7 +12,7 @@
             </div>
             <div class="pdf_item">
                 <span class="pdf_item_label">PDI提交人: </span>
-                <span class="pdf_item_value">{{ form.creatorName }}</span>
+                <span class="pdf_item_value">{{ form.pdiSubmitBy }}</span>
             </div>
             <div class="pdf_item">
                 <span class="pdf_item_label">PDI结果: </span>

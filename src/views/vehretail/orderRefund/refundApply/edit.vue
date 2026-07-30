@@ -285,7 +285,7 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleModel/detail',
+                      path: '/datacenter/materials/vehicleModel/edit',
                       query: {
                         id: form.modelId,
                       }
@@ -306,7 +306,7 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        path: '/datacenter/materials/vehicleMaterials/edit',
                         query: { id: form.materialsId }
                     })"
                     v-if="form.materialsCode"
@@ -639,7 +639,7 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleModel/detail',
+                      path: '/datacenter/materials/vehicleModel/edit',
                       query: {
                         id: form.modelId
                       },
@@ -1432,7 +1432,7 @@ export default {
             const material = res.records[0];
             navigate(
               {
-                path: '/sales/datacenter/materials/vehicleMaterials/detail',
+                path: '/sales/datacenter/materials/vehicleMaterials/edit',
                 query: {
                   id: material.id,
                 },
