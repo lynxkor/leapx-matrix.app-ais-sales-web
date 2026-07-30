@@ -50,7 +50,7 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_reservation_status" v-model="form.reservationStatusList"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
-        <el-form-item label="是否匹配订单">
+        <el-form-item label="是否匹配订单" v-if="activeName !== 'unmatchedOrder'">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.lockStatus" placeholder="请选择"
             clearable filterable />
         </el-form-item>
@@ -160,6 +160,12 @@
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
+    <div class="ais-active">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
+        <el-tab-pane label="未匹配订单车辆" name="unmatchedOrder"></el-tab-pane>
+      </el-tabs>
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-permission="moduleKey+'-batchReserve'" size="small" @click="batchreseRvation('reserve')" :disabled="selectionList.length === 0">批量预留</el-button>
@@ -175,9 +181,16 @@
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-permission="moduleKey+'-listWarehouse'" size="small" @click="warehouseDialog = true">调整默认仓库</el-button>
     </div>
-    <div class="ais-table-c">
+    <div class="ais-table-c" v-if="activeName === 'homePage'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
+        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect" @sortChange="handleSortChange">
+        <EditPage slot="centralizedViewSlot" :id="clickItemId" />
+      </LPVxeTable>
+    </div>
+    <div class="ais-table-c" v-if="activeName === 'unmatchedOrder'">
+      <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
+        :option-obj="optionUnmatched" :get-config="getConfig" :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect" @sortChange="handleSortChange">
         <EditPage slot="centralizedViewSlot" :id="clickItemId" />
       </LPVxeTable>
@@ -299,6 +312,7 @@ export default {
       convertTypeDialog: false, // 批量车辆类型转换弹窗
       warehouseDialog: false, // 调整默认仓库弹窗
       dealerCode: '', // 销售门店编码
+      activeName: 'homePage',
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryLedgerTable',
@@ -375,6 +389,16 @@ export default {
         ],
         total: 0
       },
+      optionUnmatched: {
+        id: 'storeInventoryLedgerTable',
+        dataList: [],
+        form: {
+          page: 1,
+          size: pageSize
+        },
+        dataProp: [],
+        total: 0
+      },
       sortColumns: [...DEFAULT_SORT_COLUMNS],
       // 提取公共配置
       selectOptions: {
@@ -434,10 +458,13 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 未匹配订单车辆 tab 复用主页表格列配置
+    this.optionUnmatched.dataProp = JSON.parse(JSON.stringify(this.optionObj.dataProp));
     this.getData();
   },
   methods: {
     handleSortChange (value) {
+      const config = this.getActiveConfig();
       const list = value || [];
       if (!list.length) {
         this.sortColumns = [];
@@ -445,12 +472,20 @@ export default {
         return;
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
-      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      const def = config.dataProp.find(d => d.props === latest.field) || {};
       this.sortColumns = [{
         column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
         sort: (latest.order || '').toUpperCase()
       }];
       this.getData();
+    },
+    // 点击tabs栏切换
+    handleClick (item) {
+      this.activeName = item.name;
+      this.onReset();
+    },
+    getActiveConfig () {
+      return this.activeName === 'unmatchedOrder' ? this.optionUnmatched : this.optionObj;
     },
 
     // 车型支持车系 ID 和 车型输入 方法
@@ -490,13 +525,16 @@ export default {
       });
     },
     onSubmit () {
-      this.optionObj.form.page = 1;
+      const config = this.getActiveConfig();
+      config.form.page = 1;
       this.getData();
     },
     onReset () {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.optionUnmatched.form.page = 1;
+      this.optionUnmatched.form.pageSize = pageSize;
       this.sortColumns = [...DEFAULT_SORT_COLUMNS];
       this.getData();
     },
@@ -508,7 +546,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '门店库存台账',
+        businessType: this.activeName === 'unmatchedOrder' ? '未匹配订单车辆' : '门店库存台账',
         dataFetchPath: 'vehstock/web/store/storeInventoryLedger/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -516,7 +554,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '门店库存台账.xlsx');
+            await downloadExcel(res.excelUrl, (this.activeName === 'unmatchedOrder' ? '未匹配订单车辆' : '门店库存台账') + '.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -534,19 +572,20 @@ export default {
       });
     },
     getData () {
+      const config = this.getActiveConfig();
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({ ...this.getFormData(), pageNum: config.form.page, pageSize: config.form.size })
         .then(res => {
           console.log(res);
-          this.optionObj.dataList = (res?.records || []).map(item => {
+          config.dataList = (res?.records || []).map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res?.total || 0;
+          config.total = res?.total || 0;
         }).finally(() => {
           this.loading = false;
         });
@@ -570,10 +609,11 @@ export default {
       return tableAddOrUpdate(data);
     },
     paginationChange (type, num) {
+      const config = this.getActiveConfig();
       if (type === 'page') {
-        this.optionObj.form.page = num;
+        config.form.page = num;
       } else {
-        this.optionObj.form.size = num;
+        config.form.size = num;
       }
       this.debouncedGetData();
     },
@@ -642,6 +682,10 @@ export default {
         data.isSupportDeliver = true;
       }
       data.sortColumns = this.sortColumns;
+      // 未匹配订单车辆 tab
+      if (this.activeName === 'unmatchedOrder') {
+        data.storeInventoryLedgerTab = 60;
+      }
       return data;
     },
     async fetchOptions (code) {
