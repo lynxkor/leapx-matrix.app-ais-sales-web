@@ -24,7 +24,7 @@
           <el-button v-if="canAddSoldPlateInfo && form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
           <el-button v-if="canVehicleAttribute && form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>-->
-          <el-button v-if="form.status === 0" size="small" :loading="submitLoading" @click="handleSubmit">提交</el-button>
+          <el-button v-if="canVehicleSubmit && form.status === 0" size="small" :loading="submitLoading" @click="handleSubmit">提交</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleCancel">作废</el-button>-->
 <!--          <el-button v-if="form.status === 1" size="small" @click="handleRevoke">撤回</el-button>-->
         </template>
@@ -811,6 +811,7 @@ export default {
     initPermissions () {
       this.canAddSoldPlateInfo = this.permissions.has(`${this.moduleKey}-addSoldPlateInfo`);
       this.canVehicleAttribute = this.permissions.has(`${this.moduleKey}-vehicleAttribute`);
+      this.canVehicleSubmit = this.permissions.has(`${this.moduleKey}-submit`);
     },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
