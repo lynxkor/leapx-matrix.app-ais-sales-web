@@ -127,6 +127,20 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="缴定金时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.paymentTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="初审人">
           <el-input v-model="form.preApproveUser" placeholder="请输入" clearable/>
         </el-form-item>
@@ -283,6 +297,7 @@ const defaultForm = {
   cateCode: '',
   area: [],
   submitTimeRange: null,
+  paymentTimeRange: null,
   preApproveUser: '',
   preApproveTimeRange: null,
   approveUser: '',
@@ -673,6 +688,12 @@ export default {
         delete data.finalApproveTimeRange;
         data.finalApproveTimeStart = this.form.finalApproveTimeRange[0];
         data.finalApproveTimeEnd = this.form.finalApproveTimeRange[1];
+      }
+      // 缴定金时间
+      if (this.form.paymentTimeRange && this.form.paymentTimeRange.length > 1) {
+        delete data.paymentTimeRange;
+        data.paymentTimeStart = this.form.paymentTimeRange[0];
+        data.paymentTimeEnd = this.form.paymentTimeRange[1];
       }
       if (this.selectionList.length > 0) {
         data.ids = this.selectionList.map(item => item.id);
