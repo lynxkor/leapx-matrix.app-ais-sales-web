@@ -6,13 +6,10 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="180px"
+      label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="申请编号">
-        <tag-input v-model="form.changeApplyCodeList" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="商城订单编号"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="商城订单号">
         <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="订单销售门店">
@@ -27,7 +24,19 @@
           placeholder="请选择"
         />
       </el-form-item>
+      <el-form-item label="原购车人手机号码">
+        <tag-input v-model="form.originalBuyerPhoneList" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="门店整车订单" v-show="this.visibleCount === 3 || show">
+        <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
+      </el-form-item>
       <template v-if="show">
+      <el-form-item label="申请编号" v-show="this.visibleCount === 3 || show">
+        <tag-input v-model="form.changeApplyCodeList" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="变更后购车人手机号码" v-show="this.visibleCount === 3 || show">
+        <tag-input v-model="form.newBuyerPhoneList" placeholder="请输入" />
+      </el-form-item>
         <el-form-item label="申请状态">
           <fetch-select
             :request="fetchOptions"
@@ -39,12 +48,6 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="原购车人手机号码">
-          <tag-input v-model="form.originalBuyerPhoneList" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="变更后购车人手机号码">
-          <tag-input v-model="form.newBuyerPhoneList" placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="变更原因">
           <fetch-select
             v-bind="selectReasonOptions"
@@ -52,32 +55,14 @@
             v-model="form.changeReasonCode"
           />
         </el-form-item>
-        <el-form-item label="缴定金时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.paymentTimeRange"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="handlePaymentTimeChange"
-          />
-        </el-form-item>
-        <el-form-item label="交车时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.deliveryTimeRange"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="handleDeliveryTimeChange"
+        <el-form-item label="变更类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_order_change_type"
+            v-model="form.changeType"
+            placeholder="请选择"
+            clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="基本车型">
@@ -92,21 +77,36 @@
             remote
           />
         </el-form-item>
-        <el-form-item label="变更类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vehretail_order_change_type"
-            v-model="form.changeType"
-            placeholder="请选择"
-            clearable
-            filterable
+        <el-form-item label="缴定金日期">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.paymentTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="handlePaymentTimeChange"
+          />
+        </el-form-item>
+        <el-form-item label="交车日期">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.deliveryTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="handleDeliveryTimeChange"
           />
         </el-form-item>
         <el-form-item label="变更说明">
           <el-input v-model="form.changeExplain" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="门店整车订单">
-          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action
