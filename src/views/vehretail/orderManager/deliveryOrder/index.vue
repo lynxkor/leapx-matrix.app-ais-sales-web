@@ -37,11 +37,23 @@
           />
         </el-form-item>
         <el-form-item label="订单交付顾问">
-          <el-input
-            placeholder="请输入"
-            v-model="form.deliveryAdvisorName"
+          <el-select
+            v-model="form.deliveryUserId"
+            filterable
             clearable
-          />
+            remote
+            :remote-method="(query) => handleDeliveryUserSearch(query)"
+            value-key="userId"
+            placeholder="请先选择交付门店"
+            @clear="form.deliveryUserId = ''"
+          >
+            <el-option
+              v-for="item in deliveryUserOptions"
+              :key="item.userId"
+              :label="item.username"
+              :value="item.userId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="订单销售门店">
           <fetch-select
@@ -139,6 +151,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getDetailDecryptField } from '@/api/vehretail/orderManager/deliveryOrder/index';
+import { engineerList } from '@/libs/api/common';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -158,9 +171,11 @@ const defaultForm = {
   status: '',
   vinList: [],
   vehicleModelName: '',
-  deliveryAdvisorName: '',
+  deliveryUserId: '',
   salesStoreName: '',
   deliveryStoreName: '',
+  saleDealerCode: '',
+  deliveryDealerCode: '',
   carBuyerParams: '',
   appointmentTime: '',
   createTime: '',
@@ -199,6 +214,7 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
+      deliveryUserOptions: [],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -221,6 +237,29 @@ export default {
         getServiceDealer: async (query) => {
           return await listOrgStoreInfo({ keyword: query, isSupportDeliver: true });
         }
+      },
+      // 交付门店变更时清空已选交付顾问
+      onDeliveryDealerChange (val) {
+        this.form.deliveryDealerCode = val;
+        this.form.deliveryUserId = '';
+        this.deliveryUserOptions = [];
+      },
+      // 交付顾问远程搜索
+      async handleDeliveryUserSearch (query) {
+        const dealerCode = this.$store.state.user.userInfo?.orgPostUserList[0]?.orgCode;
+        if (!dealerCode) {
+          this.deliveryUserOptions = [];
+          return;
+        }
+        const res = await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [dealerCode] });
+        const list = res?.data || res || [];
+        // 若已选中项不在返回结果中，回填一条带名字的不可选项（保持显示）
+        const currentId = this.form.deliveryUserId;
+        const finalList = [...list];
+        if (currentId && !finalList.some(item => String(item.userId) === String(currentId))) {
+          finalList.unshift({ userId: currentId, username: query || currentId });
+        }
+        this.deliveryUserOptions = finalList;
       },
       optionObj: {
         id: 'deliveryOrderTable',
@@ -328,6 +367,7 @@ export default {
     // 提前在 model 上赋值，保证查询时默认带上时间段；展开后 dateranges 挂载也会再次同步）
     const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
     this.form.createTime = [startTime, endTime];
+
     this.getData();
   },
   methods: {
