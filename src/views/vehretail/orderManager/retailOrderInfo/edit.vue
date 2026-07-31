@@ -22,8 +22,8 @@
           <el-button size="small" :loading="printLoading" v-if="canOperateOrder && canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button size="small" :loading="setSpecialMarkLoading" v-if="canSetSpecialRemark" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="canManualLock && form.wholesaleBindStatus !== 1 && this.form.orderStatus === 3" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" :loading="autoLockLoading" v-if="canAutoLock && form.wholesaleBindStatus !== 1 && this.form.orderStatus === 3" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="canManualLock && form.wholesaleBindStatus !== 1 && form.orderStatus === 3" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" :loading="autoLockLoading" v-if="canAutoLock && form.wholesaleBindStatus !== 1 && form.orderStatus === 3" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
