@@ -1128,7 +1128,33 @@ export default {
       });
     },
     // 更改预约时间
-    handleChangeAppointmentTime () {
+    async handleChangeAppointmentTime () {
+      // 1. 校验当前表单是否填写
+      const validateForm = (formRef) => {
+        return new Promise((resolve) => {
+          if (formRef) {
+            formRef.validate(valid => {
+              resolve(valid);
+            });
+          } else {
+            resolve(true);
+          }
+        });
+      };
+      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+        validateForm(this.$refs.ruleForm1),
+        validateForm(this.$refs.ruleForm2)
+      ]);
+      if (!ruleForm1Valid || !ruleForm2Valid) {
+        // 表单校验不通过：若有编辑权限，自动进入编辑模式；否则提示需要更新销售/交付顾问
+        if (this.canAddOrUpdate) {
+          this.isEditing = true;
+          this.$message.warning('请先完善销售/交付顾问等信息后重试');
+        } else {
+          this.$message.error('当前用户没有编辑权限，请联系相关人员更新销售/交付顾问');
+        }
+        return;
+      }
       if (!this.form.appointmentTime) {
         this.$message.warning('当前订单暂无预约时间，请使用「预约交车」功能');
         return;

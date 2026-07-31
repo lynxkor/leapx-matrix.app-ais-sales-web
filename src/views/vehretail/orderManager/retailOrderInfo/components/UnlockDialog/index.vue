@@ -42,7 +42,7 @@
         <el-option label="系统自动匹配批售单" :value="20" />
       </el-select>
     </el-form-item>
-    <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField" :rules=" form.orderHandleType === 10 ? [{ required: true, message: '手动选择现车时，VIN必填', trigger: 'blur' }] : []">
+    <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField" :rules=" form.orderHandleType === 10 || form.unlockReasonCode === 'DJY001' ? [{ required: true, message: '手动选择现车时，VIN必填', trigger: 'blur' }] : []">
       <el-button size="small" type="primary" plain :disabled="form.orderHandleType !== 10 && form.unlockReasonCode !== 'DJY001'" @click="showVinDialog()">选择车辆</el-button>
     </el-form-item>
     <el-form-item label=" " v-if="shouldShowVinField">
