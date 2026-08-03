@@ -239,6 +239,7 @@ export default {
         ...this.selectedRow,
         retailOrderId: this.data.retailOrderId,
         retailOrderCode: this.data.retailOrderCode,
+        materialsCodeList: this.searchForm.materialsCodeList
       };
       manualLock(params).then(res => {
         this.$message.success('车辆选择成功');
