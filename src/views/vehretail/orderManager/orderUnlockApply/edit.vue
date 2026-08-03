@@ -432,7 +432,8 @@
                   ref="attachment"
                   configCode="mcs_unstockvin"
                   attachType="附件资料"
-                  :readonly="!canEditing"
+                  @before-upload-click="handleBeforeClick"
+                  :readonly="form.applyStatus === '1040' || form.applyStatus === '1010'"
                 />
               </div>
             </div>
@@ -665,6 +666,14 @@ export default {
     }
   },
   methods: {
+    handleBeforeClick ({ allow, openFileDialog }) {
+      if (!this.canAddOrUpdate) {
+        this.$message.warning('没有编辑权限无法上传');
+        allow(false);
+        return;
+      }
+      allow(true); // 等价于 openFileDialog() 内部会自动调用一次
+    },
     handleUnlkockApplyAudit (data) {
       const ids = data.auditDataList.map(item => item.id) || [];
       let reqParams = {
@@ -678,11 +687,15 @@ export default {
     },
     async handleBatchSubmit () {
       const selectionList = [this.form];
+      console.log('111111', this.$refs);
       // 1) 提交前先校验所有 AisAttachment 组件(必填 / minNum / maxNum)
       const attachmentRefs = Object.values(this.$refs).filter(ref => typeof ref?.validate === 'function');
+      console.log('attachmentRefs', attachmentRefs);
       for (const ref of attachmentRefs) {
+        console.log('ref', ref);
         // eslint-disable-next-line no-await-in-loop
         const ok = await ref.validate();
+        console.log('ok', ok);
         if (!ok) {
           // 校验失败已在 AisAttachment 内弹错,直接阻断,不弹确认框
           return;
