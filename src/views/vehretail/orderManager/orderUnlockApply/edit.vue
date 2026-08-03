@@ -433,7 +433,7 @@
                   configCode="mcs_unstockvin"
                   attachType="附件资料"
                   @before-upload-click="handleBeforeClick"
-                  :readonly="form.applyStatus === '1040' || form.applyStatus === '1010'"
+                  :readonly="canReadonly"
                 />
               </div>
             </div>
@@ -558,6 +558,9 @@ export default {
     canAudit () {
       return this.form.applyStatus === 1020 &&
         this.permissions.has(`${this.moduleKey}-audit`);
+    },
+    canReadonly () {
+      return this.form.applyStatus !== 1010 && this.form.applyStatus !== 1040;
     },
   },
   watch: {
