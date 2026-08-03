@@ -189,6 +189,7 @@ export default {
     // 查询
     handleSearch () {
       this.currentPage = 1;
+      this.selectedRow = null;
       this.loadData();
     },
 
