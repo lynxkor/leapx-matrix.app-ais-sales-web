@@ -243,6 +243,8 @@ export default {
       };
       manualLock(params).then(res => {
         this.$message.success('车辆选择成功');
+        // 提交成功后通知父组件，由父组件决定是否刷新详情等
+        this.$emit('submitted');
         this.close();
       }).catch(() => {}).finally(() => {
         this.confirmLoading = false;
