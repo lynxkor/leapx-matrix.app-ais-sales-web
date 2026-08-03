@@ -116,7 +116,8 @@
                     type="datetime"
                     v-model="form.endTime"
                      value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="请选日期"
+                    :picker-options="pickerOptions"
+                    placeholder="请选择当前时间之后的日期"
                   />
                 </el-form-item>
                  <el-form-item label="备注（说明）：">
@@ -431,6 +432,10 @@ export default {
         return callback(new Error('请选择截止日期'));
       }
 
+      if (new Date(this.form.endTime).getTime() <= Date.now()) {
+        return callback(new Error('请选择当前时间之后的日期！'));
+      }
+
       // 2. 转换为时间戳（兼容日期/日期时间格式）
       const getTimeStamp = (dateStr) => {
         if (!dateStr) return 0;
@@ -438,11 +443,6 @@ export default {
       };
       const effstartTime = getTimeStamp(startTime);
       const effendTime = getTimeStamp(endTime);
-      // 当日时间戳（23:59:59）：避免选当日提示超限
-      const todayEnd = new Date();
-      todayEnd.setHours(0, 0, 0, 0);
-      // const todayEndTime = todayEnd.getTime();
-
       // 3. 校验开始日期 ≤ 截止日期
       if (startTime && effstartTime > effendTime) {
         return callback(new Error('开始日期不能晚于截止日期'));
@@ -479,6 +479,13 @@ export default {
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
+      pickerOptions: {
+        disabledDate (time) {
+          // time 是日期面板渲染的日期零点
+          // new Date() 获取当前实时时间
+          return time.getTime() < Date.now();
+        }
+      },
       columns: [
         {
           field: 'activityDetailCode',
