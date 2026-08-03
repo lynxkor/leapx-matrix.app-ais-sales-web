@@ -365,6 +365,7 @@ export default {
 
       // 显示成功消息
       this.$message.success('物料选择成功');
+      this.$emit('confirm', this.selectedRow);
 
       // 关闭对话框
       this.close();
