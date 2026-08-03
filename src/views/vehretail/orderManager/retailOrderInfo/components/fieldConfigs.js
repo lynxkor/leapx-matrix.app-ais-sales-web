@@ -255,7 +255,7 @@ export const orderCancellationRecordDisplayFields = [
   { key: 'creatorName', label: '申请人' },
   { key: 'orderRefundTypeLabel', label: '退订方式' },
   { key: 'cateName', label: '退订原因分类' },
-  { key: 'orderCancelDescp', label: '退订原因说明' }
+  { key: 'refundReason', label: '退订原因说明' }
 ];
 
 // 订单收款记录字段配置

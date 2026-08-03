@@ -19,6 +19,13 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="业务标识编号">
+        <tag-input
+          placeholder="请输入"
+          v-model="form.bizNoList"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="事件类型">
         <fetch-select
           :options="eventTypeOptions"
@@ -43,31 +50,24 @@
           multiple
         />
       </el-form-item>
-      <el-form-item label="执行状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="event_execute_result_enum"
-          v-model="form.executeResultList"
-          placeholder="请选择"
-          clearable
-          filterable
-          multiple
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="执行状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="event_execute_result_enum"
+            v-model="form.executeResultList"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
+        </el-form-item>
         <el-form-item label="事件场景">
           <el-input
             placeholder="请输入"
             v-model="form.scene"
             clearable
             filterable
-          />
-        </el-form-item>
-        <el-form-item label="业务标识编号">
-          <tag-input
-            placeholder="请输入"
-            v-model="form.bizNoList"
-            clearable
           />
         </el-form-item>
         <el-form-item label="业务关联单据">
@@ -133,6 +133,9 @@
             <el-button v-if="canDelete" size="small" @click="handleBatchExecute" :disabled="selectionList.length === 0">同步重试</el-button>
             <el-button v-if="canDelete" size="small" @click="handleBatchExecuteAsync" :disabled="selectionList.length === 0">异步重试</el-button>
             <el-button v-if="canDelete" size="small" @click="handleBatchCancel" :disabled="selectionList.length === 0">取消任务</el-button>
+            <el-button v-if="canDelete" size="small" @click="handleBatchCompleteRepeat" :disabled="selectionList.length === 0">已完成状态重试</el-button>
+            <el-button v-if="canDelete" size="small" @click="handleCancelRevert" :disabled="selectionList.length === 0">取消状态恢复</el-button>
+            <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
 
     <!-- 表格 -->
@@ -163,21 +166,23 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
+  cancelRevert,
   deleteItem,
   findEventTypeList,
   findThirdTargetPlatformList,
   getList,
   manualCancel,
   manualExecute,
-  manualExecuteAsync
+  manualExecuteAsync, manualExecuteRepeatAsync
 } from '@/api/vehretail/event/eventNotifyTask';
-import { getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput/index.vue';
+import { downloadExcel } from '@/libs/utils';
 
 const defaultForm = {
   bizNo: '',
@@ -221,6 +226,7 @@ export default {
       thirdTargetPlatformOptions: [],
       show: false,
       loading: false,
+      exportLoading: false,
       clickItemId: '',
       optionObj: {
         id: 'eventNotifyTaskTable',
@@ -258,6 +264,10 @@ export default {
           { props: 'target', label: '系统平台编码', visible: true, width: 150 },
           { props: 'targetDesc', label: '系统平台', visible: true, width: 150 },
           { props: 'failedCount', label: '失败次数', visible: true, width: 100 },
+          { props: 'dataParam', label: '数据参数快照', visible: true, width: 100 },
+          { props: 'failedReason', label: '失败原因', visible: true, width: 100 },
+          { props: 'extend1', label: '拓展字段1', visible: true, width: 100 },
+          { props: 'extend2', label: '拓展字段2', visible: true, width: 100 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           { props: 'updateTime', label: '更新时间', visible: false, width: 180 },
           { props: 'failedReason', label: '失败原因', visible: true, width: 300 },
@@ -303,6 +313,39 @@ export default {
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
+    },
+    exportExcel () {
+      this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
+      exportTable({
+        businessType: '事件管理',
+        dataFetchPath: this.form.systemPrefix + '/web/task/event/page',
+        reqParams,
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, '事件管理.xlsx');
+          } catch (error) {
+            this.$message({
+              type: 'error',
+              message: '文件导出失败'
+            });
+          }
+        } else {
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelTask', '_blank'),
+            { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
+          );
+        }
+      }).finally(() => {
+        this.exportLoading = false;
+      });
     },
     getData () {
       this.loading = true;
@@ -470,6 +513,32 @@ export default {
       const ids = this.selectionList.map(item => item.id);
       manualCancel({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('取消成功');
+        this.getData();
+      });
+    },
+    handleBatchCompleteRepeat () {
+      // 检查所选记录
+      const invalidRecords = this.selectionList.filter(item => !(item.executeResult === 8 || item.executeResult === 9));
+      if (invalidRecords.length > 0) {
+        this.$message.warning('只允许重复执行已经完成或已取消的任务！');
+        return;
+      }
+      const ids = this.selectionList.map(item => item.id);
+      manualExecuteRepeatAsync({ idList: ids }, this.form.systemPrefix).then(res => {
+        this.$message.success('重试成功请稍后刷新查看任务状态');
+        this.getData();
+      });
+    },
+    handleCancelRevert () {
+      // 检查所选记录
+      const invalidRecords = this.selectionList.filter(item => item.executeResult !== 9);
+      if (invalidRecords.length > 0) {
+        this.$message.warning('只允许恢复手动取消的任务！');
+        return;
+      }
+      const ids = this.selectionList.map(item => item.id);
+      cancelRevert({ idList: ids }, this.form.systemPrefix).then(res => {
+        this.$message.success('恢复成功');
         this.getData();
       });
     },

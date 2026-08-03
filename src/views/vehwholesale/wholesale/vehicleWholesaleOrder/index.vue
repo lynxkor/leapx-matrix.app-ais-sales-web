@@ -396,7 +396,6 @@
           ref="warehouseTable"
           :data="warehouseList"
           :highlight-current-row="true"
-          @row-click="handleWarehouseSelect"
           border
           size="medium"
           max-height="400px"
@@ -646,7 +645,7 @@ export default {
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200, sortable: true },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200, sortable: true },
           { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'vin', label: '配车VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'vin', label: '配车VIN码', visible: true, width: 180 }, // , buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }]
           { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },

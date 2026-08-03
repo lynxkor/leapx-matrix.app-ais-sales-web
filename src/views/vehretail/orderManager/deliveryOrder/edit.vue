@@ -10,7 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.status !== 7 && form.status !== 99"
+        :showEditBtn="form && form.status !== 7 && form.status !== 99"
         :key="reloadKey"
       >
         <template #status>
@@ -20,21 +20,21 @@
         <template #extraButtons>
           <!-- 交车状态： 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废 -->
           <!-- deliveryConfirmStatus 交车确认单状态 5-待生成 10-已生成待签署 15-已签署 99-已失效 -->
-          <el-button v-if="canAppointment && form.status === 1" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
-          <el-button v-if="canDeliveryConfirm && form.status === 5 && (form.deliveryConfirmStatus === 5 || form.deliveryConfirmStatus === 10)" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
-          <el-button v-if="canChangeAppointmentTime && form.status === 4" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
-          <el-button v-if="canCancelOrderRights && form.status === 4" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
-          <el-button v-if="canRevertCancelOrderRights && form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
-          <el-button v-if="canAddPaymentRecord && form.status === 4" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
-          <el-button v-if="canConfirmPayment && form.status === 4" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
-          <el-button v-if="canDeliveryConfirmPush && form.status === 4 && form.deliveryConfirmPdfUrl" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
-          <el-button v-if="canDeliveryConfirmResign && form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
-          <el-button v-if="canViewDeliveryConfirm && form.deliveryConfirmStatus === 15 && form.status !== 99" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
-          <el-button v-if="canUploadInvoice && form.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
-          <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
-          <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
-          <el-button v-if="canPushDeliveryActive && form.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
-          <el-button v-if="canCalculateDeliveryAmount && form.status === 4" size="small" :loading="buttonLoading['calculateDeliveryAmount']" @click="handleCalculateDeliveryAmount">计算尾款</el-button>
+          <el-button v-if="canAppointment && form?.status === 1" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
+          <el-button v-if="canDeliveryConfirm && form?.status === 5 && (form?.deliveryConfirmStatus === 5 || form?.deliveryConfirmStatus === 10)" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button v-if="canChangeAppointmentTime && form?.status === 4" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
+          <el-button v-if="canCancelOrderRights && form?.status === 4" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
+          <el-button v-if="canRevertCancelOrderRights && form?.status === 4 && form?.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
+          <el-button v-if="canAddPaymentRecord && form?.status === 4" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
+          <el-button v-if="canConfirmPayment && form?.status === 4" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button v-if="canDeliveryConfirmPush && form?.status === 4 && form?.deliveryConfirmPdfUrl" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
+          <el-button v-if="canDeliveryConfirmResign && form?.status !== 7 && form?.status !== 99 && form?.deliveryConfirmStatus === 15" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button v-if="canViewDeliveryConfirm && form?.deliveryConfirmStatus === 15 && form?.status !== 99" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <el-button v-if="canUploadInvoice && form?.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
+          <el-button v-if="canCancelPayment && form?.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
+          <el-button v-if="canCancelDelivery && form?.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="canPushDeliveryActive && form?.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
+          <el-button v-if="canCalculateDeliveryAmount && form?.status === 4" size="small" :loading="buttonLoading['calculateDeliveryAmount']" @click="handleCalculateDeliveryAmount">计算尾款</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -576,7 +576,6 @@ export default {
     },
     'form.retailOrderCode': {
       handler (val) {
-        console.log('[edit.vue] retailOrderCode changed to:', val);
         if (val && this.$refs.paymentRecordTable) {
           this.$refs.paymentRecordTable.refresh();
         }
@@ -1129,7 +1128,33 @@ export default {
       });
     },
     // 更改预约时间
-    handleChangeAppointmentTime () {
+    async handleChangeAppointmentTime () {
+      // 1. 校验当前表单是否填写
+      const validateForm = (formRef) => {
+        return new Promise((resolve) => {
+          if (formRef) {
+            formRef.validate(valid => {
+              resolve(valid);
+            });
+          } else {
+            resolve(true);
+          }
+        });
+      };
+      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+        validateForm(this.$refs.ruleForm1),
+        validateForm(this.$refs.ruleForm2)
+      ]);
+      if (!ruleForm1Valid || !ruleForm2Valid) {
+        // 表单校验不通过：若有编辑权限，自动进入编辑模式；否则提示需要更新销售/交付顾问
+        if (this.canAddOrUpdate) {
+          this.isEditing = true;
+          this.$message.warning('请先完善销售/交付顾问等信息后重试');
+        } else {
+          this.$message.error('当前用户没有编辑权限，请联系相关人员更新销售/交付顾问');
+        }
+        return;
+      }
       if (!this.form.appointmentTime) {
         this.$message.warning('当前订单暂无预约时间，请使用「预约交车」功能');
         return;

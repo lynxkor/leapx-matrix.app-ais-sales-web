@@ -102,3 +102,19 @@ export function findEventTypeList (systemPrefix) {
 export function findThirdTargetPlatformList (systemPrefix) {
   return api.jsonPost(systemPrefix + prefix + 'findThirdTargetPlatformList');
 }
+
+/**
+ * 手动取消
+ * @param {Object} data
+ */
+export function manualExecuteRepeatAsync (data, systemPrefix) {
+  return api.jsonPost(systemPrefix + prefix + 'manualExecuteRepeatAsync', data);
+}
+
+/**
+ * 手动取消
+ * @param {Object} data
+ */
+export function cancelRevert (data, systemPrefix) {
+  return api.jsonPost(systemPrefix + prefix + 'cancelRevert', data);
+}

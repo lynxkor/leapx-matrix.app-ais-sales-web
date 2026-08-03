@@ -209,7 +209,7 @@
                     {{ form.originalBuyerPhone }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
-                <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
+                <el-form-item label="原购车人证件类型：" prop="originalIdCardTypeLabel">
                   {{ form.originalIdCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
@@ -539,6 +539,7 @@ const defaultForm = {
   originalBuyerName: '',
   originalBuyerPhone: '',
   originalIdCardType: null,
+  originalIdCardTypeLabel: '',
   originalIdCardNo: '',
   originalAgentName: '',
   originalSaleDealerCode: '',
@@ -1133,6 +1134,7 @@ export default {
         this.form.originalBuyerName = '';
         this.form.originalBuyerPhone = '';
         this.form.originalIdCardType = null;
+        this.form.originalIdCardTypeLabel = '';
         this.form.originalIdCardNo = '';
         this.form.originalAgentName = '';
         this.form.originalSaleDealerCode = '';
@@ -1158,6 +1160,7 @@ export default {
       this.form.originalBuyerName = selectedOption.carBuyerName;
       this.form.originalBuyerPhone = selectedOption.carBuyerPhone;
       this.form.originalIdCardType = selectedOption.idCardType;
+      this.form.originalIdCardTypeLabel = selectedOption.idCardTypeLabel;
       this.form.originalIdCardNo = selectedOption.idCardNo;
       this.form.originalAgentName = selectedOption.agentName;
       this.form.originalSaleDealerCode = selectedOption.saleDealerCode;

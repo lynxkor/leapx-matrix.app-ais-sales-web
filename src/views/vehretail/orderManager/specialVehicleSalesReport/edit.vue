@@ -619,6 +619,7 @@ export default {
       // 按钮权限
       canAddSoldPlateInfo: false, // 添加上牌信息
       canVehicleAttribute: false, // 调整车辆属性
+      canVehicleSubmit: false, // 车辆提交
       loading: false,
       submitLoading: false,
       uploadOperate: false,

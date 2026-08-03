@@ -9,10 +9,36 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="商城订单号">
+        <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" clearable/>
+      </el-form-item>
+      <el-form-item label="销售门店">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.saleDealerCode"
+          :remote-method="saleDealerSearch"
+          value-key="storeCode"
+          label-key="storeName"
+          placeholder="请选择"
+        />
+      </el-form-item>
+      <el-form-item label="购车人手机号">
+        <el-input v-model="form.buyerPhone" placeholder="请输入" clearable/>
+      </el-form-item>
+      <el-form-item label="整车订单号">
+        <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" clearable/>
+      </el-form-item>
+
+      <template v-if="show">
       <el-form-item label="退订申请单号">
         <tag-input v-model="form.refundCodeList" placeholder="请输入" clearable/>
       </el-form-item>
-      <el-form-item label="申请状态"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="购车人姓名">
+        <el-input v-model="form.buyerName" placeholder="请输入" clearable/>
+      </el-form-item>
+      <el-form-item label="申请单状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vehretail_order_change_apply_status"
@@ -23,14 +49,39 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="退订原因分类" v-show="this.visibleCount === 3 || show">
+      <el-form-item label="大区" v-show="this.visibleCount === 3 || show">
         <fetch-select
-          v-bind="selectCategoryOptions"
-          :remote-method="changeCategorySearch"
-          v-model="form.cateCode"
+          filterable
+          clearable
+          remote
+          v-model="form.regionCode"
+          :remote-method="remoteMethods.region"
+          value-key="orgCode"
+          label-key="orgName"
         />
       </el-form-item>
-      <template v-if="show">
+      <el-form-item label="省市区" v-show="this.visibleCount === 3 || show">
+        <el-cascader
+          placeholder="请选择省市区"
+          v-model="form.area"
+          :props="orgProps"
+          :options="areaOptions"
+          filterable
+          clearable>
+        </el-cascader>
+      </el-form-item>
+      <el-form-item label="基础车型" v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :remote-method="remoteMethods.model"
+          v-model="form.modelId"
+          placeholder="请选择"
+          clearable
+          label-key="name"
+          value-key="id"
+          filterable
+          remote
+        />
+      </el-form-item>
         <el-form-item label="定金退回方式" prop="depositRefundType">
           <fetch-select
             :request="fetchOptions"
@@ -41,61 +92,11 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="购车人姓名">
-          <el-input v-model="form.buyerName" placeholder="请输入"  clearable/>
-        </el-form-item>
-        <el-form-item label="购车人手机号">
-          <el-input v-model="form.buyerPhone" placeholder="请输入"  clearable/>
-        </el-form-item>
-        <el-form-item label="销售门店">
+        <el-form-item label="退订原因分类">
           <fetch-select
-            filterable
-            clearable
-            remote
-            v-model="form.saleDealerCode"
-            :remote-method="saleDealerSearch"
-            value-key="storeCode"
-            label-key="storeName"
-            placeholder="请选择"
-          />
-        </el-form-item>
-        <el-form-item label="基础车型">
-          <fetch-select
-            :remote-method="remoteMethods.model"
-            v-model="form.modelId"
-            placeholder="请选择"
-            clearable
-            label-key="name"
-            value-key="id"
-            filterable
-            remote
-          />
-        </el-form-item>
-        <el-form-item label="商城订单编号">
-          <tag-input v-model="form.mallOrderCodeList" placeholder="请输入"  clearable/>
-        </el-form-item>
-        <el-form-item label="整车订单号">
-          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入"  clearable/>
-        </el-form-item>
-        <el-form-item label="省市区">
-          <el-cascader
-            placeholder="请选择省市区"
-            v-model="form.area"
-            :props="orgProps"
-            :options="areaOptions"
-            filterable
-            clearable>
-          </el-cascader>
-        </el-form-item>
-        <el-form-item label="大区">
-          <fetch-select
-            filterable
-            clearable
-            remote
-            v-model="form.regionCode"
-            :remote-method="remoteMethods.region"
-            value-key="orgCode"
-            label-key="orgName"
+            v-bind="selectCategoryOptions"
+            :remote-method="changeCategorySearch"
+            v-model="form.cateCode"
           />
         </el-form-item>
         <el-form-item label="申请时间">
@@ -127,8 +128,28 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="缴定金时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.paymentTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="初审人">
           <el-input v-model="form.preApproveUser" placeholder="请输入" clearable/>
+        </el-form-item>
+        <el-form-item label="审核人">
+          <el-input v-model="form.approveUser" placeholder="请输入" clearable/>
+        </el-form-item>
+        <el-form-item label="终审人">
+          <el-input v-model="form.finalApproveUser" placeholder="请输入" clearable/>
         </el-form-item>
         <el-form-item label="初审时间">
           <el-date-picker
@@ -144,9 +165,6 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="审核人">
-          <el-input v-model="form.approveUser" placeholder="请输入" clearable/>
-        </el-form-item>
         <el-form-item label="审核时间">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
@@ -160,9 +178,6 @@
             end-placeholder="结束日期"
             clearable
           />
-        </el-form-item>
-        <el-form-item label="终审人">
-          <el-input v-model="form.finalApproveUser" placeholder="请输入" clearable/>
         </el-form-item>
         <el-form-item label="终审时间">
           <el-date-picker
@@ -283,6 +298,7 @@ const defaultForm = {
   cateCode: '',
   area: [],
   submitTimeRange: null,
+  paymentTimeRange: null,
   preApproveUser: '',
   preApproveTimeRange: null,
   approveUser: '',
@@ -673,6 +689,12 @@ export default {
         delete data.finalApproveTimeRange;
         data.finalApproveTimeStart = this.form.finalApproveTimeRange[0];
         data.finalApproveTimeEnd = this.form.finalApproveTimeRange[1];
+      }
+      // 缴定金时间
+      if (this.form.paymentTimeRange && this.form.paymentTimeRange.length > 1) {
+        delete data.paymentTimeRange;
+        data.paymentTimeStart = this.form.paymentTimeRange[0];
+        data.paymentTimeEnd = this.form.paymentTimeRange[1];
       }
       if (this.selectionList.length > 0) {
         data.ids = this.selectionList.map(item => item.id);

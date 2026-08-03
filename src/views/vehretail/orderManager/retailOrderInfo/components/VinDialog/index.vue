@@ -78,7 +78,7 @@ const defaultSearchForm = {
   // 固定筛选条件
   vechicleStatusList: ['11', '12', '20'], // 已入门店库/在途/待提交 PDI
   lockStatus: '0', // 未锁定
-  reservationStatusList: ['30'], // 正常车辆
+  reservationStatusList: ['1'], // 正常车辆
   materialsCodeList: [] // 可配物料编码列表
 };
 
@@ -189,6 +189,7 @@ export default {
     // 查询
     handleSearch () {
       this.currentPage = 1;
+      this.selectedRow = null;
       this.loadData();
     },
 
