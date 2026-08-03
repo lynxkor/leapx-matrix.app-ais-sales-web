@@ -396,7 +396,6 @@
           ref="warehouseTable"
           :data="warehouseList"
           :highlight-current-row="true"
-          @row-click="handleWarehouseSelect"
           border
           size="medium"
           max-height="400px"

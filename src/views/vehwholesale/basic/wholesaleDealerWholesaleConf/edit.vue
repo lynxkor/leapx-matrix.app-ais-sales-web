@@ -114,17 +114,11 @@
                   />
                 </el-form-item>
                 <el-form-item label="母公司：" prop="dealerParentOrgCode">
-                  <fetch-select
-                    filterable
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerParentOrgName"
                     clearable
-                    remote
-                    v-model="form.dealerParentOrgCode"
-                    :params="form.dealerParentOrgName"
-                    :remote-method="getDealerParentOrgList"
-                    value-key="companyCode"
-                    label-key="companyName"
-                    @change="(val, record) => {form.dealerParentOrgName = record?.companyName || ''}"
-                    :disabled="!!_id"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -310,6 +304,19 @@ export default {
         this.form.provinceName = selectedOption?.provinceName || '';
         this.form.cityName = selectedOption?.cityName || '';
         this.form.cityCode = selectedOption?.cityCode || '';
+        this.form.dealerParentOrgCode = selectedOption?.parentCompanyCode || '';
+        this.form.dealerParentOrgName = selectedOption?.parentCompanyName || '';
+      } else {
+        this.form.dealerCode = '';
+        this.form.dealerName = '';
+        this.form.regionId = '';
+        this.form.regionName = '';
+        this.form.provinceCode = '';
+        this.form.provinceName = '';
+        this.form.cityName = '';
+        this.form.cityCode = '';
+        this.form.dealerParentOrgCode = '';
+        this.form.dealerParentOrgName = '';
       }
     },
     getDefautlForm () {
