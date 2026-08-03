@@ -312,6 +312,14 @@ export default {
         this.form.cityCode = selectedOption?.cityCode || '';
         this.form.dealerParentOrgCode = selectedOption?.parentCompanyCode || '';
         this.form.dealerParentOrgName = selectedOption?.parentCompanyName || '';
+        // const dealerParentOrgName = selectedOption?.parentCompanyName || '';
+        // if (dealerParentOrgName) {
+        //   const company = this.getDealerParentOrgList(dealerParentOrgName);
+        //   if (company) {
+        //     this.form.dealerParentOrgCode = selectedOption?.parentCompanyCode || '';
+        //     this.form.dealerParentOrgName = company.companyName || '';
+        //   }
+        // }
       }
     },
     getDefautlForm () {
