@@ -310,6 +310,8 @@ export default {
         this.form.provinceName = selectedOption?.provinceName || '';
         this.form.cityName = selectedOption?.cityName || '';
         this.form.cityCode = selectedOption?.cityCode || '';
+        this.form.dealerParentOrgCode = selectedOption?.parentCompanyCode || '';
+        this.form.dealerParentOrgName = selectedOption?.parentCompanyName || '';
       }
     },
     getDefautlForm () {
