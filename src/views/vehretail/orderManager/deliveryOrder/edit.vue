@@ -323,7 +323,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-link
-                v-if="form.status === 4 && canDeletePaymentRecord(row)"
+                v-if="form.status === 4 && canDeletePaymentRecord(row) && canRetailOrderPayRecordDelete"
                 type="danger"
                 :underline="false"
                 @click="handleDeletePaymentRecord(row)"
@@ -597,6 +597,8 @@ export default {
       buttonLoading: {},
       // 权限控制
       canAppointment: false, // 预约交车
+      // 权限 Set 缓存（从 aisPageSource 转换而来，O(1) 查询；懒初始化）
+      permissionSet: null,
       canAddOrUpdate: false, // 编辑表单权限
       canDeliveryConfirm: false, // 交车确认单生成
       canChangeAppointmentTime: false, // 更改预约时间
@@ -818,23 +820,33 @@ export default {
   methods: {
     getPaymentRecordList,
     // 初始化权限
+    // 注意：不要用 this.permissions，因为 permissions mixin 会按 moduleKey 前缀过滤，
+    // 跨模块的权限（如 AISVR-retailOrderPayRecord-delete）会被过滤掉导致查不到。
     initPermissions () {
-      this.canAppointment = this.permissions.has(`${this.moduleKey}-appointment`);
-      this.canAddOrUpdate = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
-      this.canDeliveryConfirm = this.permissions.has(`${this.moduleKey}-deliveryConfirm`);
-      this.canChangeAppointmentTime = this.permissions.has(`${this.moduleKey}-changeAppointmentTime`);
-      this.canCancelOrderRights = this.permissions.has(`${this.moduleKey}-cancelOrderRights`);
-      this.canRevertCancelOrderRights = this.permissions.has(`${this.moduleKey}-revertCancelOrderRights`);
-      this.canAddPaymentRecord = this.permissions.has(`${this.moduleKey}-addPaymentRecord`);
-      this.canConfirmPayment = this.permissions.has(`${this.moduleKey}-confirmPayment`);
-      this.canDeliveryConfirmPush = this.permissions.has(`${this.moduleKey}-deliveryConfirmPush`);
-      this.canDeliveryConfirmResign = this.permissions.has(`${this.moduleKey}-deliveryConfirmResign`);
-      this.canViewDeliveryConfirm = this.permissions.has(`${this.moduleKey}-viewDeliveryConfirm`);
-      this.canUploadInvoice = this.permissions.has(`${this.moduleKey}-uploadInvoice`);
-      this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
-      this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
-      this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
-      this.canCalculateDeliveryAmount = this.permissions.has(`${this.moduleKey}-calculateDeliveryAmount`);
+      // 懒初始化：aisPageSource 在登录后基本不变，复用 Set 避免每次 .includes() 遍历
+      if (!this.permissionSet) {
+        const arr = this.$store.state.pageSource?.aisPageSource || [];
+        this.permissionSet = new Set(Array.isArray(arr) ? arr : []);
+      }
+      const has = (key) => this.permissionSet.has(key);
+      this.canAppointment = has(`${this.moduleKey}-appointment`);
+      this.canAddOrUpdate = has(`${this.moduleKey}-addOrUpdate`);
+      this.canDeliveryConfirm = has(`${this.moduleKey}-deliveryConfirm`);
+      this.canChangeAppointmentTime = has(`${this.moduleKey}-changeAppointmentTime`);
+      this.canCancelOrderRights = has(`${this.moduleKey}-cancelOrderRights`);
+      this.canRevertCancelOrderRights = has(`${this.moduleKey}-revertCancelOrderRights`);
+      this.canAddPaymentRecord = has(`${this.moduleKey}-addPaymentRecord`);
+      this.canConfirmPayment = has(`${this.moduleKey}-confirmPayment`);
+      this.canDeliveryConfirmPush = has(`${this.moduleKey}-deliveryConfirmPush`);
+      this.canDeliveryConfirmResign = has(`${this.moduleKey}-deliveryConfirmResign`);
+      this.canViewDeliveryConfirm = has(`${this.moduleKey}-viewDeliveryConfirm`);
+      this.canUploadInvoice = has(`${this.moduleKey}-uploadInvoice`);
+      this.canCancelPayment = has(`${this.moduleKey}-cancelPayment`);
+      this.canCancelDelivery = has(`${this.moduleKey}-cancelDelivery`);
+      this.canPushDeliveryActive = has(`${this.moduleKey}-pushDeliveryActive`);
+      this.canCalculateDeliveryAmount = has(`${this.moduleKey}-calculateDeliveryAmount`);
+      // 跨模块权限：从 store 原始数据判断，绕过 mixin 的前缀过滤
+      this.canRetailOrderPayRecordDelete = has('AISVR-retailOrderPayRecord-delete');
     },
     handleSaleUserChange (val, name) {
       if (!val) {

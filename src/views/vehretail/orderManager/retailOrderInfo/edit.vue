@@ -394,7 +394,7 @@
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
           <!-- VIN 选择对话框 -->
-          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
+          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" @submitted="onVinDialogSubmitted" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
           <!-- 购车协议对话框 -->
           <purchase-agreement-dialog
             ref="PurchaseAgreementDialog"
@@ -914,6 +914,10 @@ export default {
       console.log('选中的车辆:', vehicle);
       // 根据实际需求处理选中的车辆数据
       this.$message.success('已选择车辆：' + vehicle.vin);
+    },
+    // vin-dialog 提交成功后回调，重新刷新详情
+    onVinDialogSubmitted () {
+      this.getDetailData();
     },
     // 自动锁车
     handleAutoLockVehicle () {
