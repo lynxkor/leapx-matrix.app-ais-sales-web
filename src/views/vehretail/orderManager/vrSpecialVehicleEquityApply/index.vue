@@ -202,20 +202,6 @@ export default {
             width: 200,
             mask: true,
             getValue: (row) => getDecryptField(row.id, 'vin'),
-            buttons: [{
-              click: (rowIndex, row) => {
-                if (row.vinId) {
-                  // 直接用 then，不会报错
-                  getDecryptField(row.id, 'vin').then(realVin => {
-                    this.navigateToRoute({
-                      path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-                      query: { vin: realVin }
-                    }, true);
-                  });
-                }
-              },
-              type: 'primary'
-            }]
           },
           { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 120 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 180 },
