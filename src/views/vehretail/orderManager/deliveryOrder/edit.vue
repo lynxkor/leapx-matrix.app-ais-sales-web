@@ -912,13 +912,14 @@ export default {
       const finalList = [...list];
 
       // 优先使用 forceDisabledItem（清空回填场景），否则使用 currentId/currentName
+      // userId 统一转 number，保证与接口返回的类型一致，el-select 才能严格匹配到 option
       if (forceDisabledItem) {
         const itemExists = finalList.some(item => String(item.userId) === String(forceDisabledItem.userId));
         if (!itemExists) {
-          finalList.push({ ...forceDisabledItem, disabled: true });
+          finalList.push({ ...forceDisabledItem, userId: Number(forceDisabledItem.userId), disabled: true });
         }
       } else if (currentId && currentName && !exists) {
-        finalList.push({ userId: currentId, username: currentName, disabled: true });
+        finalList.push({ userId: Number(currentId), username: currentName, disabled: true });
       }
 
       this[optionsKey] = finalList;
@@ -946,10 +947,12 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          res.saleUserId = res.saleUserId ? String(res.saleUserId) : '';
-          res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
-          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
-          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
+          // 统一转为 number，与远程搜索返回的 userId 类型保持一致，
+          // 否则 el-select 严格相等匹配不到 option，会只显示 id 不显示姓名
+          res.saleUserId = res.saleUserId ? Number(res.saleUserId) : '';
+          res.deliveryUserId = res.deliveryUserId ? Number(res.deliveryUserId) : '';
+          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? Number(res.deliveryDerivativeUserId) : '';
+          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? Number(res.onSiteDeliveryUserId) : '';
           // 初始化下拉数据（无论是否有值都查询一次，确保下拉有数据）
           this.$nextTick(() => {
             this.handleRemoteSearch('', 'saleUser');
