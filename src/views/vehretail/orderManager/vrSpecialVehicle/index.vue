@@ -195,20 +195,7 @@ export default {
             label: 'VIN',
             visible: true,
             width: 200,
-            fixed: 'left',
-            buttons: [{
-              click: (rowIndex, row) => {
-                if (row.vinId) {
-                  this.navigateToRoute({
-                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-                    query: {
-                      vin: row.vin
-                    }
-                  }, true);
-                }
-              },
-              type: 'primary'
-            }]
+            fixed: 'left'
           },
           { props: 'materialsCode', label: '整车物料码', visible: true, width: 180 },
           { props: 'materialsDesc', label: '整车物料描述', visible: true, width: 200 },

@@ -34,10 +34,10 @@
                   <span class="status-tag link">{{ form.retailOrderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="配车VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link>
+                  {{ form.matchVin }}
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
