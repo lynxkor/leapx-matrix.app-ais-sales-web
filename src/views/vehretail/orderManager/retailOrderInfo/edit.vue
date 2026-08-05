@@ -177,7 +177,7 @@
                     :disabled="!canEditField('deliveryDealerName')"
                   />
                 </el-form-item>
-                <el-form-item label="订单交付顾问：" prop="deliveryUserName">
+                <el-form-item label="订单交付顾问：">
                   <fetch-select
                     filterable
                     clearable
