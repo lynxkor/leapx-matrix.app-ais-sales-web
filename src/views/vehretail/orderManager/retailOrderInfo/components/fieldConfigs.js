@@ -144,17 +144,6 @@ export const financeDisplayFields = [
   { key: 'insuranceSchemeLabel', label: '保险方案' }
 ];
 
-// 期限信息字段配置
-export const termDisplayFields = [
-  { key: 'deliveryNoticeTime', label: '触发交付通知时间' },
-  { key: 'deliveryDelayFlagLabel', label: '是否延期交付' },
-  { key: 'deliveryWithdrawFlagLabel', label: '是否做过交车撤回' },
-  { key: 'statusRollbackFlagLabel', label: '状态是否回退过' },
-  // { key: 'userPickupDeadline', label: '用户提车截止日' },
-  // { key: 'deliveryDelayDays', label: '交付延期天数' },
-  { key: 'rightsEnjoyDate', label: '权益享受日期' }
-];
-
 // 整车订单改配信息字段配置————暂时没有
 export const modificationRecordDisplayFields = [
   { key: 'createTime', label: '操作时间' },
