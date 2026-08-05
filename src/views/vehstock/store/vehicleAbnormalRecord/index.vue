@@ -213,9 +213,9 @@ export default {
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       if (this.activeName === 'fenceCrossed') {
-        this.form.fenceCrossedType = '2';
+        this.form.fenceCrossedType = '50';
       } else if (this.activeName === 'fenceNotCrossed') {
-        this.form.fenceCrossedType = '1';
+        this.form.fenceCrossedType = '30';
       }
       this.sortColumns = [...DEFAULT_SORT_COLUMNS];
       this.getData();
@@ -385,10 +385,10 @@ export default {
         this.onReset();
       } else if (item.name === 'fenceCrossed') {
         this.onReset();
-        this.form.fenceCrossedType = '2';
+        this.form.fenceCrossedType = '50';
       } else if (item.name === 'fenceNotCrossed') {
         this.onReset();
-        this.form.fenceCrossedType = '1';
+        this.form.fenceCrossedType = '30';
       }
     },
   }
