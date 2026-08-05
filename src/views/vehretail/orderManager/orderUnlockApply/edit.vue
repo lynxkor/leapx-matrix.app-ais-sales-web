@@ -688,23 +688,13 @@ export default {
         this.$refs.containerRef.loadDetail();
       });
     },
-    async handleBatchSubmit () {
+    handleBatchSubmit () {
       const selectionList = [this.form];
-      console.log('111111', this.$refs);
-      // 1) 提交前先校验所有 AisAttachment 组件(必填 / minNum / maxNum)
-      const attachmentRefs = Object.values(this.$refs).filter(ref => typeof ref?.validate === 'function');
-      console.log('attachmentRefs', attachmentRefs);
-      for (const ref of attachmentRefs) {
-        console.log('ref', ref);
-        // eslint-disable-next-line no-await-in-loop
-        const ok = await ref.validate();
-        console.log('ok', ok);
-        if (!ok) {
-          // 校验失败已在 AisAttachment 内弹错,直接阻断,不弹确认框
-          return;
-        }
+      const allFiles = this.$refs.attachment.getFileList();
+      if (!allFiles.length) {
+        this.$message.warning('请上传附件');
+        return;
       }
-      // 2) 校验通过,弹窗确认
       this.$confirm('确认提交吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
