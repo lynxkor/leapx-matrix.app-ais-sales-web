@@ -102,7 +102,8 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="配车VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link> -->
+                  {{ form.matchVin }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
@@ -246,7 +247,8 @@
                   {{ form.invoiceAmount }}
                 </el-form-item>
                 <el-form-item label="发票VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link> -->
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="发票合格证号：">
                   {{ form.certificateNo }}
@@ -474,7 +476,8 @@
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.deliveryVin}`" target="_blank">{{ form.deliveryVin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.deliveryVin}`" target="_blank">{{ form.deliveryVin }}</el-link> -->
+                  {{ form.deliveryVin }}
                 </el-form-item>
                 <el-form-item label="交车时间：">
                   {{ form.deliveryTime }}

@@ -143,7 +143,8 @@
                   <el-link type="primary" :href="'/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
-                  <el-link type="primary" :href="'/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + form.vin" target="_blank">{{ form.vin }}</el-link>
+                  <!-- <el-link type="primary" :href="'/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + form.vin" target="_blank">{{ form.vin }}</el-link> -->
+                  {{ form.vin }}
                 </el-form-item>
                     <el-form-item label="整车物料：" prop="materialsCode">
                   <el-link type="primary" :href="'/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode" target="_blank">{{ form.materialsCode }}</el-link>
