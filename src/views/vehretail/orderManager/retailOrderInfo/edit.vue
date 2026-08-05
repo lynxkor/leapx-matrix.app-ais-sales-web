@@ -373,12 +373,7 @@
             :formData="form.finance || {}"
             :fields="financeDisplayFields"
           />
-          <generic-detail-display
-            id="term" class="common-section"
-            :title="'期限信息'"
-            :formData="form"
-            :fields="termDisplayFields"
-          />
+          <term-info-section id="term" class="common-section" :formData="form" />
           <component-table
             v-for="tableConfig in tableConfigs"
             :key="tableConfig.sectionId" class="common-section"
@@ -465,7 +460,6 @@ import {
   wholesaleDisplayFields,
   refundDisplayFields,
   financeDisplayFields,
-  termDisplayFields,
   modificationRecordDisplayFields,
   orderChangeApplicationDisplayFields,
   unlockApplicationRecordDisplayFields,
@@ -478,6 +472,7 @@ import {
 import ComponentTable from '@/libs/components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
+import TermInfoSection from './components/TermInfoSection';
 import { getEnum, loginUserGet, engineerList } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -543,6 +538,7 @@ export default {
     MaterialsDialog,
     VinDialog,
     NavTop,
+    TermInfoSection,
     ComponentTable,
     GenericDetailDisplay,
     EditPageLayout,
@@ -662,7 +658,6 @@ export default {
       wholesaleDisplayFields: wholesaleDisplayFields,
       refundDisplayFields: refundDisplayFields,
       financeDisplayFields: financeDisplayFields,
-      termDisplayFields: termDisplayFields,
       tableConfigs: [
         {
           title: '整车订单改配信息',

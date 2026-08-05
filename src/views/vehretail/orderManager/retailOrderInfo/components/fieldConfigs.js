@@ -92,9 +92,9 @@ export const lockAllocationDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-    paramKey: 'matchVin',
-    paramName: 'vin'
+    // link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+    // paramKey: 'matchVin',
+    // paramName: 'vin'
   },
   { key: 'deliveryVin', label: '交车VIN码' },
   { key: 'deliveryTime', label: '交车时间' },
@@ -117,9 +117,9 @@ export const wholesaleDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-    paramKey: 'matchVin',
-    paramName: 'vin'
+    // link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+    // paramKey: 'matchVin',
+    // paramName: 'vin'
   },
   { key: 'wholesaleOrderStatusLabel', label: '批售订单状态' },
   { key: 'confirmStatusLabel', label: '批售确认状态' },
@@ -142,17 +142,6 @@ export const financeDisplayFields = [
   { key: 'financialOrderStatusLabel', label: '金融订单状态' },
   { key: 'insuranceProgressLabel', label: '保险办理进度' },
   { key: 'insuranceSchemeLabel', label: '保险方案' }
-];
-
-// 期限信息字段配置
-export const termDisplayFields = [
-  { key: 'deliveryNoticeTime', label: '触发交付通知时间' },
-  { key: 'deliveryDelayFlagLabel', label: '是否延期交付' },
-  { key: 'deliveryWithdrawFlagLabel', label: '是否做过交车撤回' },
-  { key: 'statusRollbackFlagLabel', label: '状态是否回退过' },
-  // { key: 'userPickupDeadline', label: '用户提车截止日' },
-  // { key: 'deliveryDelayDays', label: '交付延期天数' },
-  { key: 'rightsEnjoyDate', label: '权益享受日期' }
 ];
 
 // 整车订单改配信息字段配置————暂时没有
