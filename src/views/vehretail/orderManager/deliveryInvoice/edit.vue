@@ -1095,7 +1095,10 @@ export default {
           throw new Error('附件校验未通过');
         }
       }
-      return addOrUpdate({ ...this.form });
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后强制刷新浏览器当前页面
+      window.location.reload();
+      return res;
     },
     // 打开侧边栏
     openPane () {
