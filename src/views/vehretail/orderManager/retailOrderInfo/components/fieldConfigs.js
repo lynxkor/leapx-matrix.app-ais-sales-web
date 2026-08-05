@@ -92,9 +92,9 @@ export const lockAllocationDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-    paramKey: 'matchVin',
-    paramName: 'vin'
+    // link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+    // paramKey: 'matchVin',
+    // paramName: 'vin'
   },
   { key: 'deliveryVin', label: '交车VIN码' },
   { key: 'deliveryTime', label: '交车时间' },
@@ -117,9 +117,9 @@ export const wholesaleDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-    paramKey: 'matchVin',
-    paramName: 'vin'
+    // link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+    // paramKey: 'matchVin',
+    // paramName: 'vin'
   },
   { key: 'wholesaleOrderStatusLabel', label: '批售订单状态' },
   { key: 'confirmStatusLabel', label: '批售确认状态' },
