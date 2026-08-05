@@ -838,7 +838,7 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
+    async submitRequest () {
       if (this.form.id) {
         // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
         const { valid, errors } = validateAttachments({
@@ -850,7 +850,10 @@ export default {
           return Promise.reject(new Error('附件校验未通过'));
         }
       }
-      return addOrUpdate({ ...this.form });
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后强制刷新浏览器当前页面
+      window.location.reload();
+      return res;
     },
     // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
     async loadAttachmentConfig () {
