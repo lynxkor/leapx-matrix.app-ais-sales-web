@@ -897,8 +897,8 @@ export default {
     async loadAttachmentConfig (data) {
       if (this.attachmentConfigLoaded) return;
       let params = {
-        yearTypeName: data.yearTypeName,
-        modelLineld: data.seriesId
+        yearTypeName: data.retailOrderMaterials.yearTypeName,
+        modelLineld: data.retailOrderMaterials.seriesId
       };
       try {
         const configRes = await getByCode({ configCode: 'mcs_vehnetwork', businessData: JSON.stringify(params) });
