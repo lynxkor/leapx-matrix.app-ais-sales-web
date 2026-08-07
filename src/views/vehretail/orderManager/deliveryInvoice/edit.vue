@@ -588,6 +588,7 @@
                 <AisAttachment
                   v-for="(item, index) in attachmentList" :key="index"
                   :businessId="_id"
+                  :businessData="businessData"
                   :ref="'attachment' + index"
                   :configCode="item.configCode"
                   :attachType="item.attachType"
@@ -808,7 +809,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '发票号码：' + this.form.deliveryInvoiceCode;
     },
     canConfirmUpload () {
       return this.form.status === 0 &&
@@ -818,11 +819,11 @@ export default {
   watch: {
     id: {
       handler (val) {
-        if (val && this.$refs.containerRef) {
+        // 首次加载交给 EditBaseContainer.mounted -> loadDetail() 自己处理，避免与子组件挂载竞态造成重复请求
+        if (val && this.attachmentConfigLoaded && this.$refs.containerRef) {
           this.$refs.containerRef.loadDetail();
         }
-      },
-      immediate: true
+      }
     }
   },
   data () {
@@ -837,6 +838,7 @@ export default {
       loading: false,
       submitLoading: false,
       uploadLoading: false,
+      businessData: '',
       uploadLoadingCounter: 0,
       // 车辆属性 1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失
       vehicleAttributeSelector: [
@@ -861,6 +863,7 @@ export default {
       ],
       yes_no_enum: YES_NO_ENUM,
       uploadCheckPassed: false, // 上传校验是否通过
+      attachmentConfigLoaded: false, // 附件配置幂等守卫:仅加载一次
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -894,21 +897,20 @@ export default {
     this.loadAttachmentConfig();
   },
   methods: {
-    // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
-    async loadAttachmentConfig () {
+    async loadAttachmentConfig (data) {
       try {
         const configRes = await getByCode({ configCode: 'mcs_vehnetwork' });
         const detailList = configRes?.detailList || [];
-        this.attachmentList = this.attachmentList.map(item => {
+        // 注意:不要整体重写 attachmentList 引用(否则 AisAttachment 的 :uploadConfig watcher 会触发全部子组件重新初始化),
+        // 仅就地更新每个 item 的字段即可
+        this.attachmentList.forEach(item => {
           const detail = detailList.find(d => d.attachType === item.attachType);
-          if (!detail) return item;
-          return {
-            ...item,
-            required: String(detail.required) === '1',
-            maxNum: Number(detail.maxNum) || 0,
-            minNum: Number(detail.minNum) || 0
-          };
+          if (!detail) return;
+          item.required = String(detail.required) === '1';
+          item.maxNum = Number(detail.maxNum) || 0;
+          item.minNum = Number(detail.minNum) || 0;
         });
+        this.attachmentConfigLoaded = true;
       } catch (e) {
         console.error('附件配置加载失败，沿用本地默认配置:', e);
       }
@@ -1080,7 +1082,14 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          let params = {
+            yearTypeName: res.retailOrderMaterials.yearTypeId,
+            modelLineId: res.retailOrderMaterials.seriesId
+          };
+          this.businessData = JSON.stringify(params);
+          return res;
+        });
       }
     },
     async submitRequest () {
