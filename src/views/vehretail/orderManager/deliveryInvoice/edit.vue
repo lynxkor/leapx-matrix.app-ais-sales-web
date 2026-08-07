@@ -588,6 +588,7 @@
                 <AisAttachment
                   v-for="(item, index) in attachmentList" :key="index"
                   :businessId="_id"
+                  :businessData="businessData"
                   :ref="'attachment' + index"
                   :configCode="item.configCode"
                   :attachType="item.attachType"
@@ -808,7 +809,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '发票号码：' + this.form.deliveryInvoiceCode;
     },
     canConfirmUpload () {
       return this.form.status === 0 &&
@@ -837,6 +838,7 @@ export default {
       loading: false,
       submitLoading: false,
       uploadLoading: false,
+      businessData: '',
       uploadLoadingCounter: 0,
       // 车辆属性 1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失
       vehicleAttributeSelector: [
@@ -892,16 +894,12 @@ export default {
     };
   },
   mounted () {
+    this.loadAttachmentConfig();
   },
   methods: {
     async loadAttachmentConfig (data) {
-      if (this.attachmentConfigLoaded) return;
-      let params = {
-        yearTypeName: data.retailOrderMaterials.yearTypeName,
-        modelLineld: data.retailOrderMaterials.seriesId
-      };
       try {
-        const configRes = await getByCode({ configCode: 'mcs_vehnetwork', businessData: JSON.stringify(params) });
+        const configRes = await getByCode({ configCode: 'mcs_vehnetwork' });
         const detailList = configRes?.detailList || [];
         // 注意:不要整体重写 attachmentList 引用(否则 AisAttachment 的 :uploadConfig watcher 会触发全部子组件重新初始化),
         // 仅就地更新每个 item 的字段即可
@@ -1085,7 +1083,11 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.loadAttachmentConfig(res);
+          let params = {
+            yearTypeName: res.retailOrderMaterials.yearTypeId,
+            modelLineId: res.retailOrderMaterials.seriesId
+          };
+          this.businessData = JSON.stringify(params);
           return res;
         });
       }
