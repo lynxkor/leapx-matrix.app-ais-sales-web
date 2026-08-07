@@ -806,14 +806,14 @@ export default {
   mounted () {
     this.$nextTick(() => {
       // 需要默认隐藏的 section 标识列表
-      const sectionsToHide = ['basicInfo', 'appointment', 'retailOrder', 'realNameAuth', 'deliveryConfirm', 'paymentRecords', 'appointmentRecords', 'attachments'];
-      sectionsToHide.forEach(sectionKey => {
-        const header = document.querySelector(`.common-section-header[data-section="${sectionKey}"]`);
-        if (header && !header.classList.contains('fold')) {
-          // 模拟点击，触发收起
-          this.addHeaderActions({ target: header.querySelector('h2') });
-        }
-      });
+      // const sectionsToHide = ['basicInfo', 'appointment', 'retailOrder', 'realNameAuth', 'deliveryConfirm', 'paymentRecords', 'appointmentRecords', 'attachments'];
+      // sectionsToHide.forEach(sectionKey => {
+      //   const header = document.querySelector(`.common-section-header[data-section="${sectionKey}"]`);
+      //   if (header && !header.classList.contains('fold')) {
+      //     // 模拟点击，触发收起
+      //     this.addHeaderActions({ target: header.querySelector('h2') });
+      //   }
+      // });
     });
     // this.loadCityDeliveryOrderMin();
   },
