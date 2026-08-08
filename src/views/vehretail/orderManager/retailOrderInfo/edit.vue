@@ -1007,7 +1007,7 @@ export default {
       return displayFields.map(field => ({
         field: field.key,
         title: field.label,
-        width: field.label || 150, // 默认宽度，可根据需要调整
+        width: field.width || 150, // 默认宽度，可根据需要调整
         // 透传跳转相关字段，ComponentTable 据此渲染可点击的链接
         link: field.link,
         paramKey: field.paramKey,
