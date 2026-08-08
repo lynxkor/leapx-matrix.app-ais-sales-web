@@ -3,6 +3,9 @@
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
+      <el-form-item label="调拨入库单号">
+        <tag-input v-model="form.inboundNoList" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="VIN">
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
@@ -65,9 +68,11 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { listOrgStoreInfo } from '@/libs/api/common';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  inboundNoList: [],
   vin: '',
   targetDealerCode: '',
   auditStatus: '',
@@ -91,6 +96,7 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
+    TagInput,
   },
   data () {
     return {
@@ -323,6 +329,11 @@ export default {
           delete data[key];
         }
       });
+      // 调拨入库单号：单值用 inboundNoLike，多值用 inboundNoList
+      if (Array.isArray(this.form.inboundNoList) && this.form.inboundNoList.length <= 1) {
+        delete data.inboundNoList;
+        data.inboundNoLike = this.form.inboundNoList[0] || '';
+      }
 
       if (this.form.createTime) {
         delete data.createTime;
