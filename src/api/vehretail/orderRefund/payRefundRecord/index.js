@@ -20,6 +20,14 @@ export function addOrUpdate (data) {
 }
 
 /**
+ * 新增或修改
+ * @param {Object} data
+ */
+export function resultAdjust (data) {
+  return api.jsonPost(prefix + 'resultAdjust', data);
+}
+
+/**
  * 删除
  * @param {Array<Number>} data
  */

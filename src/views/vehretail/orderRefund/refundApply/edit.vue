@@ -846,7 +846,7 @@ import {
   cancelReasonChange,
   legalVerification
 } from '@/api/vehretail/orderRefund/refundApply/index';
-import { addOrUpdate as updateRefundRecord } from '@/api/vehretail/orderRefund/payRefundRecord/index';
+import { addOrUpdate as updateRefundRecord, resultAdjust } from '@/api/vehretail/orderRefund/payRefundRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1469,7 +1469,7 @@ export default {
         refundResult: row.refundResult,
         refundRemark: row.refundRemark
       };
-      updateRefundRecord(params).then(() => {
+      resultAdjust(params).then(() => {
         this.$message.success('保存成功');
         this.editingRefundRowIndex = null;
         this.originalRefundRecordData = null;
