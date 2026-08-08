@@ -898,23 +898,8 @@ export default {
             return;
           }
           this.optionObj.dataList = res.records.map(item => {
-            const vehicleMaterials = item.vehicleMaterialsDo || {};
             return {
               ...item,
-              modelName: vehicleMaterials.modelName || '',
-              modelId: vehicleMaterials.modelId || '',
-              drivingRangeName: vehicleMaterials.drivingRangeName || '',
-              drivingRangeId: vehicleMaterials.drivingRangeId || '',
-              rangePowerName: vehicleMaterials.rangePowerName || '',
-              rangePowerId: vehicleMaterials.rangePowerId || '',
-              exteriorName: vehicleMaterials.exteriorName || '',
-              exteriorId: vehicleMaterials.exteriorId || '',
-              interiorName: vehicleMaterials.interiorName || '',
-              interiorId: vehicleMaterials.interiorId || '',
-              wheelHubName: vehicleMaterials.wheelHubName || '',
-              wheelHubId: vehicleMaterials.wheelHubId || '',
-              yearTypeName: vehicleMaterials.yearTypeName || '',
-              yearTypeId: vehicleMaterials.yearTypeId || '',
               deleteLoading: false
             };
           });

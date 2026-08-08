@@ -16,9 +16,10 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_delivery_status"
-          v-model="form.status"
+          v-model="form.statusList"
           placeholder="请选择"
           clearable
+          multiple
           filterable
         />
       </el-form-item>
@@ -60,8 +61,9 @@
             filterable
             clearable
             remote
+            multiple
             collapseTags
-            v-model="form.saleDealerCode"
+            v-model="form.saleDealerCodes"
             :remote-method="remoteMethods.getSaleDealer"
             value-key="storeCode"
             label-key="storeName"
@@ -72,8 +74,9 @@
             filterable
             clearable
             remote
+            multiple
             collapseTags
-            v-model="form.deliveryDealerCode"
+            v-model="form.deliveryDealerCodes"
             :remote-method="remoteMethods.getServiceDealer"
             value-key="storeCode"
             label-key="storeName"
@@ -104,6 +107,73 @@
             v-model="form.createTime"
             :setDefault="true"
             deftTime="最近三个月"
+          />
+        </el-form-item>
+        <el-form-item label="交车日期">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.deliveryTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="车系">
+          <fetch-select
+            :remote-method="seriesSearch"
+            remote
+            reserve-keyword
+            v-model="form.seriesIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="seriesList"
+          />
+        </el-form-item>
+        <el-form-item label="省份">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            collapse-tags
+            v-model="form.provinceCodes"
+            :remote-method="getProvince"
+            value-key="code"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="城市">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            collapseTags
+            v-model="form.cityCodes"
+            :options="cityOptions"
+            value-key="code"
+            label-key="name"
+            @change="handleCityChange"
+          />
+        </el-form-item>
+        <el-form-item label="区县">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            collapseTags
+            v-model="form.districtCodes"
+            :options="districtOptions"
+            value-key="code"
+            label-key="name"
           />
         </el-form-item>
       </template>
@@ -152,7 +222,7 @@ import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getDetailDecryptField } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import { engineerList } from '@/libs/api/common';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo, vehicleSeriesList, cityPage, getProvinceTree } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -168,19 +238,24 @@ import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   deliveryOrderCode: '',
-  status: '',
+  statusList: [],
   vinList: [],
   vehicleModelName: '',
   deliveryUserId: '',
   salesStoreName: '',
   deliveryStoreName: '',
-  saleDealerCode: '',
-  deliveryDealerCode: '',
+  saleDealerCodes: [],
+  deliveryDealerCodes: [],
   carBuyerParams: '',
   appointmentTime: '',
   createTime: '',
   deliveryOrderCodeList: [],
-  mallOrderCodeList: []
+  mallOrderCodeList: [],
+  deliveryTime: [],
+  seriesIds: [],
+  provinceCodes: [],
+  cityCodes: [],
+  districtCodes: []
 };
 
 const pageSize = 20;
@@ -215,6 +290,9 @@ export default {
       exportLoading: false,
       clickItemId: '',
       deliveryUserOptions: [],
+      seriesList: [],
+      cityOptions: [],
+      districtOptions: [],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -240,7 +318,7 @@ export default {
       },
       // 交付门店变更时清空已选交付顾问
       onDeliveryDealerChange (val) {
-        this.form.deliveryDealerCode = val;
+        this.form.deliveryDealerCodes = val;
         this.form.deliveryUserId = '';
         this.deliveryUserOptions = [];
       },
@@ -369,6 +447,7 @@ export default {
     this.form.createTime = [startTime, endTime];
 
     this.getData();
+    this.getCity();
   },
   methods: {
     // 排序
@@ -521,7 +600,7 @@ export default {
 
       // 交车状态 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废
       // 如果未选择交车状态，默认按照 1,2,3,4,5,6,7 顺序查询
-      if (!data.status) {
+      if (!data.statusList || data.statusList.length === 0) {
         data.statusList = [1, 2, 3, 4, 5, 6, 7];
       }
 
@@ -551,9 +630,62 @@ export default {
         delete data.mallOrderCodeList;
         data.mallOrderCodeLike = this.form.mallOrderCodeList[0] || '';
       }
+
+      if (this.form.deliveryTime) {
+        delete data.deliveryTime;
+        if (this.form.deliveryTime.length > 1) {
+          data.deliveryTimeStart = this.form.deliveryTime[0];
+          data.deliveryTimeEnd = this.form.deliveryTime[1];
+        }
+      }
+
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
+    },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    async getProvince (query) {
+      const res = await getProvinceTree();
+      let list = res || [];
+      if (query && query.trim()) {
+        const searchText = query.trim().toLowerCase();
+        list = list.filter(item => item.name && item.name.toLowerCase().includes(searchText));
+      }
+      return list;
+    },
+    async getCity () {
+      const params = { page: 1, size: -1 };
+      const res = await cityPage(params);
+      const list = res.records || [];
+      this.cityOptions = list.map(item => ({
+        label: item.areaName,
+        value: item.areaCode
+      }));
+    },
+    handleCityChange (val) {
+      // 根据选中的城市收集其下的区县
+      const selectedCities = this.cityOptions.filter(item => val.includes(item.value));
+      const districtMap = new Map();
+      selectedCities.forEach(city => {
+        const districts = city.child || [];
+        districts.forEach(d => {
+          if (!districtMap.has(d.code)) {
+            districtMap.set(d.code, { code: d.code, name: d.name });
+          }
+        });
+      });
+      this.districtOptions = Array.from(districtMap.values());
+      // 清空已选区县中不在新选项范围内的
+      const validCodes = new Set(this.districtOptions.map(d => d.code));
+      this.form.districtCodes = (this.form.districtCodes || []).filter(code => validCodes.has(code));
     },
     async fetchOptions (code) {
       if (code) {

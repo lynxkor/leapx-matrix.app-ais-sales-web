@@ -105,7 +105,7 @@ export function listOrgStoreInfo (data) {
  * @param {*} data
  */
 export function listOrgWarehouseStoreInfo (data) {
-  return api.jsonPost('/network/portal/store/warehouse/page', data);
+  return api.jsonPost('/vw/network/dealer/warehouse/list', data);
 }
 
 /**
