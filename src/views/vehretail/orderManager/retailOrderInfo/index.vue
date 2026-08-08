@@ -165,6 +165,19 @@
             multiple
           />
         </el-form-item>
+        <el-form-item label="锁单时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.lockTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
         <el-form-item label="订单排序时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -551,6 +564,9 @@ export default {
           { props: 'deliveryCycleMaxWeek', label: '交付周期上限', visible: true, width: 160 },
           { props: 'initialDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 180 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 180 },
+          // 二网门店
+          { props: 'secondNetStoreCode', label: '二网门店编码', visible: true, width: 200 },
+          { props: 'secondNetStoreName', label: '二网门店名称', visible: true, width: 240 },
           { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160, sortable: true },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200, sortable: true },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
@@ -915,7 +931,7 @@ export default {
           delete data[key];
         }
       });
-      const timeFields = ['createTime', 'orderSortTime', 'paymentTime', 'deliveryTime'];
+      const timeFields = ['createTime', 'orderSortTime', 'paymentTime', 'deliveryTime', 'lockTime'];
       timeFields.forEach(field => {
         if (this.form[field]) {
           delete data[field];

@@ -43,6 +43,22 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="车系">
+        <fetch-select
+          :remote-method="seriesSearch"
+          remote
+          reserve-keyword
+          v-model="form.seriesIds"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          clearable
+          multiple
+          collapseTags
+          filterable
+          :options="seriesList"
+        />
+      </el-form-item>
       <el-form-item label="车型">
         <fetch-select
           :remote-method="modelSearch"
@@ -57,6 +73,21 @@
           multiple
           collapseTags
           filterable
+        />
+      </el-form-item>
+      <el-form-item label="年款">
+        <fetch-select
+          :remote-method="listVehicleYearType"
+          remote
+          v-model="form.yearTypeIds"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          clearable
+          multiple
+          collapseTags
+          filterable
+          :options="yearTypeList"
         />
       </el-form-item>
       <el-form-item label="所属母公司">
@@ -111,21 +142,6 @@
           clearable
           multiple
           filterable
-        />
-      </el-form-item>
-      <el-form-item label="年款">
-        <fetch-select
-          :remote-method="listVehicleYearType"
-          remote
-          v-model="form.yearTypeIds"
-          placeholder="请选择"
-          labelKey="name"
-          valueKey="id"
-          clearable
-          multiple
-          collapseTags
-          filterable
-          :options="yearTypeList"
         />
       </el-form-item>
       <template v-if="show">
@@ -481,7 +497,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, batchSetAllowLockRetail, editSpecialRemark } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -621,6 +637,7 @@ export default {
       showBatchCancelSettleDialog: false,
       showBatchRemarkDialog: false,
       yearTypeList: [],
+      seriesList: [],
       options: [],
       modelList: [],
       cityOptions: [], // 市
@@ -729,13 +746,13 @@ export default {
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
           {
-            props: 'interiorName',
-            label: '内饰',
+            props: 'seriesName',
+            label: '车系',
             visible: true,
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -748,6 +765,32 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
+          },
+          {
+            props: 'interiorName',
+            label: '内饰',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -802,20 +845,6 @@ export default {
           { props: 'createdShippingPlanLabel', label: '是否创建发运单计划', visible: true, width: 200 },
           { props: 'hasSettleFailedLabel', label: '是否存在结算失败', visible: true, width: 200 },
           { props: 'confirmUserName', label: '确认人', visible: true, width: 200 },
-          {
-            props: 'yearTypeName',
-            label: '年款',
-            visible: true,
-            width: 200,
-            buttons: [
-              {
-                click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
-                },
-                type: 'primary'
-              }
-            ]
-          },
           { props: 'settleWayLabel', label: '结算方式', visible: true, width: 200 },
           { props: 'allocateWayLabel', label: '配车方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
@@ -1489,6 +1518,15 @@ export default {
         this.modelList = [];
       }
       // }
+    },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 城市下拉
     async getCity () {
