@@ -4,10 +4,10 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="群编号">
-        <el-input placeholder="请输入" v-model="form.groupNo" clearable />
+        <el-input placeholder="请输入" v-model="form.groupNoLike" clearable />
       </el-form-item>
       <el-form-item label="群名称">
-        <el-input placeholder="请输入" v-model="form.groupName" clearable />
+        <el-input placeholder="请输入" v-model="form.groupNameLike" clearable />
       </el-form-item>
       <el-form-item label="门店编码" v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -83,8 +83,8 @@ import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  groupNo: '',
-  groupName: '',
+  groupNoLike: '',
+  groupNameLike: '',
   dealerCode: '',
   dealerName: '',
   createTime: '',
