@@ -146,18 +146,18 @@ export const financeDisplayFields = [
 
 // 整车订单改配信息字段配置————暂时没有
 export const modificationRecordDisplayFields = [
-  { key: 'createTime', label: '操作时间' },
-  { key: 'operateUserName', label: '操作人' },
-  { key: 'paymentTime', label: '缴定金时间' },
-  { key: 'materialsDescBefore', label: '修改前物料描述' },
-  { key: 'modelNameBefore', label: '修改前车型名称' },
-  { key: 'yearTypeNameBefore', label: '修改前年款名称' },
-  { key: 'materialsCodeAfter', label: '修改后物料编码' },
-  { key: 'modelNameAfter', label: '修改后车型名称' },
-  { key: 'yearTypeNameAfter', label: '修改后年款名称' },
-  { key: 'materialsCodeBefore', label: '修改前物料编码' },
-  { key: 'materialsDescAfter', label: '修改后物料描述' },
-  { key: 'remark', label: '备注' }
+  { key: 'createTime', label: '操作时间', width: 180 },
+  { key: 'operateUserName', label: '操作人', width: 120 },
+  { key: 'paymentTime', label: '缴定金时间', width: 200 },
+  { key: 'materialsCodeBefore', label: '修改前物料编码', width: 300 },
+  { key: 'materialsCodeAfter', label: '修改后物料编码', width: 300 },
+  { key: 'materialsDescBefore', label: '修改前物料描述', width: 300 },
+  { key: 'materialsDescAfter', label: '修改后物料描述', width: 300 },
+  { key: 'modelNameBefore', label: '修改前车型名称', width: 180 },
+  { key: 'modelNameAfter', label: '修改后车型名称', width: 180 },
+  { key: 'yearTypeNameBefore', label: '修改前年款名称', width: 180 },
+  { key: 'yearTypeNameAfter', label: '修改后年款名称', width: 180 },
+  { key: 'remark', label: '备注', width: 400 }
 ];
 
 // 订单信息变更申请字段配置
@@ -166,14 +166,15 @@ export const orderChangeApplicationDisplayFields = [
     key: 'changeApplyCode',
     label: '订单变更申请编号',
     link: '/sales/vehretail/orderRefund/changeApply/edit',
-    paramKey: 'id'
+    paramKey: 'id',
+    width: 280
   },
-  { key: 'applyStatusLabel', label: '申请状态' },
-  { key: 'changeTypeLabel', label: '变更类型' },
-  { key: 'changeReason', label: '变成原因' },
-  { key: 'changeExplain', label: '变更说明' },
+  { key: 'applyStatusLabel', label: '申请状态', width: 180 },
+  { key: 'changeTypeLabel', label: '变更类型', width: 180 },
+  { key: 'changeReason', label: '变成原因', width: 200 },
+  { key: 'changeExplain', label: '变更说明', width: 380 },
   { key: 'deliveryStatusLabel', label: '是否完成交车' },
-  { key: 'createTime', label: '创建时间' }
+  { key: 'createTime', label: '创建时间', width: 240 }
 ];
 
 // 锁车解绑申请记录字段配置
@@ -203,9 +204,9 @@ export const unlockApplicationRecordDisplayFields = [
 
 // 锁车记录字段配置
 export const lockCarRecordDisplayFields = [
-  { key: 'saleDealerName', label: '门店' }, // 塞入销售门店数据
-  { key: 'retailOrderCode', label: '整车订单' },
-  { key: 'mallOrderCode', label: '商城订单编号' },
+  { key: 'saleDealerName', label: '门店', width: 260 }, // 塞入销售门店数据
+  { key: 'retailOrderCode', label: '整车订单', width: 180 },
+  { key: 'mallOrderCode', label: '商城订单编号', width: 180 },
   {
     key: 'wholesaleOrderCode',
     label: '批售单号',
@@ -222,13 +223,13 @@ export const lockCarRecordDisplayFields = [
 
 // 订单透明化状态跟踪字段配置
 export const orderTransparencyTrackingDisplayFields = [
-  { key: 'trackCode', label: '编号' },
-  { key: 'saleDealerName', label: '门店' }, // 塞入销售门店数据
-  { key: 'retailOrderCode', label: '整车订单' },
+  { key: 'trackCode', label: '编号', width: 180 },
+  { key: 'saleDealerName', label: '门店', width: 260 }, // 塞入销售门店数据
+  { key: 'retailOrderCode', label: '整车订单', width: 200 },
   { key: 'oldOrderStatusLabel', label: '原订单状态' },
   { key: 'newOrderStatusLabel', label: '新订单状态' },
-  { key: 'operateTime', label: '操作时间' },
-  { key: 'operateDesc', label: '操作描述' }
+  { key: 'operateTime', label: '操作时间', width: 240 },
+  { key: 'operateDesc', label: '操作描述', width: 380 }
 ];
 
 // 订单退订记录字段配置
@@ -237,14 +238,15 @@ export const orderCancellationRecordDisplayFields = [
     key: 'refundCode',
     label: '退订申请单号',
     link: '/sales/vehretail/orderRefund/refundApply/edit',
-    paramKey: 'id'
+    paramKey: 'id',
+    width: 180
   },
   { key: 'refundStatusLabel', label: '申请单状态' },
-  { key: 'applyTime', label: '申请时间' },
+  { key: 'applyTime', label: '申请时间', width: 260 },
   { key: 'creatorName', label: '申请人' },
-  { key: 'orderRefundTypeLabel', label: '退订方式' },
-  { key: 'cateName', label: '退订原因分类' },
-  { key: 'refundReason', label: '退订原因说明' }
+  { key: 'orderRefundTypeLabel', label: '退订方式', width: 180 },
+  { key: 'cateName', label: '退订原因分类', width: 180 },
+  { key: 'refundReason', label: '退订原因说明', width: 380 }
 ];
 
 // 订单收款记录字段配置
