@@ -63,7 +63,7 @@
             remote
             multiple
             collapseTags
-            v-model="form.saleDealerCodes"
+            v-model="form.saleDealerCodeList"
             :remote-method="remoteMethods.getSaleDealer"
             value-key="storeCode"
             label-key="storeName"
@@ -76,7 +76,7 @@
             remote
             multiple
             collapseTags
-            v-model="form.deliveryDealerCodes"
+            v-model="form.deliveryDealerCodeList"
             :remote-method="remoteMethods.getServiceDealer"
             value-key="storeCode"
             label-key="storeName"
@@ -102,13 +102,6 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="创建时间">
-          <dateranges
-            v-model="form.createTime"
-            :setDefault="true"
-            deftTime="最近三个月"
-          />
-        </el-form-item>
         <el-form-item label="交车日期">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
@@ -122,12 +115,19 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="车系">
+        <el-form-item label="创建时间">
+          <dateranges
+            v-model="form.createTime"
+            :setDefault="true"
+            deftTime="最近三个月"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="车系">
           <fetch-select
             :remote-method="seriesSearch"
             remote
             reserve-keyword
-            v-model="form.seriesIds"
+            v-model="form.seriesIdList"
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
@@ -137,8 +137,8 @@
             filterable
             :options="seriesList"
           />
-        </el-form-item>
-        <el-form-item label="省份">
+        </el-form-item> -->
+        <!-- <el-form-item label="省份">
           <fetch-select
             filterable
             clearable
@@ -175,7 +175,7 @@
             value-key="code"
             label-key="name"
           />
-        </el-form-item>
+        </el-form-item> -->
       </template>
       <page-search-action
         v-if="canList"
@@ -244,18 +244,18 @@ const defaultForm = {
   deliveryUserId: '',
   salesStoreName: '',
   deliveryStoreName: '',
-  saleDealerCodes: [],
-  deliveryDealerCodes: [],
+  saleDealerCodeList: [],
+  deliveryDealerCodeList: [],
   carBuyerParams: '',
   appointmentTime: '',
   createTime: '',
   deliveryOrderCodeList: [],
   mallOrderCodeList: [],
   deliveryTime: [],
-  seriesIds: [],
-  provinceCodes: [],
-  cityCodes: [],
-  districtCodes: []
+  // seriesIdList: [],
+  // provinceCodes: [],
+  // cityCodes: [],
+  // districtCodes: []
 };
 
 const pageSize = 20;
