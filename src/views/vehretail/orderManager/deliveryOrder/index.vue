@@ -30,12 +30,68 @@
         <el-form-item label="商城订单编号">
           <tag-input v-model="form.mallOrderCodeList" clearable placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="车系名称">
+          <fetch-select
+            :remote-method="seriesSearch"
+            remote
+            reserve-keyword
+            v-model="form.seriesIdList"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="车型名称">
           <fetch-select
             :remote-method="remoteMethods.model"
             v-model="form.modelId"
             v-bind="selectOptions"
           />
+        </el-form-item>
+        <!-- <el-form-item label="大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            v-model="form.regionCodeList"
+            :remote-method="remoteMethods.region"
+            value-key="orgCode"
+            label-key="orgName"
+          />
+        </el-form-item> -->
+        <el-form-item label="省市" class="item--area">
+          <el-cascader
+            v-model="form.areaCodes"
+            :options="areaOptions"
+            :props="areaProps"
+            placeholder="请选择省市"
+            collapse-tags
+            clearable
+            filterable
+            @change="handleAreaChange"
+          />
+        </el-form-item>
+        <el-form-item label="订单交付顾问">
+          <el-select
+            :disabled="!form.deliveryDealerCodeList"
+            v-model="form.deliveryUserId"
+            filterable
+            clearable
+            value-key="userId"
+            placeholder="请先选择交付门店"
+          >
+            <el-option
+              v-for="item in deliveryUserOptions"
+              :key="item.userId"
+              :label="item.username"
+              :value="item.userId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="订单销售门店">
           <fetch-select
@@ -63,23 +119,6 @@
             label-key="storeName"
             @change="onDeliveryDealerChange"
           />
-        </el-form-item>
-        <el-form-item label="订单交付顾问">
-          <el-select
-            :disabled="!form.deliveryDealerCodeList"
-            v-model="form.deliveryUserId"
-            filterable
-            clearable
-            value-key="userId"
-            placeholder="请先选择交付门店"
-          >
-            <el-option
-              v-for="item in deliveryUserOptions"
-              :key="item.userId"
-              :label="item.username"
-              :value="item.userId"
-            />
-          </el-select>
         </el-form-item>
         <el-form-item label="购车人信息">
           <el-input
@@ -119,33 +158,6 @@
             v-model="form.createTime"
             :setDefault="true"
             deftTime="最近三个月"
-          />
-        </el-form-item>
-        <el-form-item label="车系">
-          <fetch-select
-            :remote-method="seriesSearch"
-            remote
-            reserve-keyword
-            v-model="form.seriesIdList"
-            placeholder="请选择"
-            labelKey="name"
-            valueKey="id"
-            clearable
-            multiple
-            collapseTags
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="省市" class="item--area">
-          <el-cascader
-            v-model="form.areaCodes"
-            :options="areaOptions"
-            :props="areaProps"
-            placeholder="请选择省市"
-            collapse-tags
-            clearable
-            filterable
-            @change="handleAreaChange"
           />
         </el-form-item>
       </template>
@@ -194,7 +206,7 @@ import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getDetailDecryptField } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import { engineerList } from '@/libs/api/common';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo, vehicleSeriesList, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -304,7 +316,10 @@ export default {
         },
         getServiceDealer: async (query) => {
           return await listOrgStoreInfo({ keyword: query, isSupportDeliver: true });
-        }
+        },
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
+        },
       },
       optionObj: {
         id: 'deliveryOrderTable',
@@ -354,6 +369,7 @@ export default {
           { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200, sortable: true },
           { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'seriesName', label: '车系名称', visible: true, width: 120 },
+          // { props: 'regionName', label: '大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
