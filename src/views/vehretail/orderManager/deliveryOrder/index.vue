@@ -648,13 +648,12 @@ export default {
       }
       return [];
     },
-    // el-cascader 多选变更时，遍历省/市/区树把每个选中的 code 按层级拆分到对应数组
+    // el-cascader 多选变更时，遍历省/市树把每个选中的 code 按层级拆分到对应数组
     handleAreaChange (selectedCodes) {
       const codes = Array.isArray(selectedCodes) ? selectedCodes : [];
       const areaTree = this.areaOptions || [];
       const provinces = new Set();
       const cities = new Set();
-      const districts = new Set();
 
       areaTree.forEach(province => {
         if (codes.includes(province.code)) {
@@ -664,17 +663,11 @@ export default {
           if (codes.includes(city.code)) {
             cities.add(city.code);
           }
-          (city.child || []).forEach(district => {
-            if (codes.includes(district.code)) {
-              districts.add(district.code);
-            }
-          });
         });
       });
 
       this.form.provinceCodes = [...provinces];
       this.form.cityCodes = [...cities];
-      this.form.districtCodes = [...districts];
     },
   }
 };
