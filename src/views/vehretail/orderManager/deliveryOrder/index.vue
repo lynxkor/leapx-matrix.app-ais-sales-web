@@ -138,12 +138,12 @@
             :options="seriesList"
           />
         </el-form-item> -->
-        <el-form-item label="省市区">
+        <el-form-item label="省市">
           <el-cascader
             v-model="form.areaCodes"
             :options="areaOptions"
             :props="areaProps"
-            placeholder="请选择省市区（可多选）"
+            placeholder="请选择省市（可多选）"
             collapse-tags
             clearable
             filterable
