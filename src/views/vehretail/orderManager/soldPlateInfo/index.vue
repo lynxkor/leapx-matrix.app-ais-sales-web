@@ -54,43 +54,6 @@
           placeholder="请选择"
         />
       </el-form-item>
-      <!-- <el-form-item label="上牌省份">
-        <fetch-select
-          filterable
-          clearable
-          remote
-          multiple
-          collapse-tags
-          v-model="form.provinceCodeList"
-          :remote-method="getProvince"
-          value-key="code"
-          label-key="name"
-        />
-      </el-form-item>
-      <el-form-item label="上牌城市">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          collapseTags
-          v-model="form.cityCodeList"
-          :remote-method="getCity"
-          value-key="code"
-          label-key="name"
-        />
-      </el-form-item>
-      <el-form-item label="上牌区县">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          collapseTags
-          v-model="form.districtCodeList"
-          :remote-method="getDistrict"
-          value-key="code"
-          label-key="name"
-        />
-      </el-form-item> -->
       <template v-if="show">
         <el-form-item label="是否自动审核">
           <fetch-select
@@ -184,6 +147,18 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="上牌省市区" class="item--area">
+          <el-cascader
+            v-model="form.areaCodes"
+            :options="areaOptions"
+            :props="areaProps"
+            placeholder="请选择省市区"
+            collapse-tags
+            clearable
+            filterable
+            @change="handleAreaChange"
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -255,13 +230,14 @@ import {
   revocationBatch,
   submitBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo';
-import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, listVehicleModel, vehicleSeriesList, cityPage, getProvinceTree, tableAddOrUpdate } from '@/api/common';
+import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, listVehicleModel, vehicleSeriesList, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
+import { getAreaTree } from '@/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
@@ -279,9 +255,10 @@ const defaultForm = {
   createTimeEnd: null,
   searchContentPc: '',
   seriesId: '',
-  // provinceCodeList: [],
-  // cityCodeList: [],
-  // districtCodeList: []
+  areaCodes: [],
+  provinceCodeList: [],
+  cityCodeList: [],
+  districtCodeList: []
 };
 
 const pageSize = 20;
@@ -317,9 +294,17 @@ export default {
       uploadDialogVisible: false,
       clickItemId: '',
       seriesList: [],
-      // cityOptions: [],
-      // districtOptions: [],
-      // provinceTreeData: [],
+      // 省/市/区三级数据
+      areaOptions: getAreaTree() || [],
+      // el-cascader 多选配置
+      areaProps: {
+        multiple: true,
+        checkStrictly: true,
+        emitPath: false,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
       optionObj: {
         id: 'soldPlateInfoTable',
         dataList: [],
@@ -576,6 +561,7 @@ export default {
           delete data[key];
         }
       });
+      delete data.areaCodes;
       const timeFields = ['createTime', 'plateDate', 'auditTime', 'deliveryTime', 'invoiceTime'];
       timeFields.forEach(field => {
         if (this.form[field]) {
@@ -612,24 +598,34 @@ export default {
         console.error('Error fetching series list:', error);
       }
     },
-    // async getProvince (query) {
-    //   const res = await getProvinceTree();
-    //   let list = res || [];
-    //   if (query && query.trim()) {
-    //     const searchText = query.trim().toLowerCase();
-    //     list = list.filter(item => item.name && item.name.toLowerCase().includes(searchText));
-    //   }
-    //   return list;
-    // },
-    // async getCity () {
-    //   const params = { page: 1, size: -1 };
-    //   const res = await cityPage(params);
-    //   const list = res.records || [];
-    //   this.cityOptions = list.map(item => ({
-    //     label: item.areaName,
-    //     value: item.areaCode
-    //   }));
-    // },
+    // el-cascader 多选变更时，遍历省/市/区树把每个选中的 code 按层级拆分到对应数组
+    handleAreaChange (selectedCodes) {
+      const codes = Array.isArray(selectedCodes) ? selectedCodes : [];
+      const areaTree = this.areaOptions || [];
+      const provinces = new Set();
+      const cities = new Set();
+      const districts = new Set();
+
+      areaTree.forEach(province => {
+        if (codes.includes(province.code)) {
+          provinces.add(province.code);
+        }
+        (province.child || []).forEach(city => {
+          if (codes.includes(city.code)) {
+            cities.add(city.code);
+          }
+          (city.child || []).forEach(district => {
+            if (codes.includes(district.code)) {
+              districts.add(district.code);
+            }
+          });
+        });
+      });
+
+      this.form.provinceCodeList = [...provinces];
+      this.form.cityCodeList = [...cities];
+      this.form.districtCodeList = [...districts];
+    },
     vehicleModelSearch (val) {
       const params = {
         modelNameLike: val,
@@ -792,5 +788,16 @@ export default {
 
 <style lang="scss" scoped>
 .m-sold-plate-info-list {
+  // 压缩已选折叠标签的展示宽度，避免撑破 inline 表单
+  ::v-deep .item--area .el-cascader__tags .el-tag {
+    max-width: 80px;
+    height: 22px;
+    padding: 0 6px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  ::v-deep .item--area .el-cascader__tags .el-tag__close {
+    top: 0;
+  }
 }
 </style>
