@@ -50,6 +50,19 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vehicle_delivery_status"
             v-model="form.vehicleDeliveryStatusList" placeholder="请选择" clearable multiple filterable />
         </el-form-item>
+        <el-form-item label="创建者">
+          <fetch-select
+            remote
+            filterable
+            clearable
+            :remote-method="getCreatorUser"
+            :params="form.creatorName"
+            v-model="form.creator"
+            value-key="userId"
+            label-key="username"
+            @change="handleCreatorChange"
+          />
+        </el-form-item>
       <el-form-item label="VDC入库时间">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
         unlink-panels
@@ -101,7 +114,7 @@ import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import TagInput from '@/libs/components/TagInput';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -127,7 +140,8 @@ const defaultForm = {
   logisticsReserved: '',
   vehicleDeliveryStatus: '',
   vehicleDeliveryStatusList: [],
-  inboundDateTime: []
+  inboundDateTime: [],
+  creator: ''
 };
 
 const pageSize = 20;
@@ -158,6 +172,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      creatorOptions: [],
       optionObj: {
         id: 'vehicleReservationDetailTable',
         dataList: [],
@@ -262,6 +277,15 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    const userInfo = this.$store.state.user.userInfo;
+    if (userInfo && userInfo.userId) {
+      this.form.creator = String(userInfo.userId);
+      this.form.creatorName = userInfo.userName;
+      this.creatorOptions = [{
+        userId: String(userInfo.userId),
+        username: userInfo.userName || userInfo.username
+      }];
+    }
     this.getData();
   },
   methods: {
@@ -404,6 +428,14 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async getCreatorUser (params) {
+      return getUserByNameOrNo({ name: params });
+    },
+    handleCreatorChange (val, selectedOption) {
+      if (selectedOption && !this.creatorOptions.find(item => item.userId === val)) {
+        this.creatorOptions = [...this.creatorOptions, selectedOption];
+      }
     },
     // 批量删除
     handleBatchDelete () {
