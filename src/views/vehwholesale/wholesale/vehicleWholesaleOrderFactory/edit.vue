@@ -493,8 +493,7 @@
                   v-show="isEditing || !_id">
                   <el-form-item label="结算资金类型：" prop="settleFundType">
                     <fetch-select :options="fundTypeList" v-model="form.settleFundType" placeholder="请选择" clearable
-                      filterable labelKey="fundTypeLabel" valueKey="fundType"
-                      :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)" @change="clearCache" />
+                      filterable labelKey="fundTypeLabel" valueKey="fundType" @change="clearCache" />
                   </el-form-item>
                   <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select :options="financialOrganizationList" v-model="form.financialOrganizationId"

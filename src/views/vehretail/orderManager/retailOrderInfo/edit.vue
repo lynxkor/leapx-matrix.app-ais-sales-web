@@ -19,7 +19,8 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" :loading="printLoading" v-if="canOperateOrder && canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <!-- 打印合同解除协议 按钮 产品改成了都不要限制什么状态都都能看到 -->
+          <el-button size="small" :loading="printLoading" v-if="canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button size="small" :loading="setSpecialMarkLoading" v-if="canSetSpecialRemark" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canManualLock && form.wholesaleBindStatus !== 1 && form.orderStatus === 3 && form.lockStatus === 1 " @click="handleManualVehicleAllocation">手工配车</el-button>

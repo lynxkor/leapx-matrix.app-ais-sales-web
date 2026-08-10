@@ -571,7 +571,7 @@ export default {
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200, sortable: true },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'idCardTypeLabel', label: '证据类型', visible: true, width: 200 },
+          { props: 'idCardTypeLabel', label: '证件类型', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
