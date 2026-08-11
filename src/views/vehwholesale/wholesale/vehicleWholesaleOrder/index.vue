@@ -83,6 +83,22 @@
         <el-form-item label="物料描述">
           <tag-input v-model="form.orderMaterialDescs" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="车系">
+          <fetch-select
+            :remote-method="seriesSearch"
+            remote
+            reserve-keyword
+            v-model="form.seriesIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="seriesList"
+          />
+        </el-form-item>
         <el-form-item label="车型名称">
           <fetch-select
             :remote-method="modelSearch"
@@ -426,7 +442,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, adjustWarehouse } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -562,6 +578,7 @@ export default {
       warehouseList: [],
       selectedWarehouse: null,
       yearTypeList: [],
+      seriesList: [],
       options: [],
       modelList: [],
       cityOptions: [],
@@ -681,6 +698,18 @@ export default {
             }]
           },
           {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
             props: 'modelName',
             label: '车型',
             visible: true,
@@ -691,6 +720,20 @@ export default {
               },
               type: 'primary'
             }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
           },
           {
             props: 'exteriorName',
@@ -742,20 +785,6 @@ export default {
           { props: 'createdShippingPlanLabel', label: '是否创建发运单计划', visible: true, width: 200 },
           { props: 'hasSettleFailedLabel', label: '是否存在结算失败', visible: true, width: 200 },
           { props: 'confirmUserName', label: '确认人', visible: true, width: 200 },
-          {
-            props: 'yearTypeName',
-            label: '年款',
-            visible: true,
-            width: 200,
-            buttons: [
-              {
-                click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
-                },
-                type: 'primary'
-              }
-            ]
-          },
           { props: 'settleWayLabel', label: '结算方式', visible: true, width: 200 },
           { props: 'allocateWayLabel', label: '配车方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
@@ -1334,6 +1363,15 @@ export default {
         this.modelList = [];
       }
       // }
+    },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 城市下拉
     async getCity () {

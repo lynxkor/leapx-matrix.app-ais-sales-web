@@ -362,8 +362,6 @@ const defaultForm = {
   needAutoAllocateCar: '',
   deliveryWay: '',
   allowLockRetail: '',
-  totalQuotaQty: '',
-  usedQuotaQty: '',
   allowLockNode: ''
 };
 
@@ -778,6 +776,10 @@ export default {
       const submitForm = { ...this.form };
       if (submitForm.allowLockRetail === '') submitForm.allowLockRetail = null;
       if (submitForm.allowLockNode === '') submitForm.allowLockNode = null;
+      // submitForm 去除两个额度数量
+      delete submitForm.totalQuotaQty;
+      delete submitForm.usedQuotaQty;
+      delete submitForm.remainQuotaQty;
       return addOrUpdate(submitForm);
     },
     // 打开侧边栏

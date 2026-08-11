@@ -19,9 +19,25 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vehretail_order_change_apply_status"
-          v-model="form.status"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="车系名称">
+        <fetch-select
+          :remote-method="seriesSearch"
+          remote
+          reserve-keyword
+          v-model="form.seriesId"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          clearable
+          filterable
+          :options="seriesList"
         />
       </el-form-item>
       <el-form-item label="车型名称">
@@ -38,6 +54,43 @@
           placeholder="请选择"
         />
       </el-form-item>
+      <!-- <el-form-item label="上牌省份">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          collapse-tags
+          v-model="form.provinceCodeList"
+          :remote-method="getProvince"
+          value-key="code"
+          label-key="name"
+        />
+      </el-form-item>
+      <el-form-item label="上牌城市">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          collapseTags
+          v-model="form.cityCodeList"
+          :remote-method="getCity"
+          value-key="code"
+          label-key="name"
+        />
+      </el-form-item>
+      <el-form-item label="上牌区县">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          collapseTags
+          v-model="form.districtCodeList"
+          :remote-method="getDistrict"
+          value-key="code"
+          label-key="name"
+        />
+      </el-form-item> -->
       <template v-if="show">
         <el-form-item label="是否自动审核">
           <fetch-select
@@ -83,6 +136,19 @@
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.plateDate"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="开票日期">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.invoiceTime"
             type="daterange"
             unlink-panels
             :picker-options="pickerOptions"
@@ -189,7 +255,7 @@ import {
   revocationBatch,
   submitBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo';
-import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, listVehicleModel, tableAddOrUpdate } from '@/api/common';
+import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, listVehicleModel, vehicleSeriesList, cityPage, getProvinceTree, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -203,7 +269,7 @@ import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   vin: '',
-  status: '',
+  statusIncludeList: [],
   autoAuditStatus: '',
   modelName: '',
   modelId: '',
@@ -211,7 +277,11 @@ const defaultForm = {
   createTimeRange: '',
   createTimeStart: null,
   createTimeEnd: null,
-  searchContentPc: ''
+  searchContentPc: '',
+  seriesId: '',
+  // provinceCodeList: [],
+  // cityCodeList: [],
+  // districtCodeList: []
 };
 
 const pageSize = 20;
@@ -246,6 +316,10 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      seriesList: [],
+      // cityOptions: [],
+      // districtOptions: [],
+      // provinceTreeData: [],
       optionObj: {
         id: 'soldPlateInfoTable',
         dataList: [],
@@ -277,6 +351,7 @@ export default {
           { props: 'auditTime', label: '审核时间', visible: true, width: 200, sortable: true },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'carSalesVersionName', label: '公告车型', visible: true, width: 200 },
           { props: 'carBuyerName', label: '车主姓名', visible: true, width: 200 },
@@ -501,7 +576,7 @@ export default {
           delete data[key];
         }
       });
-      const timeFields = ['createTime', 'plateDate', 'auditTime', 'deliveryTime'];
+      const timeFields = ['createTime', 'plateDate', 'auditTime', 'deliveryTime', 'invoiceTime'];
       timeFields.forEach(field => {
         if (this.form[field]) {
           delete data[field];
@@ -528,6 +603,33 @@ export default {
       };
       return await listOrgStoreInfo(params);
     },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    // async getProvince (query) {
+    //   const res = await getProvinceTree();
+    //   let list = res || [];
+    //   if (query && query.trim()) {
+    //     const searchText = query.trim().toLowerCase();
+    //     list = list.filter(item => item.name && item.name.toLowerCase().includes(searchText));
+    //   }
+    //   return list;
+    // },
+    // async getCity () {
+    //   const params = { page: 1, size: -1 };
+    //   const res = await cityPage(params);
+    //   const list = res.records || [];
+    //   this.cityOptions = list.map(item => ({
+    //     label: item.areaName,
+    //     value: item.areaCode
+    //   }));
+    // },
     vehicleModelSearch (val) {
       const params = {
         modelNameLike: val,
