@@ -44,7 +44,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="主页" name="homePage"></el-tab-pane>
         <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
-        <el-tab-pane label="当前电力不足" name="fenceCrossedPower"></el-tab-pane>
+        <el-tab-pane label="当前电量不足" name="fenceCrossedPower"></el-tab-pane>
         <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
         <el-tab-pane label="当前实车交付未出库" name="fenceNotDelivered"></el-tab-pane>
       </el-tabs>
