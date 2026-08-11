@@ -593,8 +593,20 @@ export default {
           { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160, sortable: true },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200, sortable: true },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
-          { props: 'orderUserName', label: '下单人姓名', visible: true, width: 180 },
-          { props: 'orderUserPhone', label: '下单人手机号', visible: true, width: 180 },
+          {
+            props: 'orderUserName',
+            label: '下单人姓名',
+            visible: true,
+            width: 140,
+          },
+          {
+            props: 'orderUserPhone',
+            label: '下单人手机号',
+            visible: true,
+            width: 180,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.id, 'orderUserPhone')
+          },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'idCardTypeLabel', label: '证件类型', visible: true, width: 200 },
           {
