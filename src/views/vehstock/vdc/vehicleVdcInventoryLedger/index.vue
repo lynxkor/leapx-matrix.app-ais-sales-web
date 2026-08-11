@@ -115,6 +115,7 @@
     </el-form>
     <div class="ais-active">
       <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="全量" name="full"></el-tab-pane>
         <el-tab-pane label="主页" name="homePage"></el-tab-pane>
         <el-tab-pane label="低电量≤10%" name="lowBattery"></el-tab-pane>
       </el-tabs>
@@ -132,7 +133,7 @@
       <el-button v-permission="moduleKey + '-batchUpdateAllowLockNode'" size="small"
         @click="handleBatchUpdateAllowLockNode" :disabled="selectionList.length === 0">批量更新锁单节点</el-button>
     </div>
-    <div class="ais-table-c" v-if="activeName === 'homePage'">
+    <div class="ais-table-c" v-if="activeName === 'homePage' || activeName === 'full'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
         :get-config="getConfig" :save-or-update="saveOrUpdate" @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
@@ -215,6 +216,9 @@ const defaultForm = {
 };
 
 const pageSize = 20;
+
+// 全量页签专用表单：不带任何查询条件
+const defaultFormFull = {};
 const mockConfig = {
   data: null
 };
@@ -241,7 +245,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       warehouseOptions: [], // 整车仓库
       factoryOptions: [], // 整车工厂
-      activeName: 'homePage',
+      activeName: 'full',
       show: false,
       loading: false,
       exportLoading: false,
@@ -588,7 +592,11 @@ export default {
       this.refreshTableData();
     },
     onReset () {
-      if (this.activeName === 'homePage') {
+      if (this.activeName === 'full') {
+        this.form = { ...defaultFormFull };
+        this.optionObj.form.page = 1;
+        this.optionObj.form.pageSize = pageSize;
+      } else if (this.activeName === 'homePage') {
         this.form = { ...defaultForm };
         this.form.lowBatteryCar = 0;
         this.form.stockAgeGe = null;
@@ -700,6 +708,9 @@ export default {
     // 根据当前活动标签页获取配置
     getActiveTabConfig () {
       const configMap = {
+        full: {
+          pageKey: 'optionObj'
+        },
         homePage: {
           pageKey: 'optionObj',
           formField: 'lowBatteryCar',
@@ -864,6 +875,10 @@ export default {
     // 点击tabs栏切换
     handleClick (item) {
       this.activeName = item.name;
+      if (item.name === 'full') {
+        this.onReset();
+        return;
+      }
       if (item.name === 'lowBattery') {
         this.form.carAllocated = '';
         this.form.logisticsReserved = '';
