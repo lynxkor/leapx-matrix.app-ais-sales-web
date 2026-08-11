@@ -544,6 +544,11 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    if (this.activeName === 'full') {
+      this.form.vehicleDeliveryStatusList = [];
+      this.form.carAllocated = '';
+      this.form.logisticsReserved = '';
+    }
     this.refreshTableData();
   },
   methods: {
@@ -604,7 +609,7 @@ export default {
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
-        this.form = { ...defaultForm };
+        this.form = { ...defaultFormFull };
         this.form.lowBatteryCar = 1;
         this.form.stockAgeGe = null;
         this.form.stockAgeLe = null;

@@ -180,10 +180,10 @@ const defaultForm = {
   optionPackageIdList: [],
 };
 
-const pageSize = 20;
-
 // 全量页签专用表单：不带任何查询条件
 const defaultFormFull = {};
+
+const pageSize = 20;
 const mockConfig = {
   data: null
 };
@@ -350,6 +350,11 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    if (this.activeName === 'full') {
+      this.form.poStatusList = [];
+      this.form.carAllocated = '';
+      this.form.status = '';
+    }
     this.getData();
   },
   methods: {
