@@ -711,6 +711,7 @@ export default {
             label: '物料描述',
             visible: true,
             width: 240,
+            sortable: true,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsId}`, '_blank');
