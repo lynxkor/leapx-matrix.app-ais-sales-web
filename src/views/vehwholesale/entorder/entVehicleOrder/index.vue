@@ -99,6 +99,19 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+         <el-form-item label="结算时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.settleTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
          <el-form-item label="订单状态">
           <fetch-select
               :options="orderStatusOptions"
@@ -270,7 +283,8 @@ const defaultForm = {
   settleFundType: '',
   financialOrganizationId: '',
   acceptanceMethod: '',
-  orderTime: '',
+  orderTime: [],
+  settleTime: [],
 };
 
 const pageSize = 20;
@@ -403,6 +417,7 @@ export default {
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
+          { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
           { props: 'saleUserName', label: '销售人员', visible: true, width: 200 },
           { props: 'remark', label: '订单备注', visible: true, width: 200 },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
@@ -961,6 +976,13 @@ export default {
         if (this.form.orderTime.length > 1) {
           data.orderTimeStart = this.form.orderTime[0];
           data.orderTimeEnd = this.form.orderTime[1];
+        }
+      }// 订单时间
+      if (this.form.settleTime) {
+        delete data.settleTime;
+        if (this.form.settleTime.length > 1) {
+          data.settleTimeStart = this.form.settleTime[0];
+          data.settleTimeEnd = this.form.settleTime[1];
         }
       }
       // 排序字段
