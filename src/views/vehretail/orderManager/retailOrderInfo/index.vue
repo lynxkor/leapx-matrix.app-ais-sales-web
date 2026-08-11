@@ -165,7 +165,7 @@
             multiple
           />
         </el-form-item>
-      <el-form-item label="订单类型">
+      <!-- <el-form-item label="订单类型">
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_type"
@@ -174,7 +174,7 @@
           clearable
           filterable
         />
-      </el-form-item>
+      </el-form-item> -->
         <el-form-item label="证件类型">
           <fetch-select
             :request="fetchOptions"
@@ -537,7 +537,7 @@ export default {
             getValue: (row) => getDetailDecryptField(row.id, 'matchVin')
           },
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
-          { props: 'orderTypeLabel', label: '订单类型', visible: true, width: 150 },
+          // { props: 'orderTypeLabel', label: '订单类型', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180, sortable: true },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
