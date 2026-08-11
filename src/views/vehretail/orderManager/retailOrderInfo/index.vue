@@ -165,6 +165,27 @@
             multiple
           />
         </el-form-item>
+      <el-form-item label="订单类型">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vr_order_type"
+          v-model="form.orderType"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
+        <el-form-item label="证件类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_id_card_type"
+            v-model="form.idCardTypeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="锁单时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -228,17 +249,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="证件类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vehretail_id_card_type"
-            v-model="form.idCardTypeList"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
           />
         </el-form-item>
       </template>
@@ -400,6 +410,7 @@ const defaultForm = {
   orderUserId: '',
   createTime: '',
   idCardTypeList: [],
+  orderType: '',
 };
 
 const pageSize = 20;
@@ -526,6 +537,7 @@ export default {
             getValue: (row) => getDetailDecryptField(row.id, 'matchVin')
           },
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
+          { props: 'orderTypeLabel', label: '订单类型', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180, sortable: true },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
