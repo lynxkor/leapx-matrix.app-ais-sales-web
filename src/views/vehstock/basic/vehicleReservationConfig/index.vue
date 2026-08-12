@@ -185,6 +185,7 @@ export default {
           { props: 'reservePos', label: '截取预留位数', visible: true, width: 140 },
           { props: 'reserveCutValue', label: '截取预留值', visible: true, width: 200 },
           { props: 'isRelatedMatchLabel', label: '是否映射其他物料', visible: true, width: 160 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
