@@ -1196,6 +1196,8 @@ export default {
       // 获取门店库存信息
       if (this.form.vin) {
         this.refreshStoreInventoryLedger(this.form.vin);
+        // 车辆产地 VDC库存中获取
+        this.vehicleProductAreaRender(this.form.vin);
       }
     },
     // 返回 Promise，便于在 handleSubmit 中 await，确保 reservationStatus 已同步赋值
@@ -1214,13 +1216,13 @@ export default {
           this.form.reservationStatus = res.records[0].reservationStatus;
           this.form.wholesaleOrderCode = res.records[0].wholesaleOrderCode;
           this.form.storeInventoryVin = this.form.vin;
-          this.form.vehiclePurpose = 30;
+          if (this.form.reservationStatus === 10) {
+            this.form.vehiclePurpose = 30;
+          }
           // this.form.saleDealerCode = res.records[0].saleDealerCode;
           // this.form.saleDealerName = res.records[0].saleDealerName;
           // this.form.deliveryDealerCode = res.records[0].deliveryDealerCode;
           // this.form.deliveryDealerName = res.records[0].deliveryDealerName;
-          // 车辆产地
-          this.vehicleProductAreaRender(vin);
           if (res.records[0].saleDealerCode) {
             // 渲染销售门店 -> 然后渲染专属服务门店
             this.saleDealerRender(res.records[0].saleDealerCode);
@@ -1242,8 +1244,9 @@ export default {
       });
     },
     vehiclePurposeChange (val) {
+      console.log(val);
       if (val) {
-        if (this.form.reservationStatus === 10 && val !== 30) {
+        if (this.form.reservationStatus === 10 && Number(val) !== 30) {
           this.$message.error('该车辆' + this.form.vin + '车辆类型为试驾车,车辆用途必须选择试驾车!');
           this.form.vehiclePurpose = null;
         } else {
