@@ -50,7 +50,11 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vehicle_delivery_status"
             v-model="form.vehicleDeliveryStatusList" placeholder="请选择" clearable multiple filterable />
         </el-form-item>
-        <el-form-item label="创建者">
+        <el-form-item label="是否配车">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.carAllocated"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+      <el-form-item label="创建者">
           <fetch-select
             remote
             filterable
@@ -141,6 +145,7 @@ const defaultForm = {
   vehicleDeliveryStatus: '',
   vehicleDeliveryStatusList: [],
   inboundDateTime: [],
+  carAllocated: '',
   creator: ''
 };
 
@@ -201,6 +206,8 @@ export default {
           },
           { props: 'bizCode', label: '业务编号', visible: true, width: 120 },
           { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 100 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'reserveTime', label: '预留时间', visible: true, width: 180 },
           { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 100 },
           { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 100 },
