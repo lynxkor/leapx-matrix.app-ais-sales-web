@@ -57,6 +57,18 @@
           @change="handleCreatorChange"
         />
       </el-form-item>
+      <!-- 预留预留就是物料描述 -->
+      <el-form-item label="物料描述">
+        <fetch-select
+          remote
+          filterable
+          clearable
+          :remote-method="remoteMethods.vehicleMaterials"
+          v-model="form.bizCode"
+          value-key="materialsCode"
+          label-key="materialsDesc"
+        />
+      </el-form-item>
       </template>
       <page-search-action
         v-model="show"
@@ -104,7 +116,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -150,6 +162,11 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       creatorOptions: [],
+      remoteMethods: {
+        vehicleMaterials: async (query) => {
+          return await vehicleMaterials({ keyWord: query });
+        },
+      },
       optionObj: {
         id: 'vehicleReservationConfigTable',
         dataList: [],

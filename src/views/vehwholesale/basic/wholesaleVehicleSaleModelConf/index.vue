@@ -15,22 +15,25 @@
           clearable
           multiple
           remote
+          reserve-keyword
           collapseTags
           v-model="form.modelIds"
           :remote-method="getModelIdList"
           value-key="id"
           label-key="name"
-          @change="handleModelChange"
         />
       </el-form-item>
       <el-form-item label="年款">
         <fetch-select
           filterable
           clearable
-          v-model="form.vehicleYearTypeId"
-          :options="yearTypeList"
-          value-key="value"
-          label-key="label"
+          multiple
+          remote
+          reserve-keyword
+          v-model="form.vehicleYearTypeIds"
+          :remote-method="remoteMethods.yearType"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <el-form-item label="订单分类"  v-show="this.visibleCount === 3 || show">
@@ -140,7 +143,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchAuditValid, batchSubmitValid, batchAudit, batchSubmit, batchEditValid, batchEdit } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType, getParentCompany } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listVehicleYearType, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -154,7 +157,7 @@ import Upload from '@/libs/components/UploadDialog';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   modelIds: [],
-  vehicleYearTypeId: '',
+  vehicleYearTypeIds: [],
   orderCategory: '',
   auditStatus: '',
   dealerParentOrgCode: '',
@@ -191,8 +194,13 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
-      yearTypeList: [],
       showEditDialog: false,
+      // 远程搜索方法
+      remoteMethods: {
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
+        }
+      },
       optionObj: {
         id: 'wholesaleVehicleSaleModelConfTable',
         dataList: [],
@@ -494,18 +502,6 @@ export default {
     },
     async getDealerParentOrgList (params) {
       return getParentCompany({ parentCompanyName: params });
-    },
-    async handleModelChange (val, record) {
-      this.yearTypeList = [];
-      this.form.vehicleYearTypeId = null;
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
-      this.yearTypeList = res.map(item => {
-        return {
-          ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
-        };
-      });
     },
     handleBatchAudit (data) {
       let params = {

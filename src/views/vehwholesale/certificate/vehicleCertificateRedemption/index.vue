@@ -317,6 +317,7 @@ export default {
             }]
           },
           { props: 'vehiclePrice', label: '车辆售价（零售价）', visible: true, width: 180, align: 'right' },
+          { props: 'salePrice', label: '销售价（批售价）', visible: true, width: 180, align: 'right' },
           { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 150 },
           { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 120, align: 'right' },
           { props: 'downPaymentAmount', label: '首付款金额', visible: true, width: 120, align: 'right' },

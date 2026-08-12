@@ -69,6 +69,17 @@
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
+      <el-form-item label="物料描述">
+        <fetch-select
+          remote
+          filterable
+          clearable
+          :remote-method="remoteMethods.vehicleMaterials"
+          v-model="form.bizCode"
+          value-key="materialsCode"
+          label-key="materialsDesc"
+        />
+      </el-form-item>
       </template>
       <page-search-action
         v-model="show"
@@ -114,7 +125,7 @@ import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import TagInput from '@/libs/components/TagInput';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo, vehicleMaterials } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -167,6 +178,11 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      remoteMethods: {
+        vehicleMaterials: async (query) => {
+          return await vehicleMaterials({ keyWord: query });
+        },
+      },
       moduleKey: 'AISVS-vehicleReservationDetail',
       show: false,
       loading: false,

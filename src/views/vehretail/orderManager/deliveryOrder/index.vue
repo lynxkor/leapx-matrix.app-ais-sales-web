@@ -48,7 +48,7 @@
         <el-form-item label="车型名称">
           <fetch-select
             :remote-method="remoteMethods.model"
-            v-model="form.modelId"
+            v-model="form.modelIdList"
             v-bind="selectOptions"
           />
         </el-form-item>
@@ -127,6 +127,17 @@
             clearable
           />
         </el-form-item>
+      <el-form-item label="金融方案">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vr_financial_scheme"
+          v-model="form.financialSchemeList"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
         <el-form-item label="预约提车时间">
           <el-date-picker
           :default-time="['00:00:00', '23:59:59']"
@@ -303,6 +314,7 @@ export default {
         clearable: true,
         filterable: true,
         remote: true,
+        multiple: true,
         reserveKeyword: true
       },
       // 远程搜索方法
@@ -388,6 +400,7 @@ export default {
           { props: 'deliveryUserName', label: '订单交付顾问', visible: false, width: 200 },
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
           { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
+          { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 200, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
