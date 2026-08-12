@@ -32,6 +32,9 @@
       <el-form-item label="销售门店">
         <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="销售门店编码">
+        <tag-input v-model="form.saleDealerCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="订单分类">
         <fetch-select
           :remote-method="getWholesaleEorderTyprList"
@@ -691,6 +694,7 @@ export default {
               }
             ]
           },
+          { props: 'saleDealerCode', label: '销售门店编码', visible: true, width: 120 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
