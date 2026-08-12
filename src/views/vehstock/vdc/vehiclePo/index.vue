@@ -111,6 +111,12 @@
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
+    <div class="ais-active">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="全量" name="full"></el-tab-pane>
+        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
+      </el-tabs>
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -174,6 +180,9 @@ const defaultForm = {
   optionPackageIdList: [],
 };
 
+// 全量页签专用表单：不带任何查询条件
+const defaultFormFull = {};
+
 const pageSize = 20;
 const mockConfig = {
   data: null
@@ -203,6 +212,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      activeName: 'full',
       optionObj: {
         id: 'vehiclePoTable',
         dataList: [],
@@ -340,6 +350,11 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    if (this.activeName === 'full') {
+      this.form.poStatusList = [];
+      this.form.carAllocated = '';
+      this.form.status = '';
+    }
     this.getData();
   },
   methods: {
@@ -373,7 +388,11 @@ export default {
       this.getData();
     },
     onReset () {
-      this.form = { ...defaultForm };
+      if (this.activeName === 'full') {
+        this.form = { ...defaultFormFull };
+      } else {
+        this.form = { ...defaultForm };
+      }
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -548,6 +567,11 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
+    },
+    // 点击tabs栏切换
+    handleClick (item) {
+      this.activeName = item.name;
+      this.onReset();
     },
   }
 };

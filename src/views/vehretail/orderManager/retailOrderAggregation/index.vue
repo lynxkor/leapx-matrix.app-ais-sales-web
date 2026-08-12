@@ -156,6 +156,8 @@ export default {
       this.retailOrderInfoExtraParams = {};
       this.entVehicleOrderExtraParams = {};
       this.vehicleProfileExtraParams = {};
+      this.form.vin = '';
+      this.form.phone = '';
       this.getData();
     },
     getData () {

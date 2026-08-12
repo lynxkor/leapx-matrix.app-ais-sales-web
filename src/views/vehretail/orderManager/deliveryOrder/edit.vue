@@ -323,7 +323,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-link
-                v-if="form.status === 4 && canDeletePaymentRecord(row)"
+                v-if="form.status === 4 && canDeletePaymentRecord(row) && canRetailOrderPayRecordDelete"
                 type="danger"
                 :underline="false"
                 @click="handleDeletePaymentRecord(row)"
@@ -597,6 +597,8 @@ export default {
       buttonLoading: {},
       // 权限控制
       canAppointment: false, // 预约交车
+      // 权限 Set 缓存（从 aisPageSource 转换而来，O(1) 查询；懒初始化）
+      permissionSet: null,
       canAddOrUpdate: false, // 编辑表单权限
       canDeliveryConfirm: false, // 交车确认单生成
       canChangeAppointmentTime: false, // 更改预约时间
@@ -804,37 +806,47 @@ export default {
   mounted () {
     this.$nextTick(() => {
       // 需要默认隐藏的 section 标识列表
-      const sectionsToHide = ['basicInfo', 'appointment', 'retailOrder', 'realNameAuth', 'deliveryConfirm', 'paymentRecords', 'appointmentRecords', 'attachments'];
-      sectionsToHide.forEach(sectionKey => {
-        const header = document.querySelector(`.common-section-header[data-section="${sectionKey}"]`);
-        if (header && !header.classList.contains('fold')) {
-          // 模拟点击，触发收起
-          this.addHeaderActions({ target: header.querySelector('h2') });
-        }
-      });
+      // const sectionsToHide = ['basicInfo', 'appointment', 'retailOrder', 'realNameAuth', 'deliveryConfirm', 'paymentRecords', 'appointmentRecords', 'attachments'];
+      // sectionsToHide.forEach(sectionKey => {
+      //   const header = document.querySelector(`.common-section-header[data-section="${sectionKey}"]`);
+      //   if (header && !header.classList.contains('fold')) {
+      //     // 模拟点击，触发收起
+      //     this.addHeaderActions({ target: header.querySelector('h2') });
+      //   }
+      // });
     });
     // this.loadCityDeliveryOrderMin();
   },
   methods: {
     getPaymentRecordList,
     // 初始化权限
+    // 注意：不要用 this.permissions，因为 permissions mixin 会按 moduleKey 前缀过滤，
+    // 跨模块的权限（如 AISVR-retailOrderPayRecord-delete）会被过滤掉导致查不到。
     initPermissions () {
-      this.canAppointment = this.permissions.has(`${this.moduleKey}-appointment`);
-      this.canAddOrUpdate = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
-      this.canDeliveryConfirm = this.permissions.has(`${this.moduleKey}-deliveryConfirm`);
-      this.canChangeAppointmentTime = this.permissions.has(`${this.moduleKey}-changeAppointmentTime`);
-      this.canCancelOrderRights = this.permissions.has(`${this.moduleKey}-cancelOrderRights`);
-      this.canRevertCancelOrderRights = this.permissions.has(`${this.moduleKey}-revertCancelOrderRights`);
-      this.canAddPaymentRecord = this.permissions.has(`${this.moduleKey}-addPaymentRecord`);
-      this.canConfirmPayment = this.permissions.has(`${this.moduleKey}-confirmPayment`);
-      this.canDeliveryConfirmPush = this.permissions.has(`${this.moduleKey}-deliveryConfirmPush`);
-      this.canDeliveryConfirmResign = this.permissions.has(`${this.moduleKey}-deliveryConfirmResign`);
-      this.canViewDeliveryConfirm = this.permissions.has(`${this.moduleKey}-viewDeliveryConfirm`);
-      this.canUploadInvoice = this.permissions.has(`${this.moduleKey}-uploadInvoice`);
-      this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
-      this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
-      this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
-      this.canCalculateDeliveryAmount = this.permissions.has(`${this.moduleKey}-calculateDeliveryAmount`);
+      // 懒初始化：aisPageSource 在登录后基本不变，复用 Set 避免每次 .includes() 遍历
+      if (!this.permissionSet) {
+        const arr = this.$store.state.pageSource?.aisPageSource || [];
+        this.permissionSet = new Set(Array.isArray(arr) ? arr : []);
+      }
+      const has = (key) => this.permissionSet.has(key);
+      this.canAppointment = has(`${this.moduleKey}-appointment`);
+      this.canAddOrUpdate = has(`${this.moduleKey}-addOrUpdate`);
+      this.canDeliveryConfirm = has(`${this.moduleKey}-deliveryConfirm`);
+      this.canChangeAppointmentTime = has(`${this.moduleKey}-changeAppointmentTime`);
+      this.canCancelOrderRights = has(`${this.moduleKey}-cancelOrderRights`);
+      this.canRevertCancelOrderRights = has(`${this.moduleKey}-revertCancelOrderRights`);
+      this.canAddPaymentRecord = has(`${this.moduleKey}-addPaymentRecord`);
+      this.canConfirmPayment = has(`${this.moduleKey}-confirmPayment`);
+      this.canDeliveryConfirmPush = has(`${this.moduleKey}-deliveryConfirmPush`);
+      this.canDeliveryConfirmResign = has(`${this.moduleKey}-deliveryConfirmResign`);
+      this.canViewDeliveryConfirm = has(`${this.moduleKey}-viewDeliveryConfirm`);
+      this.canUploadInvoice = has(`${this.moduleKey}-uploadInvoice`);
+      this.canCancelPayment = has(`${this.moduleKey}-cancelPayment`);
+      this.canCancelDelivery = has(`${this.moduleKey}-cancelDelivery`);
+      this.canPushDeliveryActive = has(`${this.moduleKey}-pushDeliveryActive`);
+      this.canCalculateDeliveryAmount = has(`${this.moduleKey}-calculateDeliveryAmount`);
+      // 跨模块权限：从 store 原始数据判断，绕过 mixin 的前缀过滤
+      this.canRetailOrderPayRecordDelete = has('AISVR-retailOrderPayRecord-delete');
     },
     handleSaleUserChange (val, name) {
       if (!val) {
@@ -900,13 +912,14 @@ export default {
       const finalList = [...list];
 
       // 优先使用 forceDisabledItem（清空回填场景），否则使用 currentId/currentName
+      // userId 统一转 number，保证与接口返回的类型一致，el-select 才能严格匹配到 option
       if (forceDisabledItem) {
         const itemExists = finalList.some(item => String(item.userId) === String(forceDisabledItem.userId));
         if (!itemExists) {
-          finalList.push({ ...forceDisabledItem, disabled: true });
+          finalList.push({ ...forceDisabledItem, userId: Number(forceDisabledItem.userId), disabled: true });
         }
       } else if (currentId && currentName && !exists) {
-        finalList.push({ userId: currentId, username: currentName, disabled: true });
+        finalList.push({ userId: Number(currentId), username: currentName, disabled: true });
       }
 
       this[optionsKey] = finalList;
@@ -934,10 +947,12 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          res.saleUserId = res.saleUserId ? String(res.saleUserId) : '';
-          res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
-          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
-          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
+          // 统一转为 number，与远程搜索返回的 userId 类型保持一致，
+          // 否则 el-select 严格相等匹配不到 option，会只显示 id 不显示姓名
+          res.saleUserId = res.saleUserId ? Number(res.saleUserId) : '';
+          res.deliveryUserId = res.deliveryUserId ? Number(res.deliveryUserId) : '';
+          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? Number(res.deliveryDerivativeUserId) : '';
+          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? Number(res.onSiteDeliveryUserId) : '';
           // 初始化下拉数据（无论是否有值都查询一次，确保下拉有数据）
           this.$nextTick(() => {
             this.handleRemoteSearch('', 'saleUser');

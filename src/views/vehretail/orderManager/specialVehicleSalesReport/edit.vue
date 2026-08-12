@@ -226,7 +226,8 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN码：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link> -->
+                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
@@ -837,7 +838,7 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
+    async submitRequest () {
       if (this.form.id) {
         // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
         const { valid, errors } = validateAttachments({
@@ -849,7 +850,10 @@ export default {
           return Promise.reject(new Error('附件校验未通过'));
         }
       }
-      return addOrUpdate({ ...this.form });
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后强制刷新浏览器当前页面
+      window.location.reload();
+      return res;
     },
     // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
     async loadAttachmentConfig () {
@@ -1192,6 +1196,8 @@ export default {
       // 获取门店库存信息
       if (this.form.vin) {
         this.refreshStoreInventoryLedger(this.form.vin);
+        // 车辆产地 VDC库存中获取
+        this.vehicleProductAreaRender(this.form.vin);
       }
     },
     // 返回 Promise，便于在 handleSubmit 中 await，确保 reservationStatus 已同步赋值
@@ -1210,13 +1216,13 @@ export default {
           this.form.reservationStatus = res.records[0].reservationStatus;
           this.form.wholesaleOrderCode = res.records[0].wholesaleOrderCode;
           this.form.storeInventoryVin = this.form.vin;
-          this.form.vehiclePurpose = 30;
+          if (this.form.reservationStatus === 10) {
+            this.form.vehiclePurpose = 30;
+          }
           // this.form.saleDealerCode = res.records[0].saleDealerCode;
           // this.form.saleDealerName = res.records[0].saleDealerName;
           // this.form.deliveryDealerCode = res.records[0].deliveryDealerCode;
           // this.form.deliveryDealerName = res.records[0].deliveryDealerName;
-          // 车辆产地
-          this.vehicleProductAreaRender(vin);
           if (res.records[0].saleDealerCode) {
             // 渲染销售门店 -> 然后渲染专属服务门店
             this.saleDealerRender(res.records[0].saleDealerCode);
@@ -1238,8 +1244,9 @@ export default {
       });
     },
     vehiclePurposeChange (val) {
+      console.log(val);
       if (val) {
-        if (this.form.reservationStatus === 10 && val !== 30) {
+        if (this.form.reservationStatus === 10 && Number(val) !== 30) {
           this.$message.error('该车辆' + this.form.vin + '车辆类型为试驾车,车辆用途必须选择试驾车!');
           this.form.vehiclePurpose = null;
         } else {

@@ -2839,7 +2839,7 @@ const routes = [
       component: () => import('@/views/vehwholesale/certificate/vehicleCertificateRedemption/index.vue'),
 
       meta: {
-        name: '新页面',
+        name: '车辆合格证赎回',
         keepAlive: true
       }
     }, {
@@ -2848,7 +2848,7 @@ const routes = [
       component: () => import('@/views/vehwholesale/certificate/vehicleCertificateRedemption/edit.vue'),
 
       meta: {
-        name: '新页面详情',
+        name: '车辆合格证赎回详情',
         noResourceUrl: 'true'
       }
     }, {

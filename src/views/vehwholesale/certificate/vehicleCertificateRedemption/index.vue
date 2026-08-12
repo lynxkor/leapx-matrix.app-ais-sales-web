@@ -285,7 +285,13 @@ export default {
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode); }, type: 'primary' }] },
           { props: 'creditSettleStatusLabel', label: '赊销结算状态', visible: true, width: 120 },
           { props: 'certificateStatusLabel', label: '合格证状态', visible: true, width: 100 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + row.vin); }, type: 'primary' }] },
+          {
+            props: 'vin',
+            label: 'VIN码',
+            visible: true,
+            width: 180,
+            // buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + row.vin); }, type: 'primary' }]
+          },
           {
             props: 'seriesName',
             label: '车系名称',

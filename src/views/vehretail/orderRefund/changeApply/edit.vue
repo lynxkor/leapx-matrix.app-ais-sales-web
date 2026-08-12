@@ -289,7 +289,7 @@
                     placeholder="请输入"
                     v-model="form.newBuyerName"
                     type="text"
-                    maxlength="20"
+                    maxlength="50"
                     show-word-limit
                     clearable
                     :disabled="[9, 10, 15, 99].includes(form.originalOrderStatus)"

@@ -76,7 +76,7 @@ export default {
         },
         dataProp: [
           { field: 'code', label: '金融订单号', width: 180, clickable: 'financeOrder' },
-          { field: 'financeOrderStatus', label: '金融订单状态', width: 120 },
+          { field: 'financeOrderStatusLabel', label: '金融订单状态', width: 120 },
           { field: 'financeOrganizationName', label: '金融机构', width: 150, clickable: 'financeOrganization' },
           { field: 'cancelReason', label: '取消原因', width: 150 },
           { field: 'installmentOrderCode', label: '分期订单号', width: 180 },

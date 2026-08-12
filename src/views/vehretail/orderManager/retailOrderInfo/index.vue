@@ -66,6 +66,7 @@
           <fetch-select
             :remote-method="remoteMethods.series"
             v-model="form.seriesIdList"
+            reserve-keyword
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
@@ -79,6 +80,7 @@
           <fetch-select
             :remote-method="remoteMethods.model"
             v-model="form.modelIdList"
+            reserve-keyword
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
@@ -104,6 +106,7 @@
           <fetch-select
             :remote-method="remoteMethods.yearType"
             v-model="form.yearTypeIdList"
+            reserve-keyword
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
@@ -133,6 +136,7 @@
             multiple
             v-model="form.regionCodeList"
             :remote-method="remoteMethods.region"
+            reserve-keyword
             value-key="orgCode"
             label-key="orgName"
           />
@@ -165,6 +169,34 @@
             multiple
           />
         </el-form-item>
+      <el-form-item label="订单类型">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vr_order_type"
+          v-model="form.orderType"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
+        <el-form-item label="证件类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_id_card_type"
+            v-model="form.idCardTypeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+      <el-form-item label="下单人信息">
+        <el-input
+          placeholder="请输入"
+          v-model="form.orderUserParams"
+          clearable
+        />
+      </el-form-item>
         <el-form-item label="锁单时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -228,17 +260,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="证件类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vehretail_id_card_type"
-            v-model="form.idCardTypeList"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
           />
         </el-form-item>
       </template>
@@ -400,6 +421,7 @@ const defaultForm = {
   orderUserId: '',
   createTime: '',
   idCardTypeList: [],
+  orderType: '',
 };
 
 const pageSize = 20;
@@ -526,6 +548,7 @@ export default {
             getValue: (row) => getDetailDecryptField(row.id, 'matchVin')
           },
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
+          { props: 'orderTypeLabel', label: '订单类型', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180, sortable: true },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
@@ -570,8 +593,22 @@ export default {
           { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160, sortable: true },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200, sortable: true },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
+          {
+            props: 'orderUserName',
+            label: '下单人姓名',
+            visible: true,
+            width: 140,
+          },
+          {
+            props: 'orderUserPhone',
+            label: '下单人手机号',
+            visible: true,
+            width: 180,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.id, 'orderUserPhone')
+          },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'idCardTypeLabel', label: '证据类型', visible: true, width: 200 },
+          { props: 'idCardTypeLabel', label: '证件类型', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

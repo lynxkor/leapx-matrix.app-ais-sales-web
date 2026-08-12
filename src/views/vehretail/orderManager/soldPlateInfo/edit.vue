@@ -229,7 +229,8 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link> -->
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="车型名称：">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
@@ -1188,7 +1189,7 @@ export default {
       }
       return res;
     },
-    submitRequest () {
+    async submitRequest () {
       if (this.form.id) {
         // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
         const { valid, errors } = validateAttachments({
@@ -1200,7 +1201,10 @@ export default {
           return Promise.reject(new Error('附件校验未通过'));
         }
       }
-      return addOrUpdate({ ...this.form });
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后强制刷新浏览器当前页面 不要用会关不了
+      // window.location.reload();
+      return res;
     },
     // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
     async loadAttachmentConfig () {
@@ -1210,15 +1214,14 @@ export default {
         // 拿到的就是后端的 data 字段本体（顶层是 configCode/configName/detailList，没有再包一层 code/data）。
         // 因此 detailList 直接挂在 configRes 上，不需要再 .data。
         const detailList = configRes?.detailList || [];
-        this.attachmentList = this.attachmentList.map(item => {
+        // 注意:不要整体重写 attachmentList 引用(否则 AisAttachment 的 :uploadConfig watcher 会触发全部子组件重新初始化),
+        // 仅就地更新每个 item 的字段即可
+        this.attachmentList.forEach(item => {
           const detail = detailList.find(d => d.attachType === item.attachType);
-          if (!detail) return item;
-          return {
-            ...item,
-            required: String(detail.required) === '1',
-            maxNum: Number(detail.maxNum) || 0,
-            minNum: Number(detail.minNum) || 0
-          };
+          if (!detail) return;
+          item.required = String(detail.required) === '1';
+          item.maxNum = Number(detail.maxNum) || 0;
+          item.minNum = Number(detail.minNum) || 0;
         });
       } catch (e) {
         console.error('附件配置加载失败，沿用本地默认配置:', e);

@@ -102,7 +102,8 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="配车VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link> -->
+                  {{ form.matchVin }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
@@ -246,7 +247,8 @@
                   {{ form.invoiceAmount }}
                 </el-form-item>
                 <el-form-item label="发票VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link> -->
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="发票合格证号：">
                   {{ form.certificateNo }}
@@ -474,7 +476,8 @@
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.deliveryVin}`" target="_blank">{{ form.deliveryVin }}</el-link>
+                  <!-- <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.deliveryVin}`" target="_blank">{{ form.deliveryVin }}</el-link> -->
+                  {{ form.deliveryVin }}
                 </el-form-item>
                 <el-form-item label="交车时间：">
                   {{ form.deliveryTime }}
@@ -585,6 +588,7 @@
                 <AisAttachment
                   v-for="(item, index) in attachmentList" :key="index"
                   :businessId="_id"
+                  :businessData="businessData"
                   :ref="'attachment' + index"
                   :configCode="item.configCode"
                   :attachType="item.attachType"
@@ -706,7 +710,6 @@ import {
   deleteItem,
   getDetail
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import { getByCode } from '@/libs/api/attachment/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -716,7 +719,6 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { validateAttachments } from '@/libs/utils';
 
 // import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
@@ -805,7 +807,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '发票号码：' + this.form.deliveryInvoiceCode;
     },
     canConfirmUpload () {
       return this.form.status === 0 &&
@@ -815,11 +817,11 @@ export default {
   watch: {
     id: {
       handler (val) {
+        // 首次加载交给 EditBaseContainer.mounted -> loadDetail() 自己处理，避免与子组件挂载竞态造成重复请求
         if (val && this.$refs.containerRef) {
           this.$refs.containerRef.loadDetail();
         }
-      },
-      immediate: true
+      }
     }
   },
   data () {
@@ -834,6 +836,7 @@ export default {
       loading: false,
       submitLoading: false,
       uploadLoading: false,
+      businessData: '',
       uploadLoadingCounter: 0,
       // 车辆属性 1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失
       vehicleAttributeSelector: [
@@ -888,28 +891,8 @@ export default {
     };
   },
   mounted () {
-    this.loadAttachmentConfig();
   },
   methods: {
-    // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
-    async loadAttachmentConfig () {
-      try {
-        const configRes = await getByCode({ configCode: 'mcs_vehnetwork' });
-        const detailList = configRes?.detailList || [];
-        this.attachmentList = this.attachmentList.map(item => {
-          const detail = detailList.find(d => d.attachType === item.attachType);
-          if (!detail) return item;
-          return {
-            ...item,
-            required: String(detail.required) === '1',
-            maxNum: Number(detail.maxNum) || 0,
-            minNum: Number(detail.minNum) || 0
-          };
-        });
-      } catch (e) {
-        console.error('附件配置加载失败，沿用本地默认配置:', e);
-      }
-    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {
@@ -1077,22 +1060,36 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          let params = {
+            yearTypeName: res.retailOrderMaterials.yearTypeId,
+            modelLineId: res.retailOrderMaterials.seriesId
+          };
+          this.businessData = JSON.stringify(params);
+          return res;
+        });
       }
     },
     async submitRequest () {
       if (this.form.id) {
-        // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
-        const { valid, errors } = validateAttachments({
-          attachmentList: this.attachmentList,
-          refs: this.$refs
-        });
-        if (!valid) {
-          this.$message.error(errors.join('；'));
+        const results = await Promise.all(
+          this.attachmentList.map((item, index) => {
+            const ref = this.$refs[`attachment${index}`];
+            const inst = Array.isArray(ref) ? ref[0] : ref;
+            if (!inst || typeof inst.validate !== 'function') return true;
+            return inst.validate({ silent: true }).then(ok => ({ ok, label: item.label }));
+          })
+        );
+        const failed = results.filter(r => r && r.ok === false);
+        if (failed.length) {
+          this.$message.error(failed.map(r => `请检查【${r.label}】附件`).join('；'));
           throw new Error('附件校验未通过');
         }
       }
-      return addOrUpdate({ ...this.form });
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后强制刷新浏览器当前页面
+      window.location.reload();
+      return res;
     },
     // 打开侧边栏
     openPane () {

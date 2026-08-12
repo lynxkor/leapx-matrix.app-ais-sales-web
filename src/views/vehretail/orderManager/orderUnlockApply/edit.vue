@@ -432,7 +432,8 @@
                   ref="attachment"
                   configCode="mcs_unstockvin"
                   attachType="附件资料"
-                  :readonly="!canEditing"
+                  @before-upload-click="handleBeforeClick"
+                  :readonly="canReadonly"
                 />
               </div>
             </div>
@@ -558,6 +559,9 @@ export default {
       return this.form.applyStatus === 1020 &&
         this.permissions.has(`${this.moduleKey}-audit`);
     },
+    canReadonly () {
+      return this.form.applyStatus !== 1010 && this.form.applyStatus !== 1040;
+    },
   },
   watch: {
     id: {
@@ -665,6 +669,14 @@ export default {
     }
   },
   methods: {
+    handleBeforeClick ({ allow, openFileDialog }) {
+      if (!this.canAddOrUpdate) {
+        this.$message.warning('没有编辑权限无法上传');
+        allow(false);
+        return;
+      }
+      allow(true); // 等价于 openFileDialog() 内部会自动调用一次
+    },
     handleUnlkockApplyAudit (data) {
       const ids = data.auditDataList.map(item => item.id) || [];
       let reqParams = {
@@ -676,19 +688,13 @@ export default {
         this.$refs.containerRef.loadDetail();
       });
     },
-    async handleBatchSubmit () {
+    handleBatchSubmit () {
       const selectionList = [this.form];
-      // 1) 提交前先校验所有 AisAttachment 组件(必填 / minNum / maxNum)
-      const attachmentRefs = Object.values(this.$refs).filter(ref => typeof ref?.validate === 'function');
-      for (const ref of attachmentRefs) {
-        // eslint-disable-next-line no-await-in-loop
-        const ok = await ref.validate();
-        if (!ok) {
-          // 校验失败已在 AisAttachment 内弹错,直接阻断,不弹确认框
-          return;
-        }
+      const allFiles = this.$refs.attachment.getFileList();
+      if (!allFiles.length) {
+        this.$message.warning('请上传附件');
+        return;
       }
-      // 2) 校验通过,弹窗确认
       this.$confirm('确认提交吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

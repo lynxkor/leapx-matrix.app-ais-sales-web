@@ -23,12 +23,13 @@
       <el-form-item label="车型名称">
         <fetch-select
           :remote-method="remoteMethods.model"
-          v-model="form.modelId"
+          v-model="form.modelIdList"
           placeholder="请选择"
           clearable
           label-key="name"
           value-key="id"
           filterable
+          multiple
           remote
         />
       </el-form-item>
@@ -224,6 +225,7 @@ const defaultForm = {
   modelName: '',
   yearTypeName: '',
   openDeliveryStatus: '',
+  modelIdList: [],
 };
 
 const pageSize = 20;

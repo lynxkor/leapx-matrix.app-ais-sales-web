@@ -44,7 +44,9 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="主页" name="homePage"></el-tab-pane>
         <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
+        <el-tab-pane label="当前电量不足" name="fenceCrossedPower"></el-tab-pane>
         <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
+        <el-tab-pane label="当前实车交付未出库" name="fenceNotDelivered"></el-tab-pane>
       </el-tabs>
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
@@ -213,9 +215,13 @@ export default {
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       if (this.activeName === 'fenceCrossed') {
-        this.form.fenceCrossedType = '2';
+        this.form.fenceCrossedType = '50';
+      } else if (this.activeName === 'fenceCrossedPower') {
+        this.form.fenceCrossedType = '60';
       } else if (this.activeName === 'fenceNotCrossed') {
-        this.form.fenceCrossedType = '1';
+        this.form.fenceCrossedType = '30';
+      } else if (this.activeName === 'fenceNotDelivered') {
+        this.form.fenceCrossedType = '70';
       }
       this.sortColumns = [...DEFAULT_SORT_COLUMNS];
       this.getData();
@@ -385,10 +391,16 @@ export default {
         this.onReset();
       } else if (item.name === 'fenceCrossed') {
         this.onReset();
-        this.form.fenceCrossedType = '2';
+        this.form.fenceCrossedType = '50';
+      } else if (item.name === 'fenceCrossedPower') {
+        this.onReset();
+        this.form.fenceCrossedType = '60';
       } else if (item.name === 'fenceNotCrossed') {
         this.onReset();
-        this.form.fenceCrossedType = '1';
+        this.form.fenceCrossedType = '30';
+      } else if (item.name === 'fenceNotDelivered') {
+        this.onReset();
+        this.form.fenceCrossedType = '70';
       }
     },
   }

@@ -19,7 +19,8 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" :loading="printLoading" v-if="canOperateOrder && canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <!-- 打印合同解除协议 按钮 产品改成了都不要限制什么状态都都能看到 -->
+          <el-button size="small" :loading="printLoading" v-if="canGetUnbindContractUrl" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button size="small" :loading="setSpecialMarkLoading" v-if="canSetSpecialRemark" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canManualLock && form.wholesaleBindStatus !== 1 && form.orderStatus === 3 && form.lockStatus === 1 " @click="handleManualVehicleAllocation">手工配车</el-button>
@@ -177,7 +178,7 @@
                     :disabled="!canEditField('deliveryDealerName')"
                   />
                 </el-form-item>
-                <el-form-item label="订单交付顾问：" prop="deliveryUserName">
+                <el-form-item label="订单交付顾问：">
                   <fetch-select
                     filterable
                     clearable
@@ -373,12 +374,7 @@
             :formData="form.finance || {}"
             :fields="financeDisplayFields"
           />
-          <generic-detail-display
-            id="term" class="common-section"
-            :title="'期限信息'"
-            :formData="form"
-            :fields="termDisplayFields"
-          />
+          <term-info-section id="term" class="common-section" :formData="form" />
           <component-table
             v-for="tableConfig in tableConfigs"
             :key="tableConfig.sectionId" class="common-section"
@@ -394,7 +390,7 @@
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
           <!-- VIN 选择对话框 -->
-          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
+          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" @submitted="onVinDialogSubmitted" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
           <!-- 购车协议对话框 -->
           <purchase-agreement-dialog
             ref="PurchaseAgreementDialog"
@@ -465,7 +461,6 @@ import {
   wholesaleDisplayFields,
   refundDisplayFields,
   financeDisplayFields,
-  termDisplayFields,
   modificationRecordDisplayFields,
   orderChangeApplicationDisplayFields,
   unlockApplicationRecordDisplayFields,
@@ -478,6 +473,7 @@ import {
 import ComponentTable from '@/libs/components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
+import TermInfoSection from './components/TermInfoSection';
 import { getEnum, loginUserGet, engineerList } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -543,6 +539,7 @@ export default {
     MaterialsDialog,
     VinDialog,
     NavTop,
+    TermInfoSection,
     ComponentTable,
     GenericDetailDisplay,
     EditPageLayout,
@@ -662,7 +659,6 @@ export default {
       wholesaleDisplayFields: wholesaleDisplayFields,
       refundDisplayFields: refundDisplayFields,
       financeDisplayFields: financeDisplayFields,
-      termDisplayFields: termDisplayFields,
       tableConfigs: [
         {
           title: '整车订单改配信息',
@@ -915,6 +911,10 @@ export default {
       // 根据实际需求处理选中的车辆数据
       this.$message.success('已选择车辆：' + vehicle.vin);
     },
+    // vin-dialog 提交成功后回调，重新刷新详情
+    onVinDialogSubmitted () {
+      this.getDetailData();
+    },
     // 自动锁车
     handleAutoLockVehicle () {
       const param = {
@@ -1008,7 +1008,7 @@ export default {
       return displayFields.map(field => ({
         field: field.key,
         title: field.label,
-        width: field.label || 150, // 默认宽度，可根据需要调整
+        width: field.width || 150, // 默认宽度，可根据需要调整
         // 透传跳转相关字段，ComponentTable 据此渲染可点击的链接
         link: field.link,
         paramKey: field.paramKey,

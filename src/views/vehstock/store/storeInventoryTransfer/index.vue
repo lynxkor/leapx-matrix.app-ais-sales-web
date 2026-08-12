@@ -3,6 +3,9 @@
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
+      <el-form-item label="整车调拨单号">
+        <tag-input v-model="form.transferNoList" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="VIN">
         <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
@@ -73,6 +76,7 @@ import axios from 'axios';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  transferNoList: [],
   vinList: [],
   targetDealerCode: '',
   auditStatus: '',
@@ -444,6 +448,11 @@ export default {
       if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
         delete data.vinList;
         data.vinLike = this.form.vinList[0] || '';
+      }
+      // 整车调拨单号：单值用 transferNo，多值用 transferNoList
+      if (Array.isArray(this.form.transferNoList) && this.form.transferNoList.length <= 1) {
+        delete data.transferNoList;
+        data.transferNo = this.form.transferNoList[0] || '';
       }
       if (this.form.createTime) {
         delete data.createTime;
