@@ -229,7 +229,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="车辆售价：" prop="vehiclePrice">
+                 <el-form-item label="零售价：" prop="vehiclePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
@@ -237,7 +237,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售价：" prop="salePrice">
+                <el-form-item label="批售价：" prop="salePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.salePrice"
@@ -353,10 +353,10 @@
                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="车辆售价：" prop="vehiclePrice">
+                <el-form-item label="零售价：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
                 </el-form-item>
-                <el-form-item label="销售价：" prop="salePrice">
+                <el-form-item label="批售价：" prop="salePrice">
                   {{ form.salePrice }}
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -683,10 +683,10 @@ export default {
           { required: true, message: '请选择赊销结算状态', trigger: ['change', 'blur'] }
         ],
         vehiclePrice: [
-          { required: true, message: '请输入车辆售价', trigger: 'change' }
+          { required: true, message: '请输入零售价', trigger: 'change' }
         ],
         salePrice: [
-          { required: true, message: '请输入销售价', trigger: 'change' }
+          { required: true, message: '请输入批售价', trigger: 'change' }
         ],
         receiverName: [
           { required: true, message: '请输入收件人', trigger: 'change' }
