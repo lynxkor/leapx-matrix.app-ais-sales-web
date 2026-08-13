@@ -588,6 +588,7 @@ export default {
         { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280', slots: { default: 'replenishApplyDetailCode' } },
         { field: 'seriesName', title: '车系', width: '120', slots: { default: 'seriesName' } },
         { field: 'modelName', title: '车型', width: '200', slots: { default: 'modelName' } },
+        { field: 'yearTypeName', title: '年款', width: '200', slots: { default: 'yearTypeName' } },
         { field: 'materialsCode', title: '物料编码', width: '250', slots: { default: 'materialsCode' } },
         { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
         { field: 'applyQty', title: '申请数量', width: '120' },
