@@ -588,6 +588,10 @@ export default {
           {
             column: 'create_time',
             sort: 'DESC'
+          },
+          {
+            column: 'id',
+            sort: 'ASC'
           }
         ];
       } else {
@@ -595,6 +599,10 @@ export default {
           {
             column: 'create_time',
             sort: 'DESC'
+          },
+          {
+            column: 'id',
+            sort: 'ASC'
           }
         ];
       }
