@@ -319,6 +319,9 @@
                   <template #materialsCode="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsCode }}</el-button>
                   </template>
+                  <template #vehicleYearType="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.vehicleYearTypeId)">{{ row.vehicleYearType }}</el-button>
+                  </template>
                 </component-table>
               </div>
             </div>
@@ -588,6 +591,7 @@ export default {
         { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280', slots: { default: 'replenishApplyDetailCode' } },
         { field: 'seriesName', title: '车系', width: '120', slots: { default: 'seriesName' } },
         { field: 'modelName', title: '车型', width: '200', slots: { default: 'modelName' } },
+        { field: 'vehicleYearType', title: '年款', width: '200', slots: { default: 'vehicleYearType' } },
         { field: 'materialsCode', title: '物料编码', width: '250', slots: { default: 'materialsCode' } },
         { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
         { field: 'applyQty', title: '申请数量', width: '120' },
