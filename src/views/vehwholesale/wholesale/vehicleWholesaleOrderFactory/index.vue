@@ -628,7 +628,9 @@ export default {
       },
       tabName: '2',
       selectionList: [],
-      sortColumns: [],
+      sortColumns: [
+        { column: 'order_time', sort: 'DESC' }
+      ],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -829,7 +831,7 @@ export default {
           { props: 'specialRemark', label: '特殊备注', visible: true, width: 200 },
           { props: 'firstCancelAllocateTime', label: '首次取消配车时间', visible: true, width: 200 },
           { props: 'firstAllocateTime', label: '首次配车时间', visible: true, width: 200 },
-          { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
+          { props: 'outboundTime', label: '出库时间', visible: true, width: 200, sortable: true },
           { props: 'lockStatusLabel', label: '是否已锁定', visible: true, width: 200 },
           { props: 'lockTime', label: '锁定时间', visible: true, width: 200 },
           {
@@ -888,6 +890,7 @@ export default {
           { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
