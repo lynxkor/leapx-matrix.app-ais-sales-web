@@ -116,6 +116,9 @@
                   </el-link> -->
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationTypeLabel">
+                  {{ form.cooperationTypeLabel }}
+                </el-form-item>
                 <!-- <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}
                 </el-form-item>

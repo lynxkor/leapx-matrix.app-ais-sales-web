@@ -672,7 +672,7 @@ export default {
         submitData.ids = list;
         txt = '是否需要批量更新！';
       } else {
-        submitData.ids = [id];
+        submitData.ids = id ? [id] : [this.form.id];
         txt = '是否需要更新！';
       }
 
