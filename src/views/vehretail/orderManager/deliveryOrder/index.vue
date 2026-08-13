@@ -400,7 +400,7 @@ export default {
           { props: 'deliveryUserName', label: '订单交付顾问', visible: false, width: 200 },
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
           { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
-          { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 200 },
+          { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 120 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
