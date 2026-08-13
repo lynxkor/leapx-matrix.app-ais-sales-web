@@ -996,7 +996,7 @@ export default {
         disabled: false
       });
       comparisonData.push({
-        fieldKey: 'carIdCardNo',
+        fieldKey: 'invoiceCardNo',
         fieldName: '发票证件号',
         recognizedValue: this.form.invoiceCardNo,
         checkField: '证件号码',
