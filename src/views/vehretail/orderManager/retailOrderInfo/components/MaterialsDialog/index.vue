@@ -152,6 +152,7 @@ import {
   vehicleBatteryCell
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
+import { debounce } from '@/libs/utils';
 
 const defaultSearchForm = {
   seriesId: '',
@@ -339,7 +340,7 @@ export default {
     },
 
     // 确认选择
-    confirmSelection () {
+    confirmSelection: debounce(function () {
       if (!this.selectedRow) {
         this.$message.warning('请勾选一条物料记录');
         return;
@@ -351,7 +352,7 @@ export default {
         // 组件内部处理提交逻辑
         this.handleInternalSubmit();
       }
-    },
+    }, 300),
 
     // 内部提交处理方法
     async handleInternalSubmit () {

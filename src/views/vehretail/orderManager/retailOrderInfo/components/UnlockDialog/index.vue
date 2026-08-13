@@ -95,6 +95,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
 import VinDialog from '../VinDialog'; // 引入 VIN 选择对话框
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import { debounce } from '@/libs/utils';
 
 const defaultForm = {
   retailOrderId: '',
@@ -312,7 +313,7 @@ export default {
         }
       });
     },
-    submit () {
+    submit: debounce(function () {
       this.$refs.form.validate(valid => {
         if (!valid) return;
         this.submitLoading = true;
@@ -322,7 +323,7 @@ export default {
           this.doSingleUnlock();
         }
       });
-    },
+    }, 300),
     doSingleUnlock () {
       const params = {
         retailOrderId: this.businessId,

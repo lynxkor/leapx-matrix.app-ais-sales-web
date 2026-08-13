@@ -72,6 +72,7 @@
 <script>
 import { manualLock, storeInventoryLedgerPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getList as materialsCodeGetList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
+import { debounce } from '@/libs/utils';
 
 const defaultSearchForm = {
   vinLike: '',
@@ -218,7 +219,7 @@ export default {
     },
 
     // 确认选择
-    confirmSelection () {
+    confirmSelection: debounce(function () {
       if (!this.selectedRow) {
         this.$message.warning('请勾选一条车辆记录');
         return;
@@ -230,7 +231,7 @@ export default {
         this.confirmLoading = true;
         this.handleInternalSubmit();
       }
-    },
+    }, 300),
 
     // 内部提交处理方法
     handleInternalSubmit () {
