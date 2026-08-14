@@ -112,7 +112,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-         <el-form-item label="出库时间">
+         <!-- <el-form-item label="出库时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.outboundTime"
@@ -124,7 +124,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-        </el-form-item>
+        </el-form-item> -->
          <el-form-item label="订单状态">
           <fetch-select
               :options="orderStatusOptions"
