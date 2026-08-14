@@ -9,6 +9,21 @@
       label-width="150px"
       class="ais-search-form"
     >
+    <el-form-item label="车系">
+      <fetch-select
+        v-model="form.seriesIds"
+        :remote-method="remoteMethods.series"
+        placeholder="请选择"
+        labelKey="name"
+        valueKey="id"
+        clearable
+        remote
+        reserve-keyword
+        multiple
+        collapseTags
+        filterable
+      />
+    </el-form-item>
       <el-form-item label="车型">
         <fetch-select
           filterable
@@ -117,6 +132,7 @@
         :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
+        @sortChange="handleSortChange"
       />
     </div>
     <Upload
@@ -143,7 +159,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchAuditValid, batchSubmitValid, batchAudit, batchSubmit, batchEditValid, batchEdit } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listVehicleYearType, getParentCompany } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listVehicleYearType, getParentCompany, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -156,6 +172,7 @@ import Upload from '@/libs/components/UploadDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  seriesIds: [],
   modelIds: [],
   vehicleYearTypeIds: [],
   orderCategory: '',
@@ -189,6 +206,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      sortColumns: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -197,6 +215,9 @@ export default {
       showEditDialog: false,
       // 远程搜索方法
       remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, size: 100 });
+        },
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query });
         }
@@ -229,6 +250,18 @@ export default {
             }]
           },
           {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
             props: 'modelName',
             label: '车型',
             visible: true,
@@ -252,11 +285,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120, sortable: true },
           { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 120 },
           { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 150 },
-          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 100, align: 'right' },
-          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150 },
+          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 100, align: 'right', sortable: true },
+          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150, sortable: true },
           { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right' },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 240 },
           { props: 'startDate', label: '开始日期', visible: true, width: 160 },
@@ -307,6 +340,21 @@ export default {
     this.getData();
   },
   methods: {
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -432,6 +480,8 @@ export default {
           data.updateTimeEnd = this.form.updateTime[1];
         }
       }
+      // 排序字段
+      data.sortColumns = this.sortColumns;
 
       return data;
     },

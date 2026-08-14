@@ -11,11 +11,11 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
+        :showEditBtn="form.applyStatus === 1010"
       >
         <template #extraButtons>
           <el-button v-if="canVoided" size="small" @click="handleBatchVoided">作废</el-button>
-          <el-button v-if="canSubmit" size="small" @click="handleBatchSubmit">提交</el-button>
+          <el-button v-if="canSubmit && form.applyStatus === 1010" size="small" @click="handleBatchSubmit">提交</el-button>
           <el-button v-if="canAudit" size="small" @click="handleBatchAudit">审核</el-button>
         </template>
         <el-main>
