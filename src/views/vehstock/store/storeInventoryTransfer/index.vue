@@ -467,7 +467,8 @@ export default {
     },
     // 查询门店编码或名称
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ keyword: params });
+      // 经营状态 2：建设中 3：已入网 4：退网中 5：已退网
+      return listOrgStoreInfo({ keyword: params, status: [2, 3, 4] });
     },
     async fetchOptions (code) {
       if (code) {
