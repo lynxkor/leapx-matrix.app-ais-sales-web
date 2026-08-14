@@ -78,6 +78,7 @@
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
+                    ref="seriesSelectRef"
                     filterable
                     clearable
                     remote
@@ -315,18 +316,19 @@ export default {
       this.form.vehicleModelLine = record?.name || '';
       this.form.seriesName = '';
       this.form.seriesId = '';
-      this.vehicleSeriesOptions = [];
-      try {
-        const response = await this.getVehicleSeriesListByModelLineId(val);
-        this.vehicleSeriesOptions = response || [];
-        if (record) {
-          this.form.vehicleModelLine = record.name;
-          this.form.vehicleModelLineId = record.id;
-        }
-      } catch (error) {
-        console.error('获取车系列表失败:', error);
-        this.vehicleSeriesOptions = [];
-      }
+      // this.vehicleSeriesOptions = [];
+      this.$refs.seriesSelectRef.loadRemoteMethod();
+      // try {
+      //   const response = await this.getVehicleSeriesListByModelLineId(val);
+      //   this.vehicleSeriesOptions = response || [];
+      //   if (record) {
+      //     this.form.vehicleModelLine = record.name;
+      //     this.form.vehicleModelLineId = record.id;
+      //   }
+      // } catch (error) {
+      //   console.error('获取车系列表失败:', error);
+      //   this.vehicleSeriesOptions = [];
+      // }
     },
     async getVehicleSeriesListByModelLineId (modelLineId) {
       if (!modelLineId) {
