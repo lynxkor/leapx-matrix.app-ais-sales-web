@@ -437,8 +437,8 @@ export default {
           { props: 'pickupContactName', label: '接车人', visible: true, width: 150 },
           { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 180 },
           { props: 'regionName', label: '大区', visible: true, width: 120 },
-          // { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 120 },
-          // { props: 'vdcInventoryStatusLabel', label: '车辆库存状态', visible: true, width: 120 },
+          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 120 },
+          { props: 'vdcInventoryStatusLabel', label: '车辆库存状态', visible: true, width: 120 },
           {
             props: 'saleDealerName',
             label: '销售门店名称',
