@@ -138,6 +138,12 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="母公司编码">
+        <tag-input v-model="form.dealerCompanyCodeList" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="母公司名称">
+        <tag-input v-model="form.dealerCompanyNameList" placeholder="请输入" />
+      </el-form-item>
         <el-form-item label="预约提车时间">
           <el-date-picker
           :default-time="['00:00:00', '23:59:59']"
@@ -250,7 +256,9 @@ const defaultForm = {
   deliveryTime: [],
   areaCodes: [],
   provinceCodeList: [],
-  cityCodeList: []
+  cityCodeList: [],
+  dealerCompanyCodeList: [],
+  dealerCompanyNameList: [],
   // seriesIdList: [],
 };
 
@@ -401,6 +409,8 @@ export default {
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
           { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
           { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 120 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
