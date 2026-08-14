@@ -193,7 +193,7 @@
             multiple
           />
        </el-form-item>
-        <!-- <el-form-item label="车辆交付状态">
+        <el-form-item label="车辆交付状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_vehicle_delivery_status"
@@ -214,7 +214,7 @@
             filterable
             multiple
           />
-       </el-form-item> -->
+       </el-form-item>
        <el-form-item label="创建时间">
          <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
