@@ -451,11 +451,11 @@
                   <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
                     {{ form.logisticsReserveRemark }}
                   </el-form-item>
-                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
-                    {{ form.cancelSettleTime }}
-                  </el-form-item>
                   <el-form-item label="结算时间：" prop="settleTime">
                     {{ form.settleTime }}
+                  </el-form-item>
+                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
+                    {{ form.cancelSettleTime }}
                   </el-form-item>
                   <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                     {{ form.initDeliveryCycleDesc }}
