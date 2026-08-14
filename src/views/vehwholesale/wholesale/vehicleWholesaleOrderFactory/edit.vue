@@ -516,6 +516,7 @@
                     <fetch-select :options="financialOrganizationList" v-model="form.financialOrganizationId"
                       placeholder="请选择" clearable filterable labelKey="name" valueKey="id"
                       @change="getNewfinancialOrganization" :disabled="form.settleFundType !== 2010" />
+                  </el-form-item>
                   <el-form-item label="使用现金金额：" prop="usedCashAmount">
                     <el-input placeholder="请输入" v-model="form.usedCashAmount" clearable disabled />
                   </el-form-item>
@@ -536,7 +537,6 @@
                     clearable
                     filterable
                   /> -->
-                  </el-form-item>
                   <el-form-item label="开票类型：" prop="invoiceDiscountType">
                     <fetch-select :request="fetchOptions" enumCode="vw_invoice_type" v-model="form.invoiceDiscountType"
                       placeholder="请选择" clearable filterable disabled />
