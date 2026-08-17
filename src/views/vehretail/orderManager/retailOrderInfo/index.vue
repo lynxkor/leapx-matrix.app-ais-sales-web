@@ -19,10 +19,13 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="批售订单号" v-show="this.visibleCount === 3 || show">
-        <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
+      <el-form-item label="配车VIN码">
+        <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
+      <el-form-item label="批售订单号">
+        <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="整车订单号">
         <tag-input v-model="form.retailOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
@@ -37,9 +40,6 @@
           filterable
         />
       </el-form-item>
-        <el-form-item label="配车VIN码">
-          <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="销售门店">
           <tag-input v-model="form.saleDealerNameList" clearable placeholder="请输入" />
           <!-- <fetch-select

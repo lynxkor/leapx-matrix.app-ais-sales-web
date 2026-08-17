@@ -179,6 +179,7 @@ const defaultForm = {
   auditStatus: '',
   dealerParentOrgCode: '',
   updateTime: '',
+  isNoSort: true
 };
 
 const pageSize = 20;
@@ -349,8 +350,9 @@ export default {
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
       const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      const columnField = (def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, '')).replace(/_label$/, '');
       this.sortColumns = [{
-        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        column: columnField,
         sort: (latest.order || '').toUpperCase()
       }];
       this.getData();

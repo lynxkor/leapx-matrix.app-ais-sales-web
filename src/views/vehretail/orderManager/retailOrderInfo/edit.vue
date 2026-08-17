@@ -261,13 +261,20 @@
                     :disabled="!canEditField('secondNetStoreName')"
                   />
                 </el-form-item>
+                <el-form-item label="交车单：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryOrder.deliveryOrderCode"
+                    disabled
+                  />
+                </el-form-item>
               </el-form>
             </div>
           </section>
           <generic-detail-display
             id="basic-info" class="common-section"
             :title="'基础信息'"
-            :formData="form"
+            :formData="{...form.deliveryOrder, ...form, deliveryOrderId: form.deliveryOrder.id}"
             :fields="displayFields"
             :getDetailDecryptField="getDetailDecryptField"
             @field-click="handleFieldClick"
@@ -513,6 +520,9 @@ const defaultForm = {
   materials: {},
   wholesaleOrderDetail: {},
   refundDetail: {},
+  deliveryOrder: {
+    id: ''
+  },
   finance: {
     financialPlan: '',
     mortgageProgress: '',
