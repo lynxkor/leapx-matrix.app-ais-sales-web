@@ -113,6 +113,28 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_inventory_status" v-model="form.vdcInventoryStatusList" placeholder="请选择" multiple
             clearable filterable />
         </el-form-item>
+        <el-form-item label="ERP发票号">
+          <div style="display: flex;">
+            <el-select v-model="form.erpInvoiceFilterMode" style="width: 110px; flex-shrink: 0;" @change="onFilterModeChange('erpInvoice')">
+              <el-option label="包含" value="include" />
+              <el-option label="不包含" value="exclude" />
+              <el-option label="空值" value="null" />
+            </el-select>
+            <tag-input v-if="form.erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceValue" placeholder="请输入" style="flex: 1;" />
+            <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.erpInvoiceNullValue" placeholder="请选择" clearable filterable style="flex: 1;" />
+          </div>
+        </el-form-item>
+        <el-form-item label="同步SAP状态">
+          <div style="display: flex;">
+            <el-select v-model="form.sapSyncStatusFilterMode" style="width: 110px; flex-shrink: 0;" @change="onFilterModeChange('sapSyncStatus')">
+              <el-option label="包含" value="include" />
+              <el-option label="不包含" value="exclude" />
+              <el-option label="空值" value="null" />
+            </el-select>
+            <tag-input v-if="form.sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusValue" placeholder="请输入" style="flex: 1;" />
+            <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.sapSyncStatusNullValue" placeholder="请选择" clearable filterable style="flex: 1;" />
+          </div>
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -216,7 +238,13 @@ const defaultForm = {
   stockAgeGe: null,
   stockAgeLe: null,
   allowLockNode: null,
-  outboundDateTime: []
+  outboundDateTime: [],
+  erpInvoiceFilterMode: 'include',
+  erpInvoiceValue: [],
+  erpInvoiceNullValue: '',
+  sapSyncStatusFilterMode: 'include',
+  sapSyncStatusValue: [],
+  sapSyncStatusNullValue: ''
 };
 
 const pageSize = 20;
@@ -571,6 +599,16 @@ export default {
       }];
       this.refreshTableData();
     },
+    // 切换筛选模式时清空输入值
+    onFilterModeChange (field) {
+      if (field === 'erpInvoice') {
+        this.form.erpInvoiceValue = [];
+        this.form.erpInvoiceNullValue = '';
+      } else if (field === 'sapSyncStatus') {
+        this.form.sapSyncStatusValue = [];
+        this.form.sapSyncStatusNullValue = '';
+      }
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -806,6 +844,30 @@ export default {
       if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
         delete data.materialsCodeList;
         data.materialsCodeLike = this.form.materialsCodeList[0] || '';
+      }
+
+      // ERP发票号：根据筛选模式映射到对应后端字段
+      delete data.erpInvoiceFilterMode;
+      delete data.erpInvoiceValue;
+      delete data.erpInvoiceNullValue;
+      if (this.form.erpInvoiceFilterMode === 'include' && this.form.erpInvoiceValue.length > 0) {
+        data.erpInvoiceList = this.form.erpInvoiceValue;
+      } else if (this.form.erpInvoiceFilterMode === 'exclude' && this.form.erpInvoiceValue.length > 0) {
+        data.erpInvoiceNotList = this.form.erpInvoiceValue;
+      } else if (this.form.erpInvoiceFilterMode === 'null' && this.form.erpInvoiceNullValue) {
+        data.erpInvoiceNull = this.form.erpInvoiceNullValue === '1' || this.form.erpInvoiceNullValue === 'true' || this.form.erpInvoiceNullValue === true;
+      }
+
+      // 同步SAP状态：根据筛选模式映射到对应后端字段
+      delete data.sapSyncStatusFilterMode;
+      delete data.sapSyncStatusValue;
+      delete data.sapSyncStatusNullValue;
+      if (this.form.sapSyncStatusFilterMode === 'include' && this.form.sapSyncStatusValue.length > 0) {
+        data.sapSyncStatusList = this.form.sapSyncStatusValue;
+      } else if (this.form.sapSyncStatusFilterMode === 'exclude' && this.form.sapSyncStatusValue.length > 0) {
+        data.sapSyncStatusNotList = this.form.sapSyncStatusValue;
+      } else if (this.form.sapSyncStatusFilterMode === 'null' && this.form.sapSyncStatusNullValue) {
+        data.sapSyncStatusNull = this.form.sapSyncStatusNullValue === '1' || this.form.sapSyncStatusNullValue === 'true' || this.form.sapSyncStatusNullValue === true;
       }
 
       // 处理库龄字段：如果值为0、null、undefined或空字符串则删除（不传递给后端）
