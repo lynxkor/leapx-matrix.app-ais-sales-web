@@ -70,7 +70,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import ApprovalDialog from './ApprovalDialog.vue';
 import ReviewDrawer from './ReviewDrawer.vue';
-import { listOrgStoreInfo } from '@/libs/api/common';
+import { listOrgStoreInfo, queryStoreRelation } from '@/libs/api/common';
 import TagInput from '@/libs/components/TagInput';
 import axios from 'axios';
 
@@ -112,9 +112,6 @@ export default {
         return {};
       }
     },
-    directOrgCodes () {
-      return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
-    },
     allOrgCodes () {
       return [...new Set([...this.directOrgCodes, ...this.descendantOrgCodes])];
     }
@@ -139,6 +136,15 @@ export default {
       reviewDrawerVisible: false, // 审核记录抽屉
       reviewData: {},
       descendantOrgCodes: [], // 子级组织编码
+      directOrgCodes: (() => {
+        // 直接从 localStorage 读取用户信息初始化（data() 中无法使用 computed）
+        try {
+          const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+          return (userInfo.orgPostUserList || []).map(item => item.orgCode);
+        } catch (e) {
+          return [];
+        }
+      })(), // 直接组织编码（异步通过 queryStoreRelation 扩充）
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryTransferTable',
@@ -280,9 +286,9 @@ export default {
   },
   async created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    // 先获取子级组织编码，保证 allOrgCodes 在首次渲染表格时已包含子级数据
-    // 否则「调入审批」按钮的 show 判断在初始化时会因为 descendantOrgCodes 为空而失效
-    await this.fetchDescendantOrgCodes();
+    // 先获取子级组织编码与门店关联关系，保证 allOrgCodes / directOrgCodes 在首次渲染表格时已包含完整数据
+    // 否则「调入审批」、「调出审批」等按钮的 show 判断在初始化时会因为 descendantOrgCodes / directOrgCodes 为空而失效
+    await Promise.all([this.fetchDescendantOrgCodes(), this.fetchStoreRelation()]);
     this.getData();
   },
   methods: {
@@ -554,6 +560,22 @@ export default {
         this.descendantOrgCodes = [...new Set(allCodes)];
       } catch (e) {
         console.error('fetchDescendantOrgCodes error:', e);
+      }
+    },
+    // 获取门店关联关系，扩充 directOrgCodes
+    async fetchStoreRelation () {
+      if (this.directOrgCodes.length === 0) return;
+      try {
+        const res = await queryStoreRelation({
+          queryType: 1,
+          storeCodes: this.directOrgCodes
+        });
+        const data = res.data || [];
+        if (Array.isArray(data)) {
+          this.directOrgCodes = [...new Set(data.map(item => item.storeCode).filter(Boolean))];
+        }
+      } catch (e) {
+        console.error('fetchStoreRelation error:', e);
       }
     }
   }
