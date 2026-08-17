@@ -241,10 +241,10 @@ const defaultForm = {
   outboundDateTime: [],
   erpInvoiceFilterMode: 'null',
   erpInvoiceValue: [],
-  erpInvoiceNullValue: '1',
+  erpInvoiceNullValue: '',
   sapSyncStatusFilterMode: 'null',
   sapSyncStatusValue: [],
-  sapSyncStatusNullValue: '1'
+  sapSyncStatusNullValue: ''
 };
 
 const pageSize = 20;
