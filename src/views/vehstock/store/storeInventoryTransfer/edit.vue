@@ -179,12 +179,12 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import BaseSearch from '@/libs/components/BaseSearch';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listOrgWarehouseStoreInfo, queryStoreRelation } from '@/api/common';
+import { getEnum, listOrgWarehouseStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { listOrgStoreInfo } from '@/libs/api/common';
+import { listOrgStoreInfo, queryStoreRelation } from '@/libs/api/common';
 import ApprovalDialog from './ApprovalDialog.vue';
 import axios from 'axios';
 
