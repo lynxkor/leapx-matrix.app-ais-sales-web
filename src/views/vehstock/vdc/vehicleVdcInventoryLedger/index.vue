@@ -855,7 +855,7 @@ export default {
       } else if (this.form.erpInvoiceFilterMode === 'exclude' && this.form.erpInvoiceValue.length > 0) {
         data.erpInvoiceNotList = this.form.erpInvoiceValue;
       } else if (this.form.erpInvoiceFilterMode === 'null' && this.form.erpInvoiceNullValue) {
-        data.erpInvoiceNull = this.form.erpInvoiceNullValue === '1' || this.form.erpInvoiceNullValue === 'true' || this.form.erpInvoiceNullValue === true;
+        data.erpInvoiceNull = (this.form.erpInvoiceNullValue === '1' || this.form.erpInvoiceNullValue === 'true' || this.form.erpInvoiceNullValue === true) ? 1 : 0;
       }
 
       // 同步SAP状态：根据筛选模式映射到对应后端字段
@@ -867,7 +867,7 @@ export default {
       } else if (this.form.sapSyncStatusFilterMode === 'exclude' && this.form.sapSyncStatusValue.length > 0) {
         data.sapSyncStatusNotList = this.form.sapSyncStatusValue;
       } else if (this.form.sapSyncStatusFilterMode === 'null' && this.form.sapSyncStatusNullValue) {
-        data.sapSyncStatusNull = this.form.sapSyncStatusNullValue === '1' || this.form.sapSyncStatusNullValue === 'true' || this.form.sapSyncStatusNullValue === true;
+        data.sapSyncStatusNull = (this.form.sapSyncStatusNullValue === '1' || this.form.sapSyncStatusNullValue === 'true' || this.form.sapSyncStatusNullValue === true) ? 1 : 0;
       }
 
       // 处理库龄字段：如果值为0、null、undefined或空字符串则删除（不传递给后端）
