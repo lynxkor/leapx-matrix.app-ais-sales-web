@@ -113,6 +113,24 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_inventory_status" v-model="form.vdcInventoryStatusList" placeholder="请选择" multiple
             clearable filterable />
         </el-form-item>
+        <el-form-item label="ERP发票号">
+          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 120px; margin-right: 8px" @change="onFilterModeChange('erpInvoice')">
+            <el-option label="包含" value="include" />
+            <el-option label="不包含" value="exclude" />
+            <el-option label="为空" value="null" />
+          </el-select>
+          <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入" style="flex: 1" />
+          <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.erpInvoiceNull" placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="同步SAP状态">
+          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 120px; margin-right: 8px" @change="onFilterModeChange('sapSyncStatus')">
+            <el-option label="包含" value="include" />
+            <el-option label="不包含" value="exclude" />
+            <el-option label="为空" value="null" />
+          </el-select>
+          <tag-input v-if="sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusList" placeholder="请输入" style="flex: 1" />
+          <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.sapSyncStatusNull" placeholder="请选择" clearable filterable />
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -216,7 +234,13 @@ const defaultForm = {
   stockAgeGe: null,
   stockAgeLe: null,
   allowLockNode: null,
-  outboundDateTime: []
+  outboundDateTime: [],
+  erpInvoiceList: [],
+  erpInvoiceNotList: [],
+  erpInvoiceNull: '',
+  sapSyncStatusList: [],
+  sapSyncStatusNotList: [],
+  sapSyncStatusNull: ''
 };
 
 const pageSize = 20;
@@ -256,6 +280,8 @@ export default {
       uploadDialogVisible: false,
       batchUpdateAllowLockNodeVisible: false,
       batchUpdateAllowLockNodeValue: null,
+      erpInvoiceFilterMode: 'include',
+      sapSyncStatusFilterMode: 'include',
       optionObj: {
         id: 'vehicleVdcInventoryLedgerTable',
         dataList: [],
@@ -571,6 +597,16 @@ export default {
       }];
       this.refreshTableData();
     },
+    // 筛选模式切换时清空对应输入值
+    onFilterModeChange (field) {
+      if (field === 'erpInvoice') {
+        this.form.erpInvoiceList = [];
+        this.form.erpInvoiceNull = '';
+      } else if (field === 'sapSyncStatus') {
+        this.form.sapSyncStatusList = [];
+        this.form.sapSyncStatusNull = '';
+      }
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -610,6 +646,8 @@ export default {
         this.form.lowBatteryCar = 0;
         this.form.stockAgeGe = null;
         this.form.stockAgeLe = null;
+        this.erpInvoiceFilterMode = 'include';
+        this.sapSyncStatusFilterMode = 'include';
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
@@ -816,6 +854,36 @@ export default {
         delete data.stockAgeLe;
       }
       data.sortColumns = this.sortColumns;
+
+      // 处理ERP发票号筛选：根据筛选模式映射到不同后端字段
+      delete data.erpInvoiceFilterMode;
+      if (this.erpInvoiceFilterMode === 'include' && data.erpInvoiceList && data.erpInvoiceList.length > 0) {
+        // 包含 -> erpInvoiceList
+      } else if (this.erpInvoiceFilterMode === 'exclude' && data.erpInvoiceList && data.erpInvoiceList.length > 0) {
+        data.erpInvoiceNotList = data.erpInvoiceList;
+        delete data.erpInvoiceList;
+      } else if (this.erpInvoiceFilterMode === 'null' && data.erpInvoiceNull) {
+        delete data.erpInvoiceList;
+        // erpInvoiceNull 保留传递给后端
+      } else {
+        delete data.erpInvoiceList;
+        delete data.erpInvoiceNull;
+      }
+
+      // 处理同步SAP状态筛选：根据筛选模式映射到不同后端字段
+      delete data.sapSyncStatusFilterMode;
+      if (this.sapSyncStatusFilterMode === 'include' && data.sapSyncStatusList && data.sapSyncStatusList.length > 0) {
+        // 包含 -> sapSyncStatusList
+      } else if (this.sapSyncStatusFilterMode === 'exclude' && data.sapSyncStatusList && data.sapSyncStatusList.length > 0) {
+        data.sapSyncStatusNotList = data.sapSyncStatusList;
+        delete data.sapSyncStatusList;
+      } else if (this.sapSyncStatusFilterMode === 'null' && data.sapSyncStatusNull) {
+        delete data.sapSyncStatusList;
+        // sapSyncStatusNull 保留传递给后端
+      } else {
+        delete data.sapSyncStatusList;
+        delete data.sapSyncStatusNull;
+      }
 
       return data;
     },
