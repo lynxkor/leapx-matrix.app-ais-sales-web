@@ -116,9 +116,9 @@
         <el-form-item label="ERP发票号">
           <div style="display: flex;">
             <el-select v-model="form.erpInvoiceFilterMode" style="width: 110px; flex-shrink: 0;" @change="onFilterModeChange('erpInvoice')">
+              <el-option label="空值" value="null" />
               <el-option label="包含" value="include" />
               <el-option label="不包含" value="exclude" />
-              <el-option label="空值" value="null" />
             </el-select>
             <tag-input v-if="form.erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceValue" placeholder="请输入" style="flex: 1;" />
             <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.erpInvoiceNullValue" placeholder="请选择" clearable filterable style="flex: 1;" />
@@ -127,9 +127,9 @@
         <el-form-item label="同步SAP状态">
           <div style="display: flex;">
             <el-select v-model="form.sapSyncStatusFilterMode" style="width: 110px; flex-shrink: 0;" @change="onFilterModeChange('sapSyncStatus')">
+              <el-option label="空值" value="null" />
               <el-option label="包含" value="include" />
               <el-option label="不包含" value="exclude" />
-              <el-option label="空值" value="null" />
             </el-select>
             <tag-input v-if="form.sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusValue" placeholder="请输入" style="flex: 1;" />
             <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.sapSyncStatusNullValue" placeholder="请选择" clearable filterable style="flex: 1;" />
