@@ -239,12 +239,12 @@ const defaultForm = {
   stockAgeLe: null,
   allowLockNode: null,
   outboundDateTime: [],
-  erpInvoiceFilterMode: 'include',
+  erpInvoiceFilterMode: 'null',
   erpInvoiceValue: [],
-  erpInvoiceNullValue: '',
-  sapSyncStatusFilterMode: 'include',
+  erpInvoiceNullValue: '1',
+  sapSyncStatusFilterMode: 'null',
   sapSyncStatusValue: [],
-  sapSyncStatusNullValue: ''
+  sapSyncStatusNullValue: '1'
 };
 
 const pageSize = 20;
