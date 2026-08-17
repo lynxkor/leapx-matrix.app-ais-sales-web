@@ -94,8 +94,7 @@
       />
     </el-form>
     <div class="ais-actions">
-      <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
+      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div

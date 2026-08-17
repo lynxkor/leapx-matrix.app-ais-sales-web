@@ -34,8 +34,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchWarehousing(0)"
         :disabled="selectionList.length === 0">入库</el-button>
