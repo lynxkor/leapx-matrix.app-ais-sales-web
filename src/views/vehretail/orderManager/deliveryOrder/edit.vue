@@ -782,7 +782,7 @@ export default {
         { field: 'paymentTime', title: '付款时间', width: 180 },
         { field: 'paymentTypeLabel', title: '支付方式', width: 120 },
         { field: 'payerName', title: '支付人', width: 120 },
-        { field: 'outTradeNo', title: '商城流水号', width: 200 },
+        { field: 'mallOrderCode', title: '商城流水号', width: 200 },
         { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
         { field: 'rightsItemCode', title: '权益项编号', width: 150 },
         { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
