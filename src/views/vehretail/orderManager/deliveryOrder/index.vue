@@ -404,6 +404,7 @@ export default {
           { props: 'deliveryNoticeTime', label: '触发交付通知时间', visible: false, width: 200 },
           { props: 'deliveryTime', label: '交车时间', visible: false, width: 200, sortable: true },
           { props: 'saleDealerName', label: '订单销售门店', visible: false, width: 200 },
+          { props: 'saleUserName', label: '订单销售顾问', visible: false, width: 200 },
           { props: 'deliveryDealerName', label: '订单交付门店', visible: false, width: 200 },
           { props: 'deliveryUserName', label: '订单交付顾问', visible: false, width: 200 },
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
@@ -411,6 +412,7 @@ export default {
           { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 120 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
