@@ -120,7 +120,10 @@
             <el-option label="为空" value="null" />
           </el-select>
           <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入" style="flex: 1" />
-          <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.erpInvoiceNull" placeholder="请选择" clearable filterable />
+          <el-select v-else v-model="form.erpInvoiceNull" size="small" placeholder="请选择" clearable style="flex: 1">
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
+          </el-select>
         </el-form-item>
         <el-form-item label="同步SAP状态" label-width="120px" class="composite-filter-item">
           <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 100px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('sapSyncStatus')">
@@ -129,7 +132,10 @@
             <el-option label="为空" value="null" />
           </el-select>
           <tag-input v-if="sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusList" placeholder="请输入" style="flex: 1" />
-          <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.sapSyncStatusNull" placeholder="请选择" clearable filterable />
+          <el-select v-else v-model="form.sapSyncStatusNull" size="small" placeholder="请选择" clearable style="flex: 1">
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
+          </el-select>
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
