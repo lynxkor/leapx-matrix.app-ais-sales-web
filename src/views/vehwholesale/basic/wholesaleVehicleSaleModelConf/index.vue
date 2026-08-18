@@ -267,6 +267,7 @@ export default {
             label: '车型',
             visible: true,
             width: 200,
+            sortable: true,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
@@ -290,8 +291,8 @@ export default {
           { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 120 },
           { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 150 },
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 100, align: 'right', sortable: true },
-          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150, sortable: true },
-          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right' },
+          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150 },
+          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right', sortable: true },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 240 },
           { props: 'startDate', label: '开始日期', visible: true, width: 160 },
           { props: 'endDate', label: '截止日期', visible: true, width: 160 },
