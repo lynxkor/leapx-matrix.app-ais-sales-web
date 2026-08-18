@@ -301,7 +301,7 @@ export default {
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 140 },
           { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId, '_blank'); }, type: 'primary' }] },
           { props: 'orderMaterialsCode', label: '订单物料编码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.orderMaterialsCode, '_blank'); }, type: 'primary' }] },
-          { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode, '_blank'); }, type: 'primary' }] },
+          // { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode, '_blank'); }, type: 'primary' }] },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode, '_blank'); }, type: 'primary' }] },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 180 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 160 },

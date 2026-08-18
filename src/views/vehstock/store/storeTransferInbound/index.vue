@@ -7,7 +7,7 @@
         <tag-input v-model="form.inboundNoList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="目标门店">
         <fetch-select
@@ -34,8 +34,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchWarehousing(0)"
         :disabled="selectionList.length === 0">入库</el-button>
@@ -73,7 +73,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   inboundNoList: [],
-  vin: '',
+  vinList: [],
   targetDealerCode: '',
   auditStatus: '',
 };
@@ -333,6 +333,11 @@ export default {
       if (Array.isArray(this.form.inboundNoList) && this.form.inboundNoList.length <= 1) {
         delete data.inboundNoList;
         data.inboundNoLike = this.form.inboundNoList[0] || '';
+      }
+      // VIN：单值用 vinLike，多值用 vinList
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
       }
 
       if (this.form.createTime) {
