@@ -114,7 +114,7 @@
             clearable filterable />
         </el-form-item>
         <el-form-item label="ERP发票号" label-width="120px" class="composite-filter-item">
-          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 100px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('erpInvoice')">
+          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 80px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('erpInvoice')">
             <el-option label="包含" value="include" />
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
@@ -126,7 +126,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="同步SAP状态" label-width="120px" class="composite-filter-item">
-          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 100px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('sapSyncStatus')">
+          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 80px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('sapSyncStatus')">
             <el-option label="包含" value="include" />
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
