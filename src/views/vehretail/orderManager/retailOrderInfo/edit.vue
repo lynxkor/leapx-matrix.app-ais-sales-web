@@ -1042,6 +1042,7 @@ export default {
         return getDetail(id).then(response => {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
+          processedData.deliveryOrder = response.deliveryOrder || { ...defaultForm.deliveryOrder };
           // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
           const addSaleDealerName = (array) => {
             if (array && Array.isArray(array) && response.saleDealerName) {
