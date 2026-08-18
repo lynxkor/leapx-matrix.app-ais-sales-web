@@ -946,8 +946,8 @@ export default {
     },
     async detailRequest () {
       let id = this._id;
-      if (this.$route.query.code && !id) {
-        const res = await getList({ deliveryOrderCode: this.$route.query.code, pageSize: 10, pageNum: 1 });
+      if (this.$route.query.deliveryCode && !id) {
+        const res = await getList({ deliveryOrderCode: this.$route.query.deliveryCode, pageSize: 10, pageNum: 1 });
         if (res && res.records && res.records.length) {
           id = res.records[0].id;
         }
