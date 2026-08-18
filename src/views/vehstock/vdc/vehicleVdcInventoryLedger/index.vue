@@ -113,8 +113,8 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_inventory_status" v-model="form.vdcInventoryStatusList" placeholder="请选择" multiple
             clearable filterable />
         </el-form-item>
-        <el-form-item label="ERP发票号">
-          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 120px; margin-right: 8px" @change="onFilterModeChange('erpInvoice')">
+        <el-form-item label="ERP发票号" label-width="120px" class="composite-filter-item">
+          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 100px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('erpInvoice')">
             <el-option label="包含" value="include" />
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
@@ -122,8 +122,8 @@
           <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入" style="flex: 1" />
           <fetch-select v-else :request="fetchOptions" enumCode="BooleanEnum" v-model="form.erpInvoiceNull" placeholder="请选择" clearable filterable />
         </el-form-item>
-        <el-form-item label="同步SAP状态">
-          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 120px; margin-right: 8px" @change="onFilterModeChange('sapSyncStatus')">
+        <el-form-item label="同步SAP状态" label-width="120px" class="composite-filter-item">
+          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 100px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('sapSyncStatus')">
             <el-option label="包含" value="include" />
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
@@ -1033,6 +1033,14 @@ export default {
 .m-vehicle-vdc-inventory-ledger-list {
   .ais-search-form {
     border: 0;
+  }
+
+  .composite-filter-item {
+    ::v-deep .el-form-item__content {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
   }
 
   .ais-actions {
