@@ -119,7 +119,7 @@
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
           </el-select>
-          <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入" style="flex: 1" />
+          <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入/粘贴" style="flex: 1; max-width: 200px" />
           <el-select v-else v-model="form.erpInvoiceNull" size="small" placeholder="请选择" clearable style="flex: 1">
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
@@ -131,7 +131,7 @@
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
           </el-select>
-          <tag-input v-if="sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusList" placeholder="请输入" style="flex: 1" />
+          <tag-input v-if="sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusList" placeholder="请输入/粘贴" style="flex: 1; max-width: 200px" />
           <el-select v-else v-model="form.sapSyncStatusNull" size="small" placeholder="请选择" clearable style="flex: 1">
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
