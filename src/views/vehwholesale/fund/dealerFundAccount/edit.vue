@@ -141,22 +141,22 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                 <el-form-item label="可用余额：" prop="availableBalance">
-                  {{ form.availableBalance }}
+                  {{ formatAmount(form.availableBalance) }}
                 </el-form-item>
                 <el-form-item label="冻结余额：" prop="frozenBalance">
-                  {{ form.frozenBalance }}
+                  {{ formatAmount(form.frozenBalance) }}
                 </el-form-item>
                 <el-form-item label="最近交易时间：" prop="lastTradeTime">
                   {{ latestTransLog.transactionTime }}
                 </el-form-item>
                 <el-form-item label="累计充值金额：" prop="totalRechargeAmount">
-                  {{ form.totalRechargeAmount }}
+                  {{ formatAmount(form.totalRechargeAmount) }}
                 </el-form-item>
                 <el-form-item label="累计结算金额：" prop="totalSettleAmount">
-                  {{ form.totalSettleAmount }}
+                  {{ formatAmount(form.totalSettleAmount) }}
                 </el-form-item>
                 <el-form-item label="最近交易金额：" prop="lastTradeAmount">
-                  {{ latestTransLog.transactionAmount }}
+                  {{ formatAmount(latestTransLog.transactionAmount) }}
                 </el-form-item>
                 <el-form-item label="最近交易类型：" prop="lastTradeType">
                   {{ latestTransLog.transactionTypeLabel }}
@@ -200,6 +200,9 @@
               <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccountTransLog/edit?id=${row.id}`" target="_blank">
                 {{ row.transLogCode }}
               </el-link>
+            </template>
+           <template #transactionAmount="{ row }">
+            {{ formatAmount(row.transactionAmount) }}
             </template>
             <template #wholesaleOrderCode="{ row }">
               <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">
@@ -245,6 +248,7 @@ import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   fundAccountCode: '',
@@ -316,7 +320,7 @@ export default {
       columns: [
         { field: 'transLogCode', title: '流水编号', width: 240, slots: { default: 'transLogCode' } },
         { field: 'transactionTypeLabel', title: '交易类型', width: 120 },
-        { field: 'transactionAmount', title: '交易金额', width: 140, align: 'right' },
+        { field: 'transactionAmount', title: '交易金额', width: 140, align: 'right', slots: { default: 'transactionAmount' } },
         { field: 'transactionTime', title: '过账时间', width: 200 },
         { field: 'transactionReceiptCode', title: '入账凭证号', width: 200 },
         { field: 'lineNo', title: '行项目号', width: 140, align: 'right' },
@@ -388,6 +392,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

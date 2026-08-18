@@ -120,28 +120,28 @@
                   {{ form.creditAccountStatusLabel }}
                 </el-form-item>
                 <el-form-item label="授信额度：" prop="creditAmount">
-                  {{ form.creditAmount }}
+                  {{ formatAmount(form.creditAmount) }}
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
                   {{ form.downPaymentRatio }}
                 </el-form-item>
                 <el-form-item label="累计提款金额：" prop="totalDrawnAmount">
-                  {{ form.totalDrawnAmount }}
+                  {{ formatAmount(form.totalDrawnAmount) }}
                 </el-form-item>
                 <el-form-item label="已用额度：" prop="usedCreditAmount">
-                  {{ form.usedCreditAmount }}
+                  {{ formatAmount(form.usedCreditAmount) }}
                 </el-form-item>
                 <el-form-item label="资金使用率%：" prop="usedRatio">
                   {{ form.usedRatio }}
                 </el-form-item>
                 <el-form-item label="剩余可用额度：" prop="availableCreditAmount">
-                  {{ form.availableCreditAmount }}
+                  {{ formatAmount(form.availableCreditAmount) }}
                 </el-form-item>
                 <el-form-item label="累计赊销金额：" prop="totalCreditSalesAmount">
-                  {{ form.totalCreditSalesAmount }}
+                  {{ formatAmount(form.totalCreditSalesAmount) }}
                 </el-form-item>
                 <el-form-item label="剩余应收账款：" prop="remainingReceivableAmount">
-                  {{ form.remainingReceivableAmount }}
+                  {{ formatAmount(form.remainingReceivableAmount) }}
                 </el-form-item>
                 <el-form-item label="最近结算金额：" prop="transactionAmount">
                   {{ form.transactionAmount }}
@@ -197,6 +197,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   creditSalesLimitCode: '',
@@ -381,6 +382,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };
