@@ -71,6 +71,16 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="合作类型">
+         <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_cooperation_type"
+            v-model="form.cooperationType"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -218,6 +228,7 @@ export default {
           // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           {
             props: 'financialOrganizationName',
             label: '金融机构',

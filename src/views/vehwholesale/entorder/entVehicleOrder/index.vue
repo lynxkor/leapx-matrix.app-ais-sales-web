@@ -112,6 +112,19 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+         <el-form-item label="出库时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.outboundTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
          <el-form-item label="订单状态">
           <fetch-select
               :options="orderStatusOptions"
@@ -285,6 +298,7 @@ const defaultForm = {
   acceptanceMethod: '',
   orderTime: [],
   settleTime: [],
+  outboundTime: [],
 };
 
 const pageSize = 20;
@@ -983,6 +997,14 @@ export default {
         if (this.form.settleTime.length > 1) {
           data.settleTimeStart = this.form.settleTime[0];
           data.settleTimeEnd = this.form.settleTime[1];
+        }
+      }
+      // 订单时间
+      if (this.form.outboundTime) {
+        delete data.outboundTime;
+        if (this.form.outboundTime.length > 1) {
+          data.outboundTimeStart = this.form.outboundTime[0];
+          data.outboundTimeEnd = this.form.outboundTime[1];
         }
       }
       // 排序字段

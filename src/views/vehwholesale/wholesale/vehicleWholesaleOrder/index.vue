@@ -130,6 +130,20 @@
             :options="yearTypeList"
           />
         </el-form-item>
+        <!-- <el-form-item label="车顶">
+          <fetch-select
+            v-model="form.roofId"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.roof"
+          />
+          </el-form-item>
+        <el-form-item label="选装包">
+          <fetch-select
+            v-model="form.optionPackageId"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.optional"
+          />
+        </el-form-item> -->
         <el-form-item label="是否已锁定">
           <fetch-select
             :request="fetchOptions"
@@ -442,7 +456,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, adjustWarehouse } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo, vehicleRoof, vehicleOptionPackage } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -564,7 +578,9 @@ export default {
       },
       tabName: '1',
       selectionList: [],
-      sortColumns: [],
+      sortColumns: [
+        { column: 'order_time', sort: 'DESC' }
+      ],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -589,6 +605,26 @@ export default {
       SETTLED_SUCCESSFULLY_STATUS: [3],
       uploadDialogVisible: false,
       clickItemId: '',
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: false,
+        collapseTags: false,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      remoteMethods: {
+        roof: async (query) => {
+          return await vehicleRoof({ roofNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        }
+      },
       optionObj: {
         id: 'orderTable',
         dataList: [],
@@ -764,7 +800,7 @@ export default {
           { props: 'specialRemark', label: '特殊备注', visible: true, width: 200 },
           { props: 'firstCancelAllocateTime', label: '首次取消配车时间', visible: true, width: 200 },
           { props: 'firstAllocateTime', label: '首次配车时间', visible: true, width: 200 },
-          { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
+          { props: 'outboundTime', label: '出库时间', visible: true, width: 200, sortable: true },
           { props: 'lockStatusLabel', label: '是否已锁定', visible: true, width: 200 },
           { props: 'lockTime', label: '锁定时间', visible: true, width: 200 },
           {
@@ -812,6 +848,7 @@ export default {
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',

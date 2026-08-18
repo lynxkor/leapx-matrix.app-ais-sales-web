@@ -1,7 +1,11 @@
 <template>
     <el-dialog class="m-start-work-dialog" :title="titleName" width="50%" :visible.sync="dialogVisible" @close="close">
-        <el-input v-model="desc" type="textarea" :rows="5" maxlength="500" placeholder="请输入" show-word-limit
-            clearable />
+        <el-form ref="formRef" :model="form" :rules="rules">
+            <el-form-item prop="desc">
+                <el-input v-model="form.desc" type="textarea" :rows="5" maxlength="500" placeholder="请输入" show-word-limit
+                    clearable />
+            </el-form-item>
+        </el-form>
         <template v-slot:footer>
             <div class="dialog-footer">
                 <el-button size="small" :loading="submitLoading" type="primary" @click="submit">确定</el-button>
@@ -36,7 +40,12 @@ export default {
       selectedRows: [],
       titleName: '请输入批量预留的说明', // 弹窗标题
       submitLoading: false,
-      desc: '' // 说明
+      form: {
+        desc: '' // 说明
+      },
+      rules: {
+        desc: []
+      }
     };
   },
   watch: {
@@ -46,19 +55,30 @@ export default {
     name (val) {
       if (val === 'reserve') {
         this.titleName = '请输入批量预留的说明';
+        this.rules.desc = [
+          { required: true, message: '请输入说明', trigger: 'blur' }
+        ];
       } else if (val === 'cancelReserve') {
         this.titleName = '请输入取消解除预留的说明';
+        this.rules.desc = [];
       } else if (val === 'car') {
         this.titleName = '请输入运损车出库的说明';
+        this.rules.desc = [];
       }
     },
   },
   methods: {
     close () {
-      this.desc = '';
+      this.form.desc = '';
+      this.$refs.formRef && this.$refs.formRef.resetFields();
       this.$emit('close');
     },
     async submit (row) {
+      // 仅批量预留（reserve）需要校验
+      if (this.name === 'reserve') {
+        const valid = await this.$refs.formRef.validate().catch(() => false);
+        if (!valid) return;
+      }
       // 定义映射关系
       const apiMap = {
         reserve: { fn: batchReserve, descKey: 'reserveDesc' },
@@ -70,12 +90,12 @@ export default {
       // 构建参数
       const params = {
         ids: this.selectionId,
-        [config.descKey]: this.desc
+        [config.descKey]: this.form.desc
       };
 
       try {
         await config.fn(params);
-        this.desc = '';
+        this.form.desc = '';
         this.$emit('submit');
       } catch (error) {
         console.error('批量操作失败:', error);

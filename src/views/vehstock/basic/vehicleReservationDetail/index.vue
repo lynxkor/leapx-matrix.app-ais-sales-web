@@ -50,7 +50,11 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vehicle_delivery_status"
             v-model="form.vehicleDeliveryStatusList" placeholder="请选择" clearable multiple filterable />
         </el-form-item>
-        <el-form-item label="创建者">
+        <el-form-item label="是否配车">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.carAllocated"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+      <el-form-item label="创建者">
           <fetch-select
             remote
             filterable
@@ -69,6 +73,17 @@
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
+      <el-form-item label="物料描述">
+        <fetch-select
+          remote
+          filterable
+          clearable
+          :remote-method="remoteMethods.vehicleMaterials"
+          v-model="form.bizCode"
+          value-key="materialsCode"
+          label-key="materialsDesc"
+        />
+      </el-form-item>
       </template>
       <page-search-action
         v-model="show"
@@ -79,8 +94,7 @@
       />
     </el-form>
     <div class="ais-actions">
-      <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
+      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
@@ -114,14 +128,14 @@ import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import TagInput from '@/libs/components/TagInput';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo, vehicleMaterials } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
+import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/libs/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -141,6 +155,7 @@ const defaultForm = {
   vehicleDeliveryStatus: '',
   vehicleDeliveryStatusList: [],
   inboundDateTime: [],
+  carAllocated: '',
   creator: ''
 };
 
@@ -167,6 +182,11 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      remoteMethods: {
+        vehicleMaterials: async (query) => {
+          return await vehicleMaterials({ keyWord: query });
+        },
+      },
       moduleKey: 'AISVS-vehicleReservationDetail',
       show: false,
       loading: false,
@@ -201,6 +221,8 @@ export default {
           },
           { props: 'bizCode', label: '业务编号', visible: true, width: 120 },
           { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 100 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'reserveTime', label: '预留时间', visible: true, width: 180 },
           { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 100 },
           { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 100 },
@@ -318,14 +340,14 @@ export default {
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
-      }).then(res => {
-        if (res) {
-          if (res.excelUrl) {
-            window.location.href = res.excelUrl;
-          } else {
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, '车辆预留明细.xlsx');
+          } catch (error) {
             this.$message({
               type: 'error',
-              message: '导出失败'
+              message: '文件导出失败'
             });
           }
         } else {

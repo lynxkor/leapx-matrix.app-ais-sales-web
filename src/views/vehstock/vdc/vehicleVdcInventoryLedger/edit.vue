@@ -188,7 +188,7 @@
                     <el-input v-model="form.vehicleLogisticsOperatorName" disabled />
                   </el-form-item>
                   <el-form-item label="订单类型：" prop="orderType">
-                    <el-input v-model="form.orderType" disabled />
+                    <el-input v-model="form.orderTypeLabel" disabled />
                   </el-form-item>
                   <el-form-item label="退车标识：" prop="returnLabelLabel">
                     <el-input v-model="form.returnLabelLabel" disabled />
@@ -278,7 +278,7 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                 <el-form-item label="订单类型：" prop="orderType">
-                  {{ form.orderType }}
+                  {{ form.orderTypeLabel }}
                 </el-form-item>
                 <el-form-item label="同步SAP时间：" prop="sapSyncTime">
                   {{ form.sapSyncTime }}
@@ -672,7 +672,7 @@ export default {
         submitData.ids = list;
         txt = '是否需要批量更新！';
       } else {
-        submitData.ids = [id];
+        submitData.ids = id ? [id] : [this.form.id];
         txt = '是否需要更新！';
       }
 

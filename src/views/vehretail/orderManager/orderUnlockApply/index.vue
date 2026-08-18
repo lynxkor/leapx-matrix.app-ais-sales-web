@@ -279,10 +279,10 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.applyStatus === 1010 || row.applyStatus === 1040;
+                return row.applyStatus === 1010;
               },
               click: (rowIndex, row) => {
-                const isEditing = row.applyStatus === 1010 || row.applyStatus === 1040;
+                const isEditing = row.applyStatus === 1010;
                 this.$router.push({
                   path: '/vehretail/orderManager/orderUnlockApply/edit',
                   query: {

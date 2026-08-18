@@ -32,6 +32,9 @@
       <el-form-item label="销售门店">
         <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="销售门店编码">
+        <tag-input v-model="form.saleDealerCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="订单分类">
         <fetch-select
           :remote-method="getWholesaleEorderTyprList"
@@ -625,7 +628,9 @@ export default {
       },
       tabName: '2',
       selectionList: [],
-      sortColumns: [],
+      sortColumns: [
+        { column: 'order_time', sort: 'DESC' }
+      ],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -691,6 +696,7 @@ export default {
               }
             ]
           },
+          { props: 'saleDealerCode', label: '销售门店编码', visible: true, width: 120 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
@@ -825,7 +831,7 @@ export default {
           { props: 'specialRemark', label: '特殊备注', visible: true, width: 200 },
           { props: 'firstCancelAllocateTime', label: '首次取消配车时间', visible: true, width: 200 },
           { props: 'firstAllocateTime', label: '首次配车时间', visible: true, width: 200 },
-          { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
+          { props: 'outboundTime', label: '出库时间', visible: true, width: 200, sortable: true },
           { props: 'lockStatusLabel', label: '是否已锁定', visible: true, width: 200 },
           { props: 'lockTime', label: '锁定时间', visible: true, width: 200 },
           {
@@ -884,6 +890,7 @@ export default {
           { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',

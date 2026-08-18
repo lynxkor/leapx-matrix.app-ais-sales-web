@@ -799,5 +799,8 @@ export default {
   ::v-deep .item--area .el-cascader__tags .el-tag__close {
     top: 0;
   }
+  ::v-deep .el-cascader__search-input {
+    margin: 2px 0 2px 10px;
+  }
 }
 </style>

@@ -58,13 +58,39 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.vehdeLiveried" placeholder="请选择"
             clearable filterable />
         </el-form-item>
+        <el-form-item label="大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            v-model="form.regionCodeList"
+            :remote-method="remoteMethods.region"
+            value-key="orgCode"
+            label-key="orgName"
+          />
+        </el-form-item>
+        <el-form-item label="省市" class="item--area">
+          <el-cascader
+            v-model="form.areaCodes"
+            :options="areaOptions"
+            :props="areaProps"
+            placeholder="请选择省市"
+            collapse-tags
+            clearable
+            filterable
+            @change="handleAreaChange"
+          />
+        </el-form-item>
         <el-form-item label="销售门店">
           <fetch-select
             filterable
             clearable
             remote
+            multiple
+            reserve-keyword
             collapseTags
-            v-model="form.saleDealerCode"
+            v-model="form.saleDealerCodeList"
             :remote-method="getDealerListByName"
             value-key="storeCode"
             label-key="storeName"
@@ -75,8 +101,10 @@
             filterable
             clearable
             remote
+            multiple
+            reserve-keyword
             collapseTags
-            v-model="form.deliveryDealerCode"
+            v-model="form.deliveryDealerCodeList"
             :remote-method="getDealerListBy"
             value-key="storeCode"
             label-key="storeName"
@@ -227,7 +255,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, listOrgStoreInfo, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -240,6 +268,7 @@ import MoveDialog from './MoveDialog.vue';
 import ConvertTypeDialog from './ConvertTypeDialog.vue';
 import WarehouseDialog from './WarehouseDialog.vue';
 import TagInput from '@/libs/components/TagInput';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -265,6 +294,10 @@ const defaultForm = {
   wheelHubIdList: [],
   optionPackageIdList: [],
   moveinDate: '',
+  areaCodes: [],
+  provinceCodeList: [],
+  cityCodeList: [],
+  regionCodeList: []
 };
 
 // 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
@@ -314,6 +347,25 @@ export default {
       dealerCode: '', // 销售门店编码
       activeName: 'homePage',
       clickItemId: '',
+      areaOptions: (() => {
+        // 仅保留省/市两级，移除城市下的区/县子节点
+        return (getAreaTree() || []).map(province => ({
+          ...province,
+          child: (province.child || []).map(city => {
+            const { child, ...rest } = city;
+            return rest;
+          })
+        }));
+      })(),
+      // el-cascader 多选配置
+      areaProps: {
+        multiple: true,
+        checkStrictly: true,
+        emitPath: false,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
       optionObj: {
         id: 'storeInventoryLedgerTable',
         dataList: [],
@@ -363,6 +415,9 @@ export default {
           { props: 'isFenceCrossedLabel', label: '是否异常车辆', visible: true, width: 140 },
           { props: 'fenceCrossedTypeLabel', label: '车辆异常类型', visible: true, width: 140 },
           { props: 'vehdeLiveriedOn', label: '标识记录日期', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 140 },
+          { props: 'provinceName', label: '省份', visible: true, width: 160 },
+          { props: 'cityName', label: '城市', visible: true, width: 160 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'secondNetStoreCode', label: '二网门店编码', visible: true, width: 160 },
@@ -441,6 +496,9 @@ export default {
         },
         announcement: async (query) => {
           return await vehicleSalesVersionList({ registeredModelNameLike: query });
+        },
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
         }
       }
     };
@@ -504,11 +562,17 @@ export default {
     },
     // 销售门店搜索
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params, isSales: true });
+      return listOrgStoreInfo({
+        storeName: params,
+        // isSales: true
+      });
     },
     // 交付门店搜索
     async getDealerListBy (params) {
-      return listOrgStoreInfo({ storeName: params, isSupportDeliver: true });
+      return listOrgStoreInfo({
+        storeName: params,
+        // isSupportDeliver: true
+      });
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
@@ -629,6 +693,7 @@ export default {
           delete data[key];
         }
       });
+      delete data.areaCodes;
 
       if (this.form.poentryOnTime) {
         delete data.poentryOnTime;
@@ -819,11 +884,45 @@ export default {
     submitBatchConvertType () {
       this.convertTypeDialog = false;
       this.getData();
+    },
+    // el-cascader 多选变更时，遍历省/市树把每个选中的 code 按层级拆分到对应数组
+    handleAreaChange (selectedCodes) {
+      const codes = Array.isArray(selectedCodes) ? selectedCodes : [];
+      const areaTree = this.areaOptions || [];
+      const provinces = new Set();
+      const cities = new Set();
+
+      areaTree.forEach(province => {
+        if (codes.includes(province.code)) {
+          provinces.add(province.code);
+        }
+        (province.child || []).forEach(city => {
+          if (codes.includes(city.code)) {
+            cities.add(city.code);
+          }
+        });
+      });
+
+      this.form.provinceCodeList = [...provinces];
+      this.form.cityCodeList = [...cities];
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.m-store-inventory-ledger-list {}
+.m-store-inventory-ledger-list {
+  ::v-deep .item--area .el-cascader__tags .el-tag {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  ::v-deep .item--area .el-cascader__tags .el-tag__close {
+    position: relative;
+    top: -2px;
+  }
+  ::v-deep .el-cascader__search-input {
+    margin: 2px 0 2px 10px;
+  }
+}
 </style>

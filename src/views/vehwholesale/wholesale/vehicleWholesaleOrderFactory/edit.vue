@@ -41,33 +41,58 @@
                     <fetch-select :request="fetchOptions" enumCode="vw_wholesale_order_status"
                       v-model="form.orderStatus" placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
-                  <el-form-item label="确认状态：" prop="confirmStatus">
-                    <fetch-select :request="fetchOptions" enumCode="vw_wholesale_confirm_status"
-                      v-model="form.confirmStatus" placeholder="请选择" clearable filterable disabled />
-                  </el-form-item>
-
-                  <el-form-item label="销售门店名称：" prop="saleDealerName">
-                    <el-input placeholder="请输入" v-model="form.saleDealerName" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                    <el-input placeholder="请输入" v-model="form.deliveryDealerName" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
-                    <el-input placeholder="请输入" v-model="form.dealerWarehouseCode" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
-                    <el-input placeholder="请输入" v-model="form.dealerWarehouseName" clearable disabled />
-                  </el-form-item>
                   <el-form-item label="整车补货单号：" prop="replenishApplyCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="允许锁零售单：" prop="allowLockRetail">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail"
+                      placeholder="请选择" clearable filterable
+                      :disabled='form.orderStatus === 99 || form.orderStatus === "99"' />
+                  </el-form-item>
+                  <el-form-item label="销售门店名称：" prop="saleDealerName">
+                    <el-input placeholder="请输入" v-model="form.saleDealerName" clearable disabled />
                   </el-form-item>
                   <el-form-item label="订单分类：" prop="orderCategory">
                     <fetch-select :options="orderCategoryOptions" v-model="form.orderCategory" placeholder="请选择"
                       clearable filterable disabled />
                   </el-form-item>
+                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
+                    <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="允许锁零售节点：" prop="allowLockNode">
+                    <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type"
+                      v-model="form.allowLockNode" placeholder="请选择允许锁零售节点" clearable filterable />
+                  </el-form-item>
+                  <el-form-item label="交付门店名称：" prop="deliveryDealerName">
+                    <el-input placeholder="请输入" v-model="form.deliveryDealerName" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="专项活动：" prop="prodScheduleActivityId">
+                    <el-input placeholder="请输入" v-model="form.prodScheduleActivityId" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
+                    <el-input placeholder="请输入" v-model="form.orderBatteryCellName" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="是否紧急订单：" prop="emergencyOrder">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.emergencyOrder"
+                      placeholder="请选择" clearable filterable
+                      :disabled='form.orderStatus === 99 || form.orderStatus === "99"' @change="changeStatus" />
+                  </el-form-item>
+                  <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
+                    <el-input placeholder="请输入" v-model="form.dealerWarehouseName" clearable disabled />
+                  </el-form-item>
                   <el-form-item label="批售方式：" prop="wholesaleWay">
                     <fetch-select :request="fetchOptions" enumCode="vw_wholesale_way" v-model="form.wholesaleWay"
                       placeholder="请选择批售方式" clearable filterable disabled />
+                  </el-form-item>
+                  <el-form-item label="订单物料编码：" prop="orderMaterialCode">
+                    <el-input placeholder="请输入" v-model="form.orderMaterialCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                    <el-input placeholder="请输入" v-model="form.emergencyOrderRemark" clearable maxlength="300"
+                      disabled />
+                  </el-form-item>
+                  <el-form-item label="税务发票号：" prop="taxInvoiceCode">
+                    <el-input placeholder="请输入" v-model="form.taxInvoiceCode" clearable disabled />
                   </el-form-item>
                   <el-form-item label="订单时间：" prop="orderTime">
                     <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.orderTime"
@@ -77,62 +102,44 @@
                   <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                     <el-input placeholder="请输入" v-model="form.orderMaterialsDesc" clearable disabled />
                   </el-form-item>
-                  <el-form-item label="专项活动：" prop="prodScheduleActivityId">
-                    <el-input placeholder="请输入" v-model="form.prodScheduleActivityId" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="税务发票号：" prop="taxInvoiceCode">
-                    <el-input placeholder="请输入" v-model="form.taxInvoiceCode" clearable disabled />
+                  <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
+                    <el-date-picker type="datetime" v-model="form.emergencyOrderTime" :picker-options="pickerOptions"
+                      value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" disabled />
                   </el-form-item>
                   <el-form-item label="开票时间：" prop="invoiceTime">
                     <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.invoiceTime"
                       :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
                       end-placeholder="结束日期" disabled />
                   </el-form-item>
-                  <el-form-item label="是否紧急订单：" prop="emergencyOrder">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.emergencyOrder"
-                      placeholder="请选择" clearable filterable
-                      :disabled='form.orderStatus === 99 || form.orderStatus === "99"' @change="changeStatus" />
-                  </el-form-item>
-                  <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
-                    <el-date-picker type="datetime" v-model="form.emergencyOrderTime" :picker-options="pickerOptions"
-                      value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" disabled />
-                  </el-form-item>
-                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
-                    <el-input placeholder="请输入" v-model="form.emergencyOrderRemark" clearable maxlength="300"
-                      disabled />
+                  <el-form-item label="确认状态：" prop="confirmStatus">
+                    <fetch-select :request="fetchOptions" enumCode="vw_wholesale_confirm_status"
+                      v-model="form.confirmStatus" placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
                   <el-form-item label="确认说明：" prop="confirmRemark">
                     <el-input placeholder="请输入" v-model="form.confirmRemark" clearable disabled />
                   </el-form-item>
-                  <el-form-item label="确认人：" prop="confirmUserName">
-                    <el-input placeholder="请输入" v-model="form.confirmUserName" clearable disabled />
+                  <el-form-item label="指定发运方式：" prop="deliveryWay">
+                    <el-input placeholder="请输入" v-model="form.deliveryWay" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="未自动确认原因：" prop="noAutoConfirmReason">
+                    <el-input placeholder="请输入" v-model="form.noAutoConfirmReason" clearable maxlength="300" disabled />
                   </el-form-item>
                   <el-form-item label="确认时间：" prop="confirmTime">
                     <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.confirmTime"
                       :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
                       end-placeholder="结束日期" disabled />
                   </el-form-item>
-                  <el-form-item label="未自动确认原因：" prop="noAutoConfirmReason">
-                    <el-input placeholder="请输入" v-model="form.noAutoConfirmReason" clearable maxlength="300" disabled />
+                  <el-form-item label="确认人：" prop="confirmUserName">
+                    <el-input placeholder="请输入" v-model="form.confirmUserName" clearable disabled />
                   </el-form-item>
-                  <el-form-item label="允许锁零售单：" prop="allowLockRetail">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail"
+                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.needAutoAllocateCar"
                       placeholder="请选择" clearable filterable
-                      :disabled='form.orderStatus === 99 || form.orderStatus === "99"' />
+                      :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)" />
                   </el-form-item>
-                  <el-form-item label="允许锁零售节点：" prop="allowLockNode">
-                    <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type"
-                      v-model="form.allowLockNode" placeholder="请选择允许锁零售节点" clearable filterable />
-                  </el-form-item>
-                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                    <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="订单物料编码：" prop="orderMaterialCode">
-                    <el-input placeholder="请输入" v-model="form.orderMaterialCode" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="指定发运方式：" prop="deliveryWay">
-                    <el-input placeholder="请输入" v-model="form.deliveryWay" clearable disabled />
-                  </el-form-item>
+                  <!-- <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
+                    <el-input placeholder="请输入" v-model="form.dealerWarehouseCode" clearable disabled />
+                  </el-form-item> -->
                    <el-form-item label="创建时间：" prop="createTime">
                     {{ form.createTime }}
                   </el-form-item>
@@ -144,35 +151,51 @@
                   <el-form-item label="订单状态：" prop="orderStatusLabel">
                     {{ form.orderStatusLabel }}
                   </el-form-item>
-                  <el-form-item label="确认状态：" prop="confirmStatusLabel">
-                    {{ form.confirmStatusLabel }}
+                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
+                    <el-link type="primary"
+                      :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${form.replenishApplyCode}`"
+                      target="_blank">{{ form.replenishApplyCode }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
+                    {{ form.allowLockRetailLabel }}
                   </el-form-item>
                   <el-form-item label="销售门店：" prop="saleDealerName">
                     <el-link type="primary"
                       :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`"
                       target="_blank">{{ form.saleDealerName }}</el-link>
                   </el-form-item>
+                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
+                    {{ form.orderCategoryLabel }}
+                  </el-form-item>
+                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
+                    <el-link type="primary"
+                      :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailId}`"
+                      target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="允许锁零售节点：" prop="allowLockNodeLabel">
+                    {{ form.allowLockNodeLabel }}
+                  </el-form-item>
                   <el-form-item label="交付门店名称：" prop="deliveryDealerName">
                     <el-link type="primary"
                       :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`"
                       target="_blank">{{ form.deliveryDealerName }}</el-link>
                   </el-form-item>
+                  <el-form-item label="专项活动：" prop="prodScheduleActivityName">
+                    <el-link type="primary"
+                      :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.prodScheduleActivityId}`"
+                      target="_blank">{{ form.prodScheduleActivityName }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
+                    {{ form.orderBatteryCellName }}
+                  </el-form-item>
+                  <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
+                    {{ form.emergencyOrderLabel }}
+                  </el-form-item>
                   <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                     {{ form.dealerWarehouseName }}
                   </el-form-item>
-                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                    <el-link type="primary"
-                      :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${form.replenishApplyCode}`"
-                      target="_blank">{{ form.replenishApplyCode }}</el-link>
-                  </el-form-item>
-                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
-                    {{ form.orderCategoryLabel }}
-                  </el-form-item>
                   <el-form-item label="批售方式：" prop="wholesaleWayLabel">
                     {{ form.wholesaleWayLabel }}
-                  </el-form-item>
-                  <el-form-item label="订单时间：" prop="orderTime">
-                    {{ form.orderTime }}
                   </el-form-item>
                   <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
                     <el-link type="primary"
@@ -180,55 +203,46 @@
                       target="_blank">{{
                         form.orderMaterialsCode }}</el-link>
                   </el-form-item>
-                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
-                    {{ form.orderMaterialsDesc }}
-                  </el-form-item>
-                  <el-form-item label="专项活动：" prop="prodScheduleActivityName">
-                    <el-link type="primary"
-                      :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.prodScheduleActivityId}`"
-                      target="_blank">{{ form.prodScheduleActivityName }}</el-link>
+                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                    {{ form.emergencyOrderRemark }}
                   </el-form-item>
                   <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                     {{ form.taxInvoiceCode }}
                   </el-form-item>
-                  <el-form-item label="开票时间：" prop="invoiceTime">
-                    {{ form.invoiceTime }}
+                  <el-form-item label="订单时间：" prop="orderTime">
+                    {{ form.orderTime }}
                   </el-form-item>
-                  <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
-                    {{ form.emergencyOrderLabel }}
+                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
+                    {{ form.orderMaterialsDesc }}
                   </el-form-item>
                   <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                     {{ form.emergencyOrderTime }}
                   </el-form-item>
-                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
-                    {{ form.emergencyOrderRemark }}
+                  <el-form-item label="开票时间：" prop="invoiceTime">
+                    {{ form.invoiceTime }}
+                  </el-form-item>
+                  <el-form-item label="确认状态：" prop="confirmStatusLabel">
+                    {{ form.confirmStatusLabel }}
                   </el-form-item>
                   <el-form-item label="确认说明：" prop="confirmRemark">
                     {{ form.confirmRemark }}
                   </el-form-item>
-                  <el-form-item label="确认人：" prop="confirmUserName">
-                    {{ form.confirmUserName }}
-                  </el-form-item>
-                  <el-form-item label="确认时间：" prop="confirmTime">
-                    {{ form.confirmTime }}
+                  <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
+                    {{ form.deliveryWayLabel }}
                   </el-form-item>
                   <el-form-item label="未自动确认原因：" prop="noAutoConfirmReason">
                     {{ form.noAutoConfirmReason }}
                   </el-form-item>
-                  <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
-                    {{ form.allowLockRetailLabel }}
+                  <el-form-item label="确认时间：" prop="confirmTime">
+                    {{ form.confirmTime }}
                   </el-form-item>
-                  <el-form-item label="允许锁零售节点：" prop="allowLockNodeLabel">
-                    {{ form.allowLockNodeLabel }}
+                  <el-form-item label="确认人：" prop="confirmUserName">
+                    {{ form.confirmUserName }}
                   </el-form-item>
-                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                    <el-link type="primary"
-                      :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailId}`"
-                      target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
+                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
+                    {{ form.needAutoAllocateCarLabel }}
                   </el-form-item>
-                  <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
-                    {{ form.deliveryWayLabel }}
-                  </el-form-item>
+
                   <el-form-item label="创建时间：" prop="createTime">
                     {{ form.createTime }}
                   </el-form-item>
@@ -247,13 +261,48 @@
                     <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.lockStatus"
                       placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
+                  <el-form-item label="配车物料码：" prop="materialsCode">
+                    <el-input placeholder="请输入" v-model="form.materialsCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
+                    <el-input placeholder="请输入" v-model="form.batteryCellName" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
+                    <el-radio-group v-model="form.certificatePledged" disabled>
+                      <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message
+                        }}</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
                   <el-form-item label="锁定时间：" prop="lockTime">
                     <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.lockTime"
                       :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
                       end-placeholder="结束日期" disabled />
                   </el-form-item>
+                  <el-form-item label="配车物料描述：" prop="materialsDesc">
+                    <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="首次配车时间：" prop="firstAllocateTime">
+                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.firstAllocateTime"
+                      :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
+                      end-placeholder="结束日期" disabled />
+                  </el-form-item>
+                  <el-form-item label="是否创建发运单计划：" prop="createdShippingPlan">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.createdShippingPlan"
+                      placeholder="请选择" clearable filterable disabled />
+                  </el-form-item>
                   <el-form-item label="零售订单号：" prop="retailOrderCode">
                     <el-input placeholder="请输入" v-model="form.retailOrderCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="配车VIN码：" prop="vin">
+                    <el-input placeholder="请输入" v-model="form.vin" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="首次结算失败时间：" prop=" firstSettleFailedTime">
+                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.firstSettleFailedTime"
+                      :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
+                      end-placeholder="结束日期" disabled />
+                  </el-form-item>
+                  <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
+                    <el-input placeholder="请输入" v-model="form.erpSaleOrderCode" clearable disabled />
                   </el-form-item>
                   <el-form-item label="商城订单号：" prop="mallOrderCode">
                     <el-input placeholder="请输入" v-model="form.mallOrderCode" clearable disabled />
@@ -262,47 +311,44 @@
                     <fetch-select :request="fetchOptions" enumCode="vw_allocate_way" v-model="form.allocateWay"
                       placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
-                  <el-form-item label="配车物料码：" prop="materialsCode">
-                    <el-input placeholder="请输入" v-model="form.materialsCode" clearable disabled />
+                  <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
+                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.firstCancelAllocateTime"
+                      :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
+                      end-placeholder="结束日期" disabled />
                   </el-form-item>
-                  <el-form-item label="配车物料描述：" prop="materialsDesc">
-                    <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled />
+                  <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                    <el-input placeholder="请输入" v-model="form.erpDeliverOrder" clearable disabled />
                   </el-form-item>
-                  <el-form-item label="配车VIN码：" prop="vin">
-                    <el-input placeholder="请输入" v-model="form.vin" clearable disabled />
+                  <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
+                    <el-input placeholder="请输入" v-model="form.logisticsReserveLabel" clearable disabled />
                   </el-form-item>
                   <el-form-item label="配车时间：" prop="allocateTime">
                     <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.allocateTime"
                       :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
                       end-placeholder="结束日期" disabled />
                   </el-form-item>
-                  <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
-                    <el-input placeholder="请输入" v-model="form.erpSaleOrderCode" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
-                    <el-input placeholder="请输入" v-model="form.erpDeliverOrder" clearable disabled />
+                  <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
+                    <el-input placeholder="请输入" v-model="form.cancelAllocateVehicleTypeLabel" clearable maxlength="300"
+                      disabled />
                   </el-form-item>
                   <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                     <el-input placeholder="请输入" v-model="form.erpInvoiceCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
+                    <el-input placeholder="请输入" v-model="form.logisticsReserveRemark" clearable disabled />
                   </el-form-item>
                   <el-form-item label="结算时间：" prop="settleTime">
                     <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.settleTime"
                       :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
                       end-placeholder="结束日期" disabled />
                   </el-form-item>
-                  <el-form-item label="结算方式：" prop="settleWay">
-                    <fetch-select :request="fetchOptions" enumCode="vw_wholesale_settle_way" v-model="form.settleWay"
-                      placeholder="请选择" clearable filterable disabled />
-                  </el-form-item>
-                  <el-form-item label="首次结算失败时间：" prop=" firstSettleFailedTime">
-                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.firstSettleFailedTime"
+                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
+                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.cancelSettleTime"
                       :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
                       end-placeholder="结束日期" disabled />
                   </el-form-item>
-                  <el-form-item label="首次配车时间：" prop="firstAllocateTime">
-                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.firstAllocateTime"
-                      :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
-                      end-placeholder="结束日期" disabled />
+                  <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
+                    <el-input placeholder="请输入" v-model="form.initDeliveryCycleDesc" clearable disabled />
                   </el-form-item>
                   <el-form-item label="退车标识：" prop="vehicleReturnFlag">
                     <el-radio-group v-model="form.vehicleReturnFlag" disabled>
@@ -310,35 +356,9 @@
                         }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item label="特殊备注：" prop="specialRemark">
-                    <el-input placeholder="请输入" v-model="form.specialRemark" clearable maxlength="300" />
-                  </el-form-item>
-                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
-                    <el-radio-group v-model="form.certificatePledged" disabled>
-                      <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message
-                        }}</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
-                    <el-input placeholder="请输入" v-model="form.cancelAllocateVehicleTypeLabel" clearable maxlength="300"
-                      disabled />
-                  </el-form-item>
-                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
-                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.cancelSettleTime"
-                      :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
-                      end-placeholder="结束日期" disabled />
-                  </el-form-item>
-                  <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
-                    <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.firstCancelAllocateTime"
-                      :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期"
-                      end-placeholder="结束日期" disabled />
-                  </el-form-item>
-                  <el-form-item label="是否创建发运单计划：" prop="createdShippingPlan">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.createdShippingPlan"
+                  <el-form-item label="结算方式：" prop="settleWay">
+                    <fetch-select :request="fetchOptions" enumCode="vw_wholesale_settle_way" v-model="form.settleWay"
                       placeholder="请选择" clearable filterable disabled />
-                  </el-form-item>
-                  <el-form-item label="作废说明：" prop="cancelRemark">
-                    <el-input placeholder="请输入" v-model="form.cancelRemark" clearable maxlength="300" disabled />
                   </el-form-item>
                   <el-form-item label="是否存在结算失败：" prop="hasSettleFailed">
                     <el-radio-group v-model="form.hasSettleFailed" disabled>
@@ -346,43 +366,61 @@
                         }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
+                  <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
+                    <el-input placeholder="请输入" v-model="form.dynamicDeliveryCycleDesc" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="特殊备注：" prop="specialRemark">
+                    <el-input placeholder="请输入" v-model="form.specialRemark" clearable maxlength="300" />
+                  </el-form-item>
                   <el-form-item label="车辆交付状态：" prop="deliveryStatus">
                     <fetch-select :request="fetchOptions" enumCode="vw_vehicle_delivery_status"
                       v-model="form.deliveryStatus" placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
-                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.needAutoAllocateCar"
-                      placeholder="请选择" clearable filterable
-                      :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)" />
+                  <el-form-item label="作废说明：" prop="cancelRemark">
+                    <el-input placeholder="请输入" v-model="form.cancelRemark" clearable maxlength="300" disabled />
                   </el-form-item>
-                  <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
-                    <el-input placeholder="请输入" v-model="form.logisticsReserveLabel" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
-                    <el-input placeholder="请输入" v-model="form.logisticsReserveRemark" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
-                    <el-input placeholder="请输入" v-model="form.initDeliveryCycleDesc" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
-                    <el-input placeholder="请输入" v-model="form.dynamicDeliveryCycleDesc" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
-                    <el-input placeholder="请输入" v-model="form.orderBatteryCellName" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
-                    <el-input placeholder="请输入" v-model="form.batteryCellName" clearable disabled />
-                  </el-form-item>
+
                 </el-form>
+
                 <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                   <el-form-item label="是否已锁定：" prop="lockStatusLabel">
                     {{ form.lockStatusLabel }}
                   </el-form-item>
+                  <el-form-item label="配车物料码：" prop="materialsCode">
+                    <el-link type="primary"
+                      :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`"
+                      target="_blank">{{ form.materialsCode }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
+                    {{ form.batteryCellName }}
+                  </el-form-item>
+                  <el-form-item label="合格证是否质押：" prop="certificatePledgedLabel">
+                    {{ form.certificatePledgedLabel }}
+                  </el-form-item>
                   <el-form-item label="锁定时间：" prop="lockTime">
                     {{ form.lockTime }}
                   </el-form-item>
+                  <el-form-item label="配车物料描述：" prop="materialsDesc">
+                    {{ form.materialsDesc }}
+                  </el-form-item>
+                  <el-form-item label="首次配车时间：" prop="firstAllocateTime">
+                    {{ form.firstAllocateTime }}
+                  </el-form-item>
+                  <el-form-item label="是否创建发运单计划：" prop="createdShippingPlanLabel">
+                    {{ form.createdShippingPlanLabel }}
+                  </el-form-item>
                   <el-form-item label="零售订单号：" prop="retailOrderCode">
                     {{ form.retailOrderCode }}
+                  </el-form-item>
+                  <el-form-item label="配车VIN码：" prop="vin">
+                    <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`"
+                      target="_blank">{{ form.vin }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
+                    {{ form.firstSettleFailedTime }}
+                  </el-form-item>
+                  <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
+                    {{ form.erpSaleOrderCode }}
                   </el-form-item>
                   <el-form-item label="商城订单号：" prop="mallOrderCode">
                     <el-button class="link" style="padding: 0;" type="text"
@@ -392,93 +430,57 @@
                   <el-form-item label="配车方式：" prop="allocateWayLabel">
                     {{ form.allocateWayLabel }}
                   </el-form-item>
-                  <el-form-item label="配车物料码：" prop="materialsCode">
-                    <el-link type="primary"
-                      :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`"
-                      target="_blank">{{ form.materialsCode }}</el-link>
-                  </el-form-item>
-                  <el-form-item label="配车物料描述：" prop="materialsDesc">
-                    {{ form.materialsDesc }}
-                  </el-form-item>
-                  <el-form-item label="配车VIN码：" prop="vin">
-                    <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`"
-                      target="_blank">{{ form.vin }}</el-link>
-                  </el-form-item>
-                  <el-form-item label="配车时间：" prop="allocateTime">
-                    {{ form.allocateTime }}
-                  </el-form-item>
-                  <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
-                    {{ form.erpSaleOrderCode }}
+                  <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
+                    {{ form.firstCancelAllocateTime }}
                   </el-form-item>
                   <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
                     {{ form.erpDeliverOrder }}
                   </el-form-item>
+                  <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
+                    {{ form.logisticsReserveLabel }}
+                  </el-form-item>
+                  <el-form-item label="配车时间：" prop="allocateTime">
+                    {{ form.allocateTime }}
+                  </el-form-item>
+                  <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
+                    {{ form.cancelAllocateVehicleTypeLabel }}
+                  </el-form-item>
                   <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                     {{ form.erpInvoiceCode }}
+                  </el-form-item>
+                  <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
+                    {{ form.logisticsReserveRemark }}
                   </el-form-item>
                   <el-form-item label="结算时间：" prop="settleTime">
                     {{ form.settleTime }}
                   </el-form-item>
-                  <el-form-item label="结算方式：" prop="settleWayLabel">
-                    {{ form.settleWayLabel }}
+                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
+                    {{ form.cancelSettleTime }}
                   </el-form-item>
-                  <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
-                    {{ form.firstSettleFailedTime }}
-                  </el-form-item>
-                  <el-form-item label="首次配车时间：" prop="firstAllocateTime">
-                    {{ form.firstAllocateTime }}
+                  <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
+                    {{ form.initDeliveryCycleDesc }}
                   </el-form-item>
                   <el-form-item label="退车标识：" prop="vehicleReturnFlagLabel">
                     {{ form.vehicleReturnFlagLabel }}
                     <!-- {{ yes_no_enum_map[form.vehicleReturnFlag] }} -->
                   </el-form-item>
-                  <el-form-item label="特殊备注：" prop="specialRemark">
-                    {{ form.specialRemark }}
-                  </el-form-item>
-                  <el-form-item label="合格证是否质押：" prop="certificatePledgedLabel">
-                    {{ form.certificatePledgedLabel }}
-                  </el-form-item>
-                  <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
-                    {{ form.cancelAllocateVehicleTypeLabel }}
-                  </el-form-item>
-                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
-                    {{ form.cancelSettleTime }}
-                  </el-form-item>
-                  <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
-                    {{ form.firstCancelAllocateTime }}
-                  </el-form-item>
-                  <el-form-item label="是否创建发运单计划：" prop="createdShippingPlanLabel">
-                    {{ form.createdShippingPlanLabel }}
-                  </el-form-item>
-                  <el-form-item label="作废说明：" prop="cancelRemark">
-                    {{ form.cancelRemark }}
+                  <el-form-item label="结算方式：" prop="settleWayLabel">
+                    {{ form.settleWayLabel }}
                   </el-form-item>
                   <el-form-item label="是否存在结算失败：" prop="hasSettleFailedLabel">
                     {{ form.hasSettleFailedLabel }}
                   </el-form-item>
-                  <el-form-item label="车辆交付状态：" prop="deliveryStatusLabel">
-                    {{ form.deliveryStatusLabel }}
-                  </el-form-item>
-                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
-                    {{ form.needAutoAllocateCarLabel }}
-                  </el-form-item>
-                  <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
-                    {{ form.logisticsReserveLabel }}
-                  </el-form-item>
-                  <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
-                    {{ form.logisticsReserveRemark }}
-                  </el-form-item>
-                  <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
-                    {{ form.initDeliveryCycleDesc }}
-                  </el-form-item>
                   <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
                     {{ form.dynamicDeliveryCycleDesc }}
                   </el-form-item>
-                  <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
-                    {{ form.orderBatteryCellName }}
+                  <el-form-item label="特殊备注：" prop="specialRemark">
+                    {{ form.specialRemark }}
                   </el-form-item>
-                  <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
-                    {{ form.batteryCellName }}
+                  <el-form-item label="车辆交付状态：" prop="deliveryStatusLabel">
+                    {{ form.deliveryStatusLabel }}
+                  </el-form-item>
+                  <el-form-item label="作废说明：" prop="cancelRemark">
+                    {{ form.cancelRemark }}
                   </el-form-item>
                 </el-form>
               </div>
@@ -491,15 +493,39 @@
                 <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
                 <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit"
                   v-show="isEditing || !_id">
+                  <el-form-item label="零售价：" prop="retailPrice">
+                    <el-input placeholder="请输入" v-model="form.retailPrice" clearable disabled />
+                  </el-form-item>
                   <el-form-item label="结算资金类型：" prop="settleFundType">
                     <fetch-select :options="fundTypeList" v-model="form.settleFundType" placeholder="请选择" clearable
                       filterable labelKey="fundTypeLabel" valueKey="fundType" @change="clearCache" />
+                  </el-form-item>
+                  <el-form-item label="使用返利金额：" prop="usedRebateAmount">
+                    <el-input placeholder="请输入" v-model="form.usedRebateAmount" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="是否赊销：" prop="creditSaleFlag">
+                    <el-radio-group v-model="form.creditSaleFlag" disabled>
+                      <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message
+                        }}</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="批售价：" prop="wholesalePrice">
+                    <el-input placeholder="请输入" v-model="form.wholesalePrice" clearable disabled />
                   </el-form-item>
                   <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select :options="financialOrganizationList" v-model="form.financialOrganizationId"
                       placeholder="请选择" clearable filterable labelKey="name" valueKey="id"
                       @change="getNewfinancialOrganization" :disabled="form.settleFundType !== 2010" />
-
+                  </el-form-item>
+                  <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                    <el-input placeholder="请输入" v-model="form.usedCashAmount" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="赊销是否还款：" prop="creditSaleRepaid">
+                    <el-radio-group v-model="form.creditSaleRepaid" disabled>
+                      <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message
+                        }}</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
                     <!-- <fetch-select
                     :remote-method="repairItemSearch"
                     remote
@@ -511,103 +537,81 @@
                     clearable
                     filterable
                   /> -->
-                  </el-form-item>
-                  <el-form-item label="零售价：" prop="retailPrice">
-                    <el-input placeholder="请输入" v-model="form.retailPrice" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="批售价：" prop="wholesalePrice">
-                    <el-input placeholder="请输入" v-model="form.wholesalePrice" clearable disabled />
-                  </el-form-item>
                   <el-form-item label="开票类型：" prop="invoiceDiscountType">
                     <fetch-select :request="fetchOptions" enumCode="vw_invoice_type" v-model="form.invoiceDiscountType"
                       placeholder="请选择" clearable filterable disabled />
-                  </el-form-item>
-                  <el-form-item label="开票系数：" prop="invoiceCoefficient">
-                    <el-input placeholder="请输入" v-model="form.invoiceCoefficient" clearable disabled />
                   </el-form-item>
                   <el-form-item label="返利使用类型：" prop="rebateUseType">
                     <fetch-select :request="fetchOptions" enumCode="vw_rebate_use_type" v-model="form.rebateUseType"
                       placeholder="请选择" clearable filterable disabled />
                   </el-form-item>
-                  <el-form-item label="返利使用系数：" prop="rebateCoefficient">
-                    <el-input placeholder="请输入" v-model="form.rebateCoefficient" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="使用现金金额：" prop="usedCashAmount">
-                    <el-input placeholder="请输入" v-model="form.usedCashAmount" clearable disabled />
-                  </el-form-item>
                   <el-form-item label="首付款比例：" prop="downPaymentRatio">
                     <el-input placeholder="请输入" v-model="form.downPaymentRatio" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="融资金额/赊销欠款：" prop="creditSalesAmount">
-                    <el-input placeholder="请输入" v-model="form.creditSalesAmount" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="是否赊销：" prop="creditSaleFlag">
-                    <el-radio-group v-model="form.creditSaleFlag" disabled>
-                      <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message
-                        }}</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item label="赊销是否还款：" prop="creditSaleRepaid">
-                    <el-radio-group v-model="form.creditSaleRepaid" disabled>
-                      <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message
-                        }}</el-radio>
-                    </el-radio-group>
                   </el-form-item>
                   <el-form-item label="同步SAP状态：" prop="syncSapMsg">
                     <el-input placeholder="请输入" v-model="form.syncSapMsg" maxlength="300" clearable disabled />
                   </el-form-item>
+                  <el-form-item label="开票系数：" prop="invoiceCoefficient">
+                    <el-input placeholder="请输入" v-model="form.invoiceCoefficient" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="返利使用系数：" prop="rebateCoefficient">
+                    <el-input placeholder="请输入" v-model="form.rebateCoefficient" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="融资金额/赊销欠款：" prop="creditSalesAmount">
+                    <el-input placeholder="请输入" v-model="form.creditSalesAmount" clearable disabled />
+                  </el-form-item>
 
                 </el-form>
                 <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                  <el-form-item label="零售价：" prop="retailPrice">
+                    {{ form.retailPrice }}
+                  </el-form-item>
                   <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                     {{ form.settleFundTypeLabel }}
+                  </el-form-item>
+                  <el-form-item label="使用返利金额：" prop="usedRebateAmount">
+                    {{ form.usedRebateAmount }}
+                  </el-form-item>
+                  <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
+                    {{ form.creditSaleFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="批售价：" prop="wholesalePrice">
+                    {{ form.wholesalePrice }}
                   </el-form-item>
                   <el-form-item label="金融机构名称：" prop="financialOrganizationName">
                     <el-link type="primary"
                       :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`"
                       target="_blank">{{ form.financialOrganizationName }}</el-link>
                   </el-form-item>
-                  <el-form-item label="零售价：" prop="retailPrice">
-                    {{ form.retailPrice }}
+                  <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                    {{ form.usedCashAmount }}
                   </el-form-item>
-                  <el-form-item label="批售价：" prop="wholesalePrice">
-                    {{ form.wholesalePrice }}
+                  <el-form-item label="赊销是否还款：" prop="creditSaleRepaidLabel">
+                    {{ form.creditSaleRepaidLabel }}
                   </el-form-item>
                   <el-form-item label="开票类型：" prop="invoiceDiscountTypeLabel">
                     {{ form.invoiceDiscountTypeLabel }}
                   </el-form-item>
-                  <el-form-item label="开票系数：" prop="invoiceCoefficient">
-                    {{ form.invoiceCoefficient }}
-                  </el-form-item>
                   <el-form-item label="返利使用类型：" prop="rebateUseTypeLabel">
                     {{ form.rebateUseTypeLabel }}
                   </el-form-item>
-                  <el-form-item label="返利使用系数：" prop="rebateCoefficient">
-                    {{ form.rebateCoefficient }}
-                  </el-form-item>
-                  <el-form-item label="使用返利金额：" prop="usedRebateAmount">
-                    {{ form.usedRebateAmount }}
-                  </el-form-item>
-                  <el-form-item label="使用现金金额：" prop="usedCashAmount">
-                    {{ form.usedCashAmount }}
-                  </el-form-item>
                   <el-form-item label="首付款比例：" prop="downPaymentRatio">
                     {{ form.downPaymentRatio }}
+                  </el-form-item>
+                  <el-form-item label="同步SAP状态：" prop="syncSapMsg">
+                    {{ form.syncSapMsg }}
+                  </el-form-item>
+                  <el-form-item label="开票系数：" prop="invoiceCoefficient">
+                    {{ form.invoiceCoefficient }}
+                  </el-form-item>
+                  <el-form-item label="返利使用系数：" prop="rebateCoefficient">
+                    {{ form.rebateCoefficient }}
                   </el-form-item>
                   <el-form-item label="融资金额/赊销欠款：" prop="creditSalesAmount">
                     <!-- todo 后续版本添加字段 -->
                     {{ form.creditSalesAmount }}
                   </el-form-item>
-                  <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
-                    {{ form.creditSaleFlagLabel }}
-                  </el-form-item>
-                  <el-form-item label="赊销是否还款：" prop="creditSaleRepaidLabel">
-                    {{ form.creditSaleRepaidLabel }}
-                  </el-form-item>
 
-                  <el-form-item label="同步SAP状态：" prop="syncSapMsg">
-                    {{ form.syncSapMsg }}
-                  </el-form-item>
                 </el-form>
               </div>
             </section>

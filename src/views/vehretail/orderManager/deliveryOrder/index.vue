@@ -48,7 +48,7 @@
         <el-form-item label="车型名称">
           <fetch-select
             :remote-method="remoteMethods.model"
-            v-model="form.modelId"
+            v-model="form.modelIdList"
             v-bind="selectOptions"
           />
         </el-form-item>
@@ -127,6 +127,23 @@
             clearable
           />
         </el-form-item>
+      <el-form-item label="金融方案">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vr_financial_scheme"
+          v-model="form.financialSchemeList"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="母公司编码">
+        <tag-input v-model="form.dealerCompanyCodeList" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="母公司名称">
+        <tag-input v-model="form.dealerCompanyNameList" placeholder="请输入" />
+      </el-form-item>
         <el-form-item label="预约提车时间">
           <el-date-picker
           :default-time="['00:00:00', '23:59:59']"
@@ -239,7 +256,9 @@ const defaultForm = {
   deliveryTime: [],
   areaCodes: [],
   provinceCodeList: [],
-  cityCodeList: []
+  cityCodeList: [],
+  dealerCompanyCodeList: [],
+  dealerCompanyNameList: [],
   // seriesIdList: [],
 };
 
@@ -303,6 +322,7 @@ export default {
         clearable: true,
         filterable: true,
         remote: true,
+        multiple: true,
         reserveKeyword: true
       },
       // 远程搜索方法
@@ -388,6 +408,9 @@ export default {
           { props: 'deliveryUserName', label: '订单交付顾问', visible: false, width: 200 },
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
           { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
+          { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 120 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
@@ -689,6 +712,9 @@ export default {
   }
   ::v-deep .item--area .el-cascader__tags .el-tag__close {
     top: 0;
+  }
+  ::v-deep .el-cascader__search-input {
+    margin: 2px 0 2px 10px;
   }
 }
 // ::v-deep .el-cascader__search-input {

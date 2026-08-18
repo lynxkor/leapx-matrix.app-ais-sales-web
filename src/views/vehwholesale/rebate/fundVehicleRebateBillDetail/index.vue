@@ -102,24 +102,62 @@
         <el-form-item label="业务单据号">
             <tag-input v-model="form.bizOrderNos" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="初审日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.auditTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
         <el-form-item label="创建人">
         <el-input
           placeholder="请输入"
           v-model="form.creatorName"
           clearable
+        />
+      </el-form-item>
+      <!-- 初审人 -->
+      <el-form-item label="初审人">
+        <el-input
+          placeholder="请输入"
+          v-model="form.auditorName"
+          clearable
+        />
+      </el-form-item>
+      <!-- 复审人 -->
+      <el-form-item label="复审人">
+        <el-input
+          placeholder="请输入"
+          v-model="form.reviewName"
+          clearable
+        />
+      </el-form-item>
+      <!-- 备注 -->
+      <el-form-item label="备注">
+        <el-input
+          placeholder="请输入"
+          v-model="form.remark"
+          clearable
+        />
+      </el-form-item>
+      <!-- 复审时间 (区间) -->
+      <el-form-item label="复审时间">
+        <el-date-picker
+          :default-time="['00:00:00', '23:59:59']"
+          v-model="form.reviewTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+      <el-form-item label="初审日期">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.auditTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         />
       </el-form-item>
       </template>
@@ -217,6 +255,11 @@ const defaultForm = {
   auditTime: '',
   billStatus: '',
   deliveryOrderCode: '',
+  // 新增筛选字段
+  auditorName: '', // 初审人
+  reviewName: '', // 复审人
+  reviewTime: [], // 复审时间(区间)
+  remark: '', // 备注
 };
 
 const pageSize = 20;
@@ -589,6 +632,14 @@ export default {
         if (this.form.auditTime.length > 1) {
           data.auditTimeStart = this.form.auditTime[0];
           data.auditTimeEnd = this.form.auditTime[1];
+        }
+      }
+      // 新增:复审时间区间
+      if (this.form.reviewTime) {
+        delete data.reviewTime;
+        if (this.form.reviewTime.length > 1) {
+          data.reviewTimeStart = this.form.reviewTime[0];
+          data.reviewTimeEnd = this.form.reviewTime[1];
         }
       }
 
