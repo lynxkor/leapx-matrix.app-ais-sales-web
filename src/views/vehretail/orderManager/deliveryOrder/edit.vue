@@ -420,6 +420,7 @@
 
 <script>
 import {
+  getList,
   getDetail,
   addOrUpdate, // 新增/修改
   validateInvoiceAmount, // 确认收款-校验开票金额-卡点
@@ -781,7 +782,7 @@ export default {
         { field: 'paymentTime', title: '付款时间', width: 180 },
         { field: 'paymentTypeLabel', title: '支付方式', width: 120 },
         { field: 'payerName', title: '支付人', width: 120 },
-        { field: 'outTradeNo', title: '商城流水号', width: 200 },
+        { field: 'mallOrderCode', title: '商城流水号', width: 200 },
         { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
         { field: 'rightsItemCode', title: '权益项编号', width: 150 },
         { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
@@ -943,8 +944,14 @@ export default {
     getDetailDecryptField (id, field) {
       return getDetailDecryptField(id, field);
     },
-    detailRequest () {
-      const id = this._id;
+    async detailRequest () {
+      let id = this._id;
+      if (this.$route.query.code && !id) {
+        const res = await getList({ deliveryOrderCode: this.$route.query.code, pageSize: 10, pageNum: 1 });
+        if (res && res.records && res.records.length) {
+          id = res.records[0].id;
+        }
+      }
       if (id) {
         return getDetail(id).then(res => {
           // 统一转为 number，与远程搜索返回的 userId 类型保持一致，

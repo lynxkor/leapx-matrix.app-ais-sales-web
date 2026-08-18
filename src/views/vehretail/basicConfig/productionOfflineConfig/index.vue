@@ -150,7 +150,7 @@ import EditPage from './edit.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  status: '',
+  status: '1',
   modelName: '',
   yearTypeName: '',
   exteriorName: '',
