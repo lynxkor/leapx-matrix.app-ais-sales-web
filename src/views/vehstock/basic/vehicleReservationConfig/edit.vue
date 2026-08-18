@@ -212,7 +212,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: '1',
   statusLabel: '',
   statusDesc: '',
   bizCode: '',

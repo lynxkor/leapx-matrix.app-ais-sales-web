@@ -114,24 +114,24 @@
             clearable filterable />
         </el-form-item>
         <el-form-item label="ERP发票号" label-width="120px" class="composite-filter-item">
-          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 80px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('erpInvoice')">
+          <el-select v-model="erpInvoiceFilterMode" size="small" style="width: 75px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('erpInvoice')">
             <el-option label="包含" value="include" />
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
           </el-select>
-          <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入/粘贴" style="flex: 1; max-width: 200px" />
+          <tag-input v-if="erpInvoiceFilterMode !== 'null'" v-model="form.erpInvoiceList" placeholder="请输入" style="flex: 1; max-width: 216px" />
           <el-select v-else v-model="form.erpInvoiceNull" size="small" placeholder="请选择" clearable style="flex: 1">
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="同步SAP状态" label-width="120px" class="composite-filter-item">
-          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 80px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('sapSyncStatus')">
+          <el-select v-model="sapSyncStatusFilterMode" size="small" style="width: 75px; margin-right: 8px; flex-shrink: 0" @change="onFilterModeChange('sapSyncStatus')">
             <el-option label="包含" value="include" />
             <el-option label="不包含" value="exclude" />
             <el-option label="为空" value="null" />
           </el-select>
-          <tag-input v-if="sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusList" placeholder="请输入/粘贴" style="flex: 1; max-width: 200px" />
+          <tag-input v-if="sapSyncStatusFilterMode !== 'null'" v-model="form.sapSyncStatusList" placeholder="请输入" style="flex: 1; max-width: 216px" />
           <el-select v-else v-model="form.sapSyncStatusNull" size="small" placeholder="请选择" clearable style="flex: 1">
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
