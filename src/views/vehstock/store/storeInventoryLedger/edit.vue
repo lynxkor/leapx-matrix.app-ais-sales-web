@@ -144,7 +144,7 @@
                   {{ form.financeRepayOn }}
                 </el-form-item>
                 <el-form-item label="交车单号：" prop="deliverOrderId">
-                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?code=${form.deliverOrderId}`" target="_blank">{{ form.deliverOrderId }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?deliveryCode=${form.deliverOrderId}`" target="_blank">{{ form.deliverOrderId }}</el-link>
                   <!-- {{ form.deliverOrderId }} -->
                 </el-form-item>
                 <el-form-item label="赊销合格证快递单号：" prop="invoiceExpressNo">
