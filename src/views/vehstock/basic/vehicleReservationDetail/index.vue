@@ -334,6 +334,7 @@ export default {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
       }
+      console.log('[exportExcel] selectionList:', this.selectionList.length, 'reqParams:', reqParams);
       exportTable({
         businessType: '车辆预留明细',
         dataFetchPath: '/vehstock/web/basic/vehicleReservationDetail/page',
@@ -413,6 +414,10 @@ export default {
 
       Object.keys(this.form).forEach(key => {
         if (data[key] === '' || data[key] === null) {
+          delete data[key];
+        }
+        // 清理空数组，避免后端将空数组误解为"不过滤"
+        if (Array.isArray(data[key]) && data[key].length === 0) {
           delete data[key];
         }
       });
