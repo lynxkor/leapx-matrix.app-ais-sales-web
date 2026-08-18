@@ -184,7 +184,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { listOrgStoreInfo } from '@/libs/api/common';
+import { listOrgStoreInfo, queryStoreRelation } from '@/libs/api/common';
 import ApprovalDialog from './ApprovalDialog.vue';
 import axios from 'axios';
 
@@ -258,9 +258,6 @@ export default {
         return {};
       }
     },
-    directOrgCodes () {
-      return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
-    },
     allOrgCodes () {
       return [...new Set([...this.directOrgCodes, ...this.descendantOrgCodes])];
     },
@@ -317,6 +314,15 @@ export default {
       storeName: '', // 目标门店仓库名称
       emptyText: '若要启用此内容，请创建记录',
       warehouseOptions: [], // 门店仓库编码或名称选项
+      directOrgCodes: (() => {
+        // 直接从 localStorage 读取用户信息初始化（data() 中无法使用 computed）
+        try {
+          const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+          return (userInfo.orgPostUserList || []).map(item => item.orgCode);
+        } catch (e) {
+          return [];
+        }
+      })(), // 直接组织编码（异步通过 queryStoreRelation 扩充）
       descendantOrgCodes: [], // 子级组织编码
       approvalVisible: false, // 调拨审批弹窗
       approvalData: {},
@@ -352,8 +358,9 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        // 详情加载完成后取一次子级组织编码，保证审批按钮的 show 判断可用
+        // 详情加载完成后取一次子级组织编码和门店关联关系，保证审批按钮的 show 判断可用
         this.fetchDescendantOrgCodes();
+        this.fetchStoreRelation();
         return getDetail(id);
       }
     },
@@ -536,6 +543,22 @@ export default {
         this.descendantOrgCodes = [...new Set(allCodes)];
       } catch (e) {
         console.error('fetchDescendantOrgCodes error:', e);
+      }
+    },
+    // 获取门店关联关系，扩充 directOrgCodes
+    async fetchStoreRelation () {
+      if (this.directOrgCodes.length === 0) return;
+      try {
+        const res = await queryStoreRelation({
+          queryType: 1,
+          storeCodes: this.directOrgCodes
+        });
+        const data = res.data || [];
+        if (Array.isArray(data)) {
+          this.directOrgCodes = [...new Set(data.map(item => item.storeCode).filter(Boolean))];
+        }
+      } catch (e) {
+        console.error('fetchStoreRelation error:', e);
       }
     }
   }

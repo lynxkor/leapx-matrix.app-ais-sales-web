@@ -35,7 +35,14 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
   { key: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明' },
   { key: 'initialDeliveryCycleDesc', label: '初始交付周期说明' },
-  { key: 'secondNetStoreName', label: '二网门店' }
+  { key: 'secondNetStoreName', label: '二网门店' },
+  {
+    key: 'deliveryOrderCode',
+    label: '交车单',
+    link: '/sales/vehretail/orderManager/deliveryOrder/edit',
+    paramKey: 'deliveryOrderId',
+    paramName: 'id'
+  }
 ];
 
 // 购车人信息字段配置
@@ -92,9 +99,9 @@ export const lockAllocationDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    // link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-    // paramKey: 'matchVin',
-    // paramName: 'vin'
+    link: '/sales/vehstock/store/storeInventoryLedger/edit',
+    paramKey: 'matchVin',
+    paramName: 'vin'
   },
   { key: 'deliveryVin', label: '交车VIN码' },
   { key: 'deliveryTime', label: '交车时间' },

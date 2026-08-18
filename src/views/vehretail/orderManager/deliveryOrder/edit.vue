@@ -420,6 +420,7 @@
 
 <script>
 import {
+  getList,
   getDetail,
   addOrUpdate, // 新增/修改
   validateInvoiceAmount, // 确认收款-校验开票金额-卡点
@@ -943,8 +944,14 @@ export default {
     getDetailDecryptField (id, field) {
       return getDetailDecryptField(id, field);
     },
-    detailRequest () {
-      const id = this._id;
+    async detailRequest () {
+      let id = this._id;
+      if (this.$route.query.code && !id) {
+        const res = await getList({ deliveryOrderCode: this.$route.query.code, pageSize: 10, pageNum: 1 });
+        if (res && res.records && res.records.length) {
+          id = res.records[0].id;
+        }
+      }
       if (id) {
         return getDetail(id).then(res => {
           // 统一转为 number，与远程搜索返回的 userId 类型保持一致，
