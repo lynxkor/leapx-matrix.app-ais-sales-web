@@ -217,19 +217,19 @@
                   {{ form.retailPrice }}
                 </el-form-item>
                 <el-form-item label="批售价/折扣价：" prop="wholesalePrice">
-                  {{ form.wholesalePrice }}
+                  {{ formatAmount(form.wholesalePrice) }}
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
                   {{ form.downPaymentRatio }}
                 </el-form-item>
                 <el-form-item label="现金金额：" prop="cashAmount">
-                  {{ form.cashAmount }}
+                  {{ formatAmount(form.cashAmount) }}
                 </el-form-item>
                 <el-form-item label="返利金额：" prop="rebateAmount">
-                  {{ form.rebateAmount }}
+                  {{ formatAmount(form.rebateAmount) }}
                 </el-form-item>
                 <el-form-item label="赊销金额：" prop="creditSalesAmount">
-                  {{ form.creditSalesAmount }}
+                  {{ formatAmount(form.creditSalesAmount) }}
                 </el-form-item>
                 <el-form-item label="赊销时间：" prop="creditSalesTime">
                   {{ form.creditSalesTime }}
@@ -241,13 +241,13 @@
                   {{ form.repaymentTime }}
                 </el-form-item>
                 <el-form-item label="赊销费用：" prop="creditSalesFee">
-                  {{ form.creditSalesFee }}
+                  {{ formatAmount(form.creditSalesFee) }}
                 </el-form-item>
                 <el-form-item label="超期赊销费用：" prop="overdueFee">
                   {{ form.overdueFee }}
                 </el-form-item>
                 <el-form-item label="违约金：" prop="penaltyFee">
-                  {{ form.penaltyFee }}
+                  {{ formatAmount(form.penaltyFee) }}
                 </el-form-item>
                 <el-form-item label="凭证编号：" prop="voucherNo">
                   {{ form.voucherNo }}
@@ -288,6 +288,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   creditSalesDetailCode: '',
@@ -477,6 +478,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

@@ -83,8 +83,9 @@
                 </el-form-item>
                 <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
                   <el-input
+                    :value="formatAmount(form.rebateUsageQuota)"
+                    @input="onRebateUsageQuotaInput"
                     placeholder="请输入开启返利使用额度"
-                    v-model="form.rebateUsageQuota"
                     clearable
                     maxlength="20"
                   />
@@ -141,7 +142,7 @@
                   {{ form.enableBankDirectConnectionLabel }}
                 </el-form-item>
                 <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
-                  {{ form.rebateUsageQuota }}
+                  {{ formatAmount(form.rebateUsageQuota) }}
                 </el-form-item>
                 <el-form-item label="是否生成采购记录：" prop="createPurchaseRecordLabel">
                   {{ form.createPurchaseRecordLabel }}
@@ -178,6 +179,7 @@ import { getEnum } from '@/api/common';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   organizationName: '',
@@ -315,6 +317,9 @@ export default {
     submitRequest () {
       // 提交时移除只读字段
       const submitForm = { ...this.form };
+      // 千分位字段：el-input onRebateUsageQuotaInput 已转回数字，此处 Number() 兜底
+      const numQuota = Number(submitForm.rebateUsageQuota);
+      submitForm.rebateUsageQuota = isNaN(numQuota) ? 0 : numQuota;
       delete submitForm.creatorName;
       delete submitForm.createTime;
       delete submitForm.statusLabel;
@@ -338,6 +343,13 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    onRebateUsageQuotaInput (val) {
+      const num = parseFloat(String(val).replace(/,/g, ''));
+      this.form.rebateUsageQuota = isNaN(num) ? '' : num;
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

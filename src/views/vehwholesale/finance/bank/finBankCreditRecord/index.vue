@@ -173,7 +173,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel, formatAmount } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
@@ -379,6 +379,13 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              creditLimit: formatAmount(item.creditLimit),
+              usedLimit: formatAmount(item.usedLimit),
+              availableLimit: formatAmount(item.availableLimit),
+              wholesaleExposureLimit: formatAmount(item.wholesaleExposureLimit),
+              occupiedExposureLimit: formatAmount(item.occupiedExposureLimit),
+              usedExposureLimit: formatAmount(item.usedExposureLimit),
+              maxCreditLimit: formatAmount(item.maxCreditLimit),
               deleteLoading: false
             };
           });

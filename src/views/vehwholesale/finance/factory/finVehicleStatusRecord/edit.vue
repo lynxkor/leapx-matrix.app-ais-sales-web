@@ -81,10 +81,10 @@
                   {{ form.financingDataSourceLabel }}
                 </el-form-item>
                 <el-form-item label="融资金额：" prop="financingAmount">
-                  {{ form.financingAmount }}
+                  {{ formatAmount(form.financingAmount) }}
                 </el-form-item>
                 <el-form-item label="含税价格：" prop="taxIncludedPrice">
-                  {{ form.taxIncludedPrice }}
+                  {{ formatAmount(form.taxIncludedPrice) }}
                 </el-form-item>
                 <el-form-item label="订单号：" prop="orderCode">
                   <el-link v-if="form.financingDataSource === 30" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.orderId || form.orderCode}`" target="_blank">{{ form.orderCode }}</el-link>
@@ -138,6 +138,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -234,7 +235,13 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      // 千分位展示字段：form-detail 模板展示，理论上 form.xxx 仍是 number；Number() 兜底
+      const submitForm = { ...this.form };
+      ['financingAmount', 'taxIncludedPrice'].forEach(field => {
+        const num = Number(submitForm[field]);
+        submitForm[field] = isNaN(num) ? 0 : num;
+      });
+      return addOrUpdate(submitForm);
     },
     // 打开侧边栏
     openPane () {
@@ -273,6 +280,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

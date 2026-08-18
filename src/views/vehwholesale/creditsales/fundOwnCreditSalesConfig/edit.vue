@@ -59,13 +59,11 @@
                   />
                 </el-form-item>
                 <el-form-item label="授信额度：" prop="creditAmount">
-                  <el-input-number
+                  <el-input
+                    :value="formatAmount(form.creditAmount)"
+                    @input="onCreditAmountInput"
                     placeholder="请输入授信额度"
-                    v-model="form.creditAmount"
-                    :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
+                    clearable
                   />
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
@@ -152,7 +150,7 @@
                   {{ form.creditAccountStatusLabel }}
                 </el-form-item>
                 <el-form-item label="授信额度：" prop="creditAmount">
-                  {{ form.creditAmount }}
+                  {{ formatAmount(form.creditAmount) }}
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
                   {{ form.downPaymentRatio }}
@@ -228,6 +226,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
 import auditDialog from '@/libs/components/auditDialog';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   configCode: '',
@@ -336,7 +335,7 @@ export default {
         ],
         creditAmount: [
           { required: true, message: '请输入授信额度', trigger: 'change' },
-          { type: 'number', min: 0, message: '授信额度必须大于等于0', trigger: 'change' }
+          // { type: 'number', min: 0, message: '授信额度必须大于等于0', trigger: 'change' }
         ],
         downPaymentRatio: [
           { required: true, message: '请输入首付款比例', trigger: 'change' },
@@ -420,8 +419,18 @@ export default {
       }
     },
     submitRequest () {
+      if (this.form.creditAmount <= 0) {
+        this.$message({
+          message: '使用天数下限必须小于使用天数上限',
+          type: 'error'
+        });
+        return Promise.reject(new Error('赊销费用必须大于等于0'));
+      }
       // 提交时移除只读字段
       const submitForm = { ...this.form };
+      // 千分位字段：el-input onCreditAmountInput 已转回数字，此处 Number() 兜底
+      const numAmount = Number(submitForm.creditAmount);
+      submitForm.creditAmount = isNaN(numAmount) ? 0 : numAmount;
       const readOnlyFields = ['creatorName', 'createTime', 'modifierName', 'updateTime',
         'configUserName', 'configTime', 'auditStatusLabel', 'creditAccountStatusLabel',
         'reviewName', 'reviewTime', 'reviewOpinion'];
@@ -480,6 +489,13 @@ export default {
     initPermissions () {
       this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
       this.preReview = this.permissions.has(`${this.moduleKey}-review`);
+    },
+    onCreditAmountInput (val) {
+      const num = parseFloat(String(val).replace(/,/g, ''));
+      this.form.creditAmount = isNaN(num) ? '' : num;
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };
