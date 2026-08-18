@@ -94,8 +94,7 @@
       />
     </el-form>
     <div class="ais-actions">
-      <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
+      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
@@ -136,7 +135,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
+import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/libs/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -335,20 +334,21 @@ export default {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
       }
+      console.log('[exportExcel] selectionList:', this.selectionList.length, 'reqParams:', reqParams);
       exportTable({
         businessType: '车辆预留明细',
         dataFetchPath: '/vehstock/web/basic/vehicleReservationDetail/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
-      }).then(res => {
-        if (res) {
-          if (res.excelUrl) {
-            window.location.href = res.excelUrl;
-          } else {
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, '车辆预留明细.xlsx');
+          } catch (error) {
             this.$message({
               type: 'error',
-              message: '导出失败'
+              message: '文件导出失败'
             });
           }
         } else {
@@ -414,6 +414,10 @@ export default {
 
       Object.keys(this.form).forEach(key => {
         if (data[key] === '' || data[key] === null) {
+          delete data[key];
+        }
+        // 清理空数组，避免后端将空数组误解为"不过滤"
+        if (Array.isArray(data[key]) && data[key].length === 0) {
           delete data[key];
         }
       });
