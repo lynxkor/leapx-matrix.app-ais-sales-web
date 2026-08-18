@@ -184,7 +184,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       remoteMethods: {
         vehicleMaterials: async (query) => {
-          return await vehicleMaterials({ keyWord: query });
+          return await vehicleMaterials({ keyWord: query, pageSize: 20, pageNum: 1 });
         },
       },
       moduleKey: 'AISVS-vehicleReservationDetail',
