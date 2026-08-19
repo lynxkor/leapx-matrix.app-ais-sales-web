@@ -187,7 +187,6 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { listOrgStoreInfo, queryStoreRelation } from '@/libs/api/common';
 import ApprovalDialog from './ApprovalDialog.vue';
 import axios from 'axios';
-import { log } from 'vxe-pc-ui';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
