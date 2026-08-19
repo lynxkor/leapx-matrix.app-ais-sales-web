@@ -72,6 +72,30 @@
             label-key="storeName"
           />
         </el-form-item>
+        <el-form-item label="大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            v-model="form.regionCodeList"
+            :remote-method="remoteMethods.region"
+            value-key="orgCode"
+            label-key="orgName"
+          />
+        </el-form-item>
+        <el-form-item label="省市" class="item--area">
+          <el-cascader
+            v-model="form.areaCodes"
+            :options="areaOptions"
+            :props="areaProps"
+            placeholder="请选择省市"
+            collapse-tags
+            clearable
+            filterable
+            @change="handleAreaChange"
+          />
+        </el-form-item>
         <el-form-item label="PDI提交人">
           <fetch-select
             remote
@@ -128,7 +152,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeVehiclePdi/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, listVehicleYearType, listOrgStoreInfo, getUserByNameOrNo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, listVehicleYearType, listOrgStoreInfo, getUserByNameOrNo, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -138,6 +162,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -155,6 +180,10 @@ const defaultForm = {
   pdiSubmitById: '',
   pdiSubmitOn: '',
   pdiSubmitTime: [],
+  areaCodes: [],
+  provinceCodeList: [],
+  cityCodeList: [],
+  regionCodeList: [],
 };
 
 // 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
@@ -193,6 +222,25 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      areaOptions: (() => {
+        // 仅保留省/市两级，移除城市下的区/县子节点
+        return (getAreaTree() || []).map(province => ({
+          ...province,
+          child: (province.child || []).map(city => {
+            const { child, ...rest } = city;
+            return rest;
+          })
+        }));
+      })(),
+      // el-cascader 多选配置
+      areaProps: {
+        multiple: true,
+        checkStrictly: true,
+        emitPath: false,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
       optionObj: {
         id: 'storeVehiclePdiTable',
         dataList: [],
@@ -232,6 +280,9 @@ export default {
           { props: 'materialsCode', label: '物料编码', visible: true, width: 160 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 140 },
+          { props: 'provinceName', label: '省', visible: true, width: 160 },
+          { props: 'cityName', label: '市', visible: true, width: 160 },
           { props: 'pdiSubmitBy', label: 'PDI提交人', visible: true, width: 160 },
           { props: 'pdiSubmitOn', label: 'PDI提交时间', visible: true, width: 200, sortable: true },
           { props: 'repairedBy', label: '异常修复确认人', visible: true, width: 160 },
@@ -275,6 +326,9 @@ export default {
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query });
         },
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
+        }
       }
     };
   },
@@ -440,6 +494,8 @@ export default {
         }
       });
 
+      delete data.areaCodes;
+
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
@@ -473,6 +529,27 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    // el-cascader 多选变更时，遍历省/市树把每个选中的 code 按层级拆分到对应数组
+    handleAreaChange (selectedCodes) {
+      const codes = Array.isArray(selectedCodes) ? selectedCodes : [];
+      const areaTree = this.areaOptions || [];
+      const provinces = new Set();
+      const cities = new Set();
+
+      areaTree.forEach(province => {
+        if (codes.includes(province.code)) {
+          provinces.add(province.code);
+        }
+        (province.child || []).forEach(city => {
+          if (codes.includes(city.code)) {
+            cities.add(city.code);
+          }
+        });
+      });
+
+      this.form.provinceCodeList = [...provinces];
+      this.form.cityCodeList = [...cities];
     },
     // 批量删除
     handleBatchDelete () {
@@ -535,5 +612,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-store-vehicle-pdi-list {}
+.m-store-vehicle-pdi-list {
+  ::v-deep .item--area .el-cascader__tags .el-tag {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  ::v-deep .item--area .el-cascader__tags .el-tag__close {
+    position: relative;
+    top: -2px;
+  }
+  ::v-deep .el-cascader__search-input {
+    margin: 2px 0 2px 10px;
+  }
+}
 </style>
