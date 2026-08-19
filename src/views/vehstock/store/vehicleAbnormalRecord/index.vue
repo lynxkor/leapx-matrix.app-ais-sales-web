@@ -31,7 +31,7 @@
             remote
             multiple
             collapseTags
-            v-model="form.deliveryDealerCode"
+            v-model="form.deliveryDealerCodeList"
             :remote-method="getDealerListBy"
             value-key="storeCode"
             label-key="storeName"
@@ -124,7 +124,7 @@ const defaultForm = {
   materialsDesc: '',
   materialsCodeList: [],
   saleDealerCodeList: [],
-  deliveryDealerCode: '',
+  deliveryDealerCodeList: [],
   regionCodeList: [],
   areaCodes: [],
   provinceCodeList: [],
