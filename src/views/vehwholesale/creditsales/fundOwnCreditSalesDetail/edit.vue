@@ -214,7 +214,7 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entVehorderCode}`" target="_blank">{{ form.entVehorderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆价格：" prop="retailPrice">
-                  {{ form.retailPrice }}
+                  {{ formatAmount(form.retailPrice) }}
                 </el-form-item>
                 <el-form-item label="批售价/折扣价：" prop="wholesalePrice">
                   {{ formatAmount(form.wholesalePrice) }}

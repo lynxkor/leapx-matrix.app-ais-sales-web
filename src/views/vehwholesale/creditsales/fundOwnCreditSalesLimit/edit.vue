@@ -144,7 +144,7 @@
                   {{ formatAmount(form.remainingReceivableAmount) }}
                 </el-form-item>
                 <el-form-item label="最近结算金额：" prop="transactionAmount">
-                  {{ form.transactionAmount }}
+                  {{ formatAmount(form.transactionAmount) }}
                 </el-form-item>
                 <el-form-item label="额度生效日期：" prop="effectiveTime">
                   {{ form.effectiveTime }}
