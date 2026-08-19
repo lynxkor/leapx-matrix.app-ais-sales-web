@@ -11,6 +11,7 @@
         </template>
         <template #extraButtons>
           <!-- 提交：仅源门店用户在待提交/驳回时可见 -->
+           {{ directOrgCodes }}
           <el-button
             v-if="canSubmit"
             size="small"
@@ -187,6 +188,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { listOrgStoreInfo, queryStoreRelation } from '@/libs/api/common';
 import ApprovalDialog from './ApprovalDialog.vue';
 import axios from 'axios';
+import { log } from 'vxe-pc-ui';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -553,9 +555,12 @@ export default {
           queryType: 1,
           storeCodes: this.directOrgCodes
         });
-        const data = res.data || [];
-        if (Array.isArray(data)) {
-          this.directOrgCodes = [...new Set(data.map(item => item.storeCode).filter(Boolean)), ...this.directOrgCodes];
+        const list = res?.storeCodes || [];
+        if (Array.isArray(list) && list.length) {
+          this.directOrgCodes = [...new Set([
+            ...list.filter(Boolean),
+            ...this.directOrgCodes
+          ])];
         }
       } catch (e) {
         console.error('fetchStoreRelation error:', e);
