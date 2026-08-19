@@ -572,7 +572,7 @@ export default {
         });
         const data = res.data || [];
         if (Array.isArray(data)) {
-          this.directOrgCodes = [...new Set(data.map(item => item.storeCode).filter(Boolean))];
+          this.directOrgCodes = [...new Set(data.map(item => item.storeCode).filter(Boolean)), ...this.directOrgCodes];
         }
       } catch (e) {
         console.error('fetchStoreRelation error:', e);
