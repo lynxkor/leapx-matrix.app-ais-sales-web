@@ -24,6 +24,43 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="交付门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            collapseTags
+            v-model="form.deliveryDealerCode"
+            :remote-method="getDealerListBy"
+            value-key="storeCode"
+            label-key="storeName"
+          />
+        </el-form-item>
+        <el-form-item label="大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            v-model="form.regionCodeList"
+            :remote-method="remoteMethods.region"
+            value-key="orgCode"
+            label-key="orgName"
+          />
+        </el-form-item>
+        <el-form-item label="省市" class="item--area">
+          <el-cascader
+            v-model="form.areaCodes"
+            :options="areaOptions"
+            :props="areaProps"
+            placeholder="请选择省市"
+            collapse-tags
+            clearable
+            filterable
+            @change="handleAreaChange"
+          />
+        </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
         </el-form-item>
@@ -65,7 +102,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleAbnormalRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -74,6 +111,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import TagInput from '@/libs/components/TagInput';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -85,7 +123,14 @@ const defaultForm = {
   materialsCode: '',
   materialsDesc: '',
   materialsCodeList: [],
-  saleDealerCodeList: []
+  saleDealerCodeList: [],
+  deliveryDealerCode: '',
+  regionCodeList: [],
+  areaCodes: [],
+  provinceCodeList: [],
+  cityCodeList: [],
+  abnormalRecordNo: '',
+  vinLastSix: ''
 };
 
 // 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
@@ -124,6 +169,31 @@ export default {
       uploadDialogVisible: false,
       activeName: 'homePage',
       clickItemId: '',
+      areaOptions: (() => {
+        // 仅保留省/市两级，移除城市下的区/县子节点
+        return (getAreaTree() || []).map(province => ({
+          ...province,
+          child: (province.child || []).map(city => {
+            const { child, ...rest } = city;
+            return rest;
+          })
+        }));
+      })(),
+      // el-cascader 多选配置
+      areaProps: {
+        multiple: true,
+        checkStrictly: true,
+        emitPath: false,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
+        }
+      },
       optionObj: {
         id: 'vehicleAbnormalRecordTable',
         dataList: [],
@@ -140,6 +210,10 @@ export default {
           { props: 'abnormalRecordTime', label: '异常记录时间', visible: true, width: 200, sortable: true },
           { props: 'vechicleStatusLabel', label: '车辆状态', visible: true, width: 100 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
+          { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 140 },
+          { props: 'provinceName', label: '省', visible: true, width: 140 },
+          { props: 'cityName', label: '市', visible: true, width: 140 },
           { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
           { props: 'dealerWarehouseAddress', label: '仓库地址', visible: true, width: 200 },
           { props: 'vehicleArrivalOn', label: '物流到店日期', visible: true, width: 200 },
@@ -312,6 +386,31 @@ export default {
     async getDealerListByName (params) {
       return listOrgStoreInfo({ storeName: params, isSales: true });
     },
+    // 交付门店搜索
+    async getDealerListBy (params) {
+      return listOrgStoreInfo({ storeName: params, isSupportDeliver: true });
+    },
+    // el-cascader 多选变更时，遍历省/市树把每个选中的 code 按层级拆分到对应数组
+    handleAreaChange (selectedCodes) {
+      const codes = Array.isArray(selectedCodes) ? selectedCodes : [];
+      const areaTree = this.areaOptions || [];
+      const provinces = new Set();
+      const cities = new Set();
+
+      areaTree.forEach(province => {
+        if (codes.includes(province.code)) {
+          provinces.add(province.code);
+        }
+        (province.child || []).forEach(city => {
+          if (codes.includes(city.code)) {
+            cities.add(city.code);
+          }
+        });
+      });
+
+      this.form.provinceCodeList = [...provinces];
+      this.form.cityCodeList = [...cities];
+    },
     getFormData () {
       const data = { ...this.form };
 
@@ -340,6 +439,9 @@ export default {
         delete data.materialsCodeList;
         data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
+
+      delete data.areaCodes;
+
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
@@ -417,6 +519,19 @@ export default {
   }
   .ais-table-c {
     height: calc(100% - 168px);
+  }
+  // 省市级联选择器样式
+  ::v-deep .item--area .el-cascader__tags .el-tag {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  ::v-deep .item--area .el-cascader__tags .el-tag__close {
+    position: relative;
+    top: -2px;
+  }
+  ::v-deep .el-cascader__search-input {
+    margin: 2px 0 2px 10px;
   }
 }
 </style>

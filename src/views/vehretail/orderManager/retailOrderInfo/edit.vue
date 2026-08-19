@@ -261,13 +261,20 @@
                     :disabled="!canEditField('secondNetStoreName')"
                   />
                 </el-form-item>
+                <el-form-item label="交车单：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryOrder.deliveryOrderCode"
+                    disabled
+                  />
+                </el-form-item>
               </el-form>
             </div>
           </section>
           <generic-detail-display
             id="basic-info" class="common-section"
             :title="'基础信息'"
-            :formData="form"
+            :formData="{...form.deliveryOrder, ...form, deliveryOrderId: form.deliveryOrder.id}"
             :fields="displayFields"
             :getDetailDecryptField="getDetailDecryptField"
             @field-click="handleFieldClick"
@@ -513,6 +520,9 @@ const defaultForm = {
   materials: {},
   wholesaleOrderDetail: {},
   refundDetail: {},
+  deliveryOrder: {
+    id: ''
+  },
   finance: {
     financialPlan: '',
     mortgageProgress: '',
@@ -1032,6 +1042,7 @@ export default {
         return getDetail(id).then(response => {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
+          processedData.deliveryOrder = response.deliveryOrder || { ...defaultForm.deliveryOrder };
           // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
           const addSaleDealerName = (array) => {
             if (array && Array.isArray(array) && response.saleDealerName) {

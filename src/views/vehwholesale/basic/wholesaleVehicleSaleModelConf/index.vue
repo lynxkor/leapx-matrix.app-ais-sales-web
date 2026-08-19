@@ -179,6 +179,7 @@ const defaultForm = {
   auditStatus: '',
   dealerParentOrgCode: '',
   updateTime: '',
+  isNoSort: true
 };
 
 const pageSize = 20;
@@ -266,6 +267,7 @@ export default {
             label: '车型',
             visible: true,
             width: 200,
+            sortable: true,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
@@ -289,8 +291,8 @@ export default {
           { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 120 },
           { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 150 },
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 100, align: 'right', sortable: true },
-          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150, sortable: true },
-          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right' },
+          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150 },
+          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right', sortable: true },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 240 },
           { props: 'startDate', label: '开始日期', visible: true, width: 160 },
           { props: 'endDate', label: '截止日期', visible: true, width: 160 },
@@ -349,8 +351,9 @@ export default {
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
       const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      const columnField = (def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, '')).replace(/_label$/, '');
       this.sortColumns = [{
-        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        column: columnField,
         sort: (latest.order || '').toUpperCase()
       }];
       this.getData();

@@ -124,10 +124,12 @@
                   {{ form.carrierOrderDetailId }}
                 </el-form-item>
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
-                 {{ form.retailOrderCode }}
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link>
+                 <!-- {{ form.retailOrderCode }} -->
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
+                  <!-- {{ form.wholesaleOrderCode }} -->
                 </el-form-item>
                 <el-form-item label="是否还款：" prop="isRepaid">
                   {{ form.isRepaidLabel }}
@@ -142,7 +144,8 @@
                   {{ form.financeRepayOn }}
                 </el-form-item>
                 <el-form-item label="交车单号：" prop="deliverOrderId">
-                  {{ form.deliverOrderId }}
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?deliveryCode=${form.deliverOrderId}`" target="_blank">{{ form.deliverOrderId }}</el-link>
+                  <!-- {{ form.deliverOrderId }} -->
                 </el-form-item>
                 <el-form-item label="赊销合格证快递单号：" prop="invoiceExpressNo">
                   {{ form.invoiceExpressNo }}
@@ -367,7 +370,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, getRecord } from '@/api/vehstock/store/storeInventoryLedger/index';
+import { getDetail, addOrUpdate, getRecord, getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -586,8 +589,14 @@ export default {
   mounted () {
   },
   methods: {
-    detailRequest () {
-      const id = this._id;
+    async detailRequest () {
+      let id = this._id;
+      if (this.$route.query.vin && !id) {
+        const res = await getList({ vin: this.$route.query.vin, status: 1, size: 10, page: 1 });
+        if (res && res.records && res.records.length) {
+          id = res.records[0].id;
+        }
+      }
       if (id) {
         return getDetail(id);
       }
