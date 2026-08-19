@@ -11,7 +11,6 @@
         </template>
         <template #extraButtons>
           <!-- 提交：仅源门店用户在待提交/驳回时可见 -->
-           {{ directOrgCodes }}
           <el-button
             v-if="canSubmit"
             size="small"
