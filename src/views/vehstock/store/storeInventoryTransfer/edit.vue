@@ -553,9 +553,12 @@ export default {
           queryType: 1,
           storeCodes: this.directOrgCodes
         });
-        const data = res.data || [];
-        if (Array.isArray(data)) {
-          this.directOrgCodes = [...new Set(data.map(item => item.storeCode).filter(Boolean)), ...this.directOrgCodes];
+        const list = res?.storeCodes || [];
+        if (Array.isArray(list) && list.length) {
+          this.directOrgCodes = [...new Set([
+            ...list.filter(Boolean),
+            ...this.directOrgCodes
+          ])];
         }
       } catch (e) {
         console.error('fetchStoreRelation error:', e);
