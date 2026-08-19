@@ -64,13 +64,11 @@
                       />
                 </el-form-item>
                  <el-form-item label="推荐额度(万元)：" prop="recAmount">
-                  <el-input-number
+                  <el-input
+                    :value="formatAmount(form.recAmount)"
+                    @input="onRecAmountInput"
                     placeholder="请输入推荐额度"
-                    v-model="form.recAmount"
-                    :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
+                    clearable
                   />
                 </el-form-item>
                  <el-form-item label="推荐日期：" prop="recDate">
@@ -159,7 +157,7 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.recFinancialOrganizationId}`" target="_blank">{{ form.recFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="推荐额度(万元)：" prop="recAmount">
-                  {{ form.recAmount }}
+                  {{ formatAmount(form.recAmount) }}
                 </el-form-item>
                 <el-form-item label="推荐日期：" prop="recDate">
                   {{ form.recDate }}
@@ -217,6 +215,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -444,8 +443,11 @@ export default {
       }
     },
     submitRequest () {
+      // 千分位字段：el-input onRecAmountInput 已转回数字，此处 Number() 兜底
+      const numRec = Number(this.form.recAmount);
       let params = {
         ...this.form,
+        recAmount: isNaN(numRec) ? 0 : numRec,
         createTime: this.formatIsoToDatetime(this.form.createTime),
         recDate: this.formatIsoToDatetime(this.form.recDate),
         depositRatio: this.form.depositRatio === null || this.form.depositRatio === '' ? null : Number(this.form.depositRatio)
@@ -499,6 +501,13 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    onRecAmountInput (val) {
+      const num = parseFloat(String(val).replace(/,/g, ''));
+      this.form.recAmount = isNaN(num) ? '' : num;
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

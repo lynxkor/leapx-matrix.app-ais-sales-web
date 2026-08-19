@@ -591,7 +591,15 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          res.detailList = (res?.detailList || []).map(item => {
+            return {
+              ...item,
+              amount: this.formatAmount(item.amount),
+            };
+          });
+          return res;
+        });
       }
     },
     submitRequest () {
