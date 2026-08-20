@@ -159,7 +159,7 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.recFinancialOrganizationId}`" target="_blank">{{ form.recFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="推荐额度(万元)：" prop="recAmount">
-                  {{ form.recAmount }}
+                  {{ formatAmount(form.recAmount) }}
                 </el-form-item>
                 <el-form-item label="推荐日期：" prop="recDate">
                   {{ form.recDate }}
@@ -217,6 +217,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -490,7 +491,6 @@ export default {
       // 避免 el-input-number 等组件导致的数据格式变化
       return {
         ...data,
-        recAmount: data.recAmount !== undefined && data.recAmount !== null ? Number(data.recAmount) : '',
         depositRatio: data.depositRatio !== undefined && data.depositRatio !== null ? String(data.depositRatio) : null,
       };
     },
@@ -499,6 +499,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

@@ -48,7 +48,7 @@
                   {{ form.monthLabel }}
                 </el-form-item>
                 <el-form-item label="合计核销金额：">
-                  {{ form.totalRebateAmount }}
+                  {{ formatAmount(form.totalRebateAmount) }}
                 </el-form-item>
                 <el-form-item label="返利类型：">
                   {{ form.rebateTypeLabel }}
@@ -79,6 +79,9 @@
                 <template #feeSupportTypeName="{ row }">
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`" target="_blank">{{ row.feeSupportTypeName }}</el-link>
                 </template>
+                <template #rebateAmount="{ row }">
+                  {{ formatAmount(row.rebateAmount) }}
+                </template>
               </ComponentTable>
         </el-main>
       </edit-base-container>
@@ -95,6 +98,7 @@ import ComponentTable from '@/libs/components/ComponentTable/index.vue';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   rebateBillCode: '',
@@ -137,7 +141,7 @@ export default {
         { field: 'rebateBillDetailCode', title: '整车返利核算单明细编号', width: '200', slots: { default: 'rebateBillDetailCode' } },
         { field: 'vin', title: 'VIN号', width: '170' },
         { field: 'bizOrderNo', title: '业务单据号', width: '180' },
-        { field: 'rebateAmount', title: '核销金额', width: '100' },
+        { field: 'rebateAmount', title: '核销金额', width: '100', slots: { default: 'rebateAmount' } },
         { field: 'modelName', title: '基本车型', width: '180', slots: { default: 'modelName' } },
         { field: 'seriesName', title: '车系', width: '120', slots: { default: 'seriesName' } },
         { field: 'remark', title: '备注', width: '320' },
@@ -174,6 +178,9 @@ export default {
     },
     getDefautlForm () {
       return { ...defaultForm };
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

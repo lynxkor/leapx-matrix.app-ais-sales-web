@@ -130,7 +130,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { downloadExcel } from '@/libs/utils';
+import { downloadExcel, formatAmount } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
 import setSettleSort from '@/views/vehwholesale/fund/dealerFundAccount/components/setSettleSort.vue';
@@ -352,6 +352,10 @@ export default {
           this.optionObj.dataList = records.map(item => {
             return {
               ...item,
+              availableBalance: formatAmount(item.availableBalance),
+              frozenBalance: formatAmount(item.frozenBalance),
+              totalRechargeAmount: formatAmount(item.totalRechargeAmount),
+              totalSettleAmount: formatAmount(item.totalSettleAmount),
               deleteLoading: false
             };
           });
