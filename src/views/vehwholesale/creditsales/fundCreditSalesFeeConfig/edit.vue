@@ -405,7 +405,7 @@ export default {
 
       if (this.form.creditSalesFee <= 0) {
         this.$message({
-          message: '使用天数下限必须小于使用天数上限',
+          message: '赊销费用必须大于等于0',
           type: 'error'
         });
         return Promise.reject(new Error('赊销费用必须大于等于0'));
