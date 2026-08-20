@@ -33,16 +33,16 @@
                   {{ form.month }}
                 </el-form-item>
                 <el-form-item label="本期期初：" prop="periodBeginBalance">
-                  {{ form.periodBeginBalance }}
+                  {{ formatAmount(form.periodBeginBalance) }}
                 </el-form-item>
                 <el-form-item label="本期期末：" prop="periodEndBalance">
-                  {{ form.periodEndBalance }}
+                  {{ formatAmount(form.periodEndBalance) }}
                 </el-form-item>
                 <el-form-item label="本期使用金额：" prop="periodUseAmount">
-                  {{ form.periodUseAmount }}
+                  {{ formatAmount(form.periodUseAmount) }}
                 </el-form-item>
                 <el-form-item label="本期入账金额：" prop="periodEntryAmount">
-                  {{ form.periodEntryAmount }}
+                  {{ formatAmount(form.periodEntryAmount) }}
                 </el-form-item>
                 <el-form-item label="账户类型：" prop="accountType">
                   {{ form.accountTypeLabel }}
@@ -70,6 +70,7 @@ import { getEnum } from '@/api/common';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   id: '',
@@ -192,6 +193,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     },
   }
 };

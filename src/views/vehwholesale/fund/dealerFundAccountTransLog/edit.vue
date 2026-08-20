@@ -57,7 +57,7 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                  <el-form-item label="交易金额：" prop="transactionAmount">
-                  {{ form.transactionAmount }}
+                  {{ formatAmount(form.transactionAmount) }}
                 </el-form-item>
                  <el-form-item label="过账时间：" prop="transactionTime">
                   {{ form.transactionTime }}
@@ -119,6 +119,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   transLogCode: '',
@@ -221,7 +222,7 @@ export default {
         ],
         transactionAmount: [
           { required: true, message: '请输入交易金额', trigger: 'blur' },
-          { pattern: /^-?\d+(\.\d{1,2})?$/, message: '请输入有效的金额格式', trigger: 'blur' }
+          // { pattern: /^-?\d+(\.\d{1,2})?$/, message: '请输入有效的金额格式', trigger: 'blur' }
         ],
         transactionTime: [
           { required: true, message: '请选择过账时间', trigger: 'change' }
@@ -275,6 +276,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

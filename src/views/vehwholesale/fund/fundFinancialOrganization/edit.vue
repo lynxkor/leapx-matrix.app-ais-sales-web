@@ -82,11 +82,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
-                  <el-input
+                  <el-input-number
                     placeholder="请输入开启返利使用额度"
                     v-model="form.rebateUsageQuota"
-                    clearable
-                    maxlength="20"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                   />
                 </el-form-item>
                 <el-form-item label="是否生成采购记录：" prop="createPurchaseRecord">
@@ -141,7 +143,7 @@
                   {{ form.enableBankDirectConnectionLabel }}
                 </el-form-item>
                 <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
-                  {{ form.rebateUsageQuota }}
+                  {{ formatAmount(form.rebateUsageQuota) }}
                 </el-form-item>
                 <el-form-item label="是否生成采购记录：" prop="createPurchaseRecordLabel">
                   {{ form.createPurchaseRecordLabel }}
@@ -178,6 +180,7 @@ import { getEnum } from '@/api/common';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   organizationName: '',
@@ -338,6 +341,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

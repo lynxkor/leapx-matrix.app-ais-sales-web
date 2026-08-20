@@ -152,7 +152,7 @@
                   {{ form.creditAccountStatusLabel }}
                 </el-form-item>
                 <el-form-item label="授信额度：" prop="creditAmount">
-                  {{ form.creditAmount }}
+                  {{ formatAmount(form.creditAmount) }}
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
                   {{ form.downPaymentRatio }}
@@ -228,6 +228,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
 import auditDialog from '@/libs/components/auditDialog';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   configCode: '',
@@ -480,6 +481,9 @@ export default {
     initPermissions () {
       this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
       this.preReview = this.permissions.has(`${this.moduleKey}-review`);
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

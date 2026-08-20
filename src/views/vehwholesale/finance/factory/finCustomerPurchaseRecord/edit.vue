@@ -139,10 +139,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="金额合计：" prop="totalAmount">
-                  <el-input
+                  <el-input-number
                     placeholder="请输入"
                     v-model="form.totalAmount"
-                    clearable
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                   />
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
@@ -309,7 +312,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="金额合计：" prop="totalAmount">
-                  {{ form.totalAmount }}
+                  {{ formatAmount(form.totalAmount) }}
                 </el-form-item>
                 <el-form-item label="数据月份：" prop="dataMonth">
                   {{ form.dataMonth }}
@@ -375,6 +378,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -589,11 +593,20 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          res.detailList = (res?.detailList || []).map(item => {
+            return {
+              ...item,
+              amount: this.formatAmount(item.amount),
+            };
+          });
+          return res;
+        });
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      const submitForm = { ...this.form };
+      return addOrUpdate(submitForm);
     },
     // 打开侧边栏
     openPane () {
@@ -632,6 +645,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };
