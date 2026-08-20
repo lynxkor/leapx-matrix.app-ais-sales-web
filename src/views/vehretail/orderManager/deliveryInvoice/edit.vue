@@ -1062,6 +1062,7 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           let params = {
+            ...res,
             yearTypeName: res.retailOrderMaterials.yearTypeId,
             modelLineId: res.retailOrderMaterials.seriesId
           };
