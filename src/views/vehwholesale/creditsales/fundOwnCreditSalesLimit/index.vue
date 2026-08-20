@@ -44,6 +44,9 @@
           clearable
         /> -->
       </el-form-item>
+      <el-form-item label="赊销额度记录编号">
+          <tag-input v-model="form.creditSalesLimitCodes" placeholder="请输入" />
+        </el-form-item>
       <el-form-item label="额度是否有效">
           <fetch-select
             :request="fetchOptions"
@@ -122,6 +125,7 @@ const defaultForm = {
   dealerCompanyCode: '',
   dealerCompanyName: '',
   creditAccountStatus: '',
+  creditSalesLimitCodes: [],
 };
 
 const pageSize = 20;

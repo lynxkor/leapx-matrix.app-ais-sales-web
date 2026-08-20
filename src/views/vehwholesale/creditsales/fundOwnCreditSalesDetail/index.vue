@@ -26,6 +26,9 @@
     <el-form-item label="门店名称" >
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="赊销明细编号">
+        <tag-input v-model="form.creditSalesDetailCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="整车批售订单">
         <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
       </el-form-item>
@@ -158,6 +161,7 @@ const defaultForm = {
   createTime: [],
   repaymentTime: [],
   status: 1,
+  creditSalesDetailCodes: [],
 };
 
 const pageSize = 20;

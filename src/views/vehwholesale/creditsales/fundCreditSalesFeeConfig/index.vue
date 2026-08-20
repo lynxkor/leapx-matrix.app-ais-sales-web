@@ -9,13 +9,9 @@
       label-width="120px"
       class="ais-search-form"
     >
-      <!-- <el-form-item label="记录编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.creditSalesFeeConfigCode"
-          clearable
-        />
-      </el-form-item> -->
+      <el-form-item label="记录编号">
+        <tag-input v-model="form.creditSalesFeeConfigCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="车系">
         <fetch-select
             :remote-method="seriesSearch"
@@ -197,10 +193,11 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: '1',
-  creditSalesFeeConfigCode: '',
+  creditSalesFeeConfigCodes: [],
   seriesName: '',
   yearTypeName: '',
   useRebate: '',
@@ -224,7 +221,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {

@@ -34,6 +34,9 @@
           label-key="companyName"
         />
       </el-form-item>
+      <el-form-item label="编码">
+        <tag-input v-model="form.codes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :remote-method="repairItemSearch"
@@ -173,6 +176,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import dateranges from '@/libs/components/dateranges';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -186,6 +190,7 @@ const defaultForm = {
   businessMode: '',
   status: '1',
   createTime: '',
+  codes: [],
 };
 
 const pageSize = 20;
@@ -201,7 +206,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    dateranges
+    dateranges,
+    TagInput
   },
   data () {
     return {

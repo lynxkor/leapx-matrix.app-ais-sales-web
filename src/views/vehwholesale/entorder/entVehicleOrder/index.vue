@@ -39,6 +39,25 @@
             label-key="companyName"
           />
         </el-form-item>
+        <el-form-item label="下单物料描述" >
+           <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
+        </el-form-item>
+      <el-form-item label="车系名称" v-show="visibleCount === 3 || show">
+        <fetch-select
+          :remote-method="seriesSearch"
+          remote
+          v-model="form.seriesIds"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          clearable
+          multiple
+          collapseTags
+          filterable
+          :options="seriesList"
+          @change="seriesListChange"
+        />
+      </el-form-item>
       <template v-if="show">
         <el-form-item label="企业客户补货订单号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
@@ -49,8 +68,118 @@
         <el-form-item label="配车VIN" >
            <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-         <el-form-item label="下单物料描述" >
-           <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
+        <el-form-item label="车型名称">
+          <fetch-select
+            :remote-method="modelSearch"
+            remote
+            reserve-keyword
+            :options="modelList"
+            v-model="form.modelIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            @change="modelListChange"
+          />
+        </el-form-item>
+        <el-form-item label="年款名称">
+          <fetch-select
+            :remote-method="yearTypeSearch"
+            remote
+            reserve-keyword
+            :options="yearModelList"
+            v-model="form.yearTypeIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="外观">
+          <fetch-select
+            :remote-method="exteriorSearch"
+            remote
+            reserve-keyword
+            :options="exteriorList"
+            v-model="form.exteriorIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="内饰">
+          <fetch-select
+            :remote-method="interiorSearch"
+            remote
+            reserve-keyword
+            :options="interiorList"
+            v-model="form.interiorIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="轮毂">
+          <fetch-select
+            :remote-method="wheelHubSearch"
+            remote
+            reserve-keyword
+            :options="wheelHubList"
+            v-model="form.wheelHubIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="选装包">
+          <fetch-select
+            :remote-method="optionPackageSearch"
+            remote
+            reserve-keyword
+            :options="optionPackageList"
+            v-model="form.optionPackageIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="车顶">
+          <fetch-select
+            :remote-method="roofSearch"
+            remote
+            reserve-keyword
+            :options="roofList"
+            v-model="form.roofIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
         </el-form-item>
          <el-form-item label="订单分类">
           <fetch-select
@@ -270,7 +399,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { setSettleFundType, queryEntCustomerFundTypes, getList, deleteItem, enableItem, batchAllocateSubmit, batchCancelAllocateSubmit, batchCancelOrders, batchCancelSettleSubmit, batchSettleSubmit, setAutoAllocate, setEmergencyOrder, editRemark } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleRoof, listVehicleYearType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -299,6 +428,14 @@ const defaultForm = {
   orderTime: [],
   settleTime: [],
   outboundTime: [],
+  seriesIds: [],
+  modelIdSet: [],
+  yearTypeIdSet: [],
+  exteriorIdSet: [],
+  interiorIdSet: [],
+  wheelHubIdSet: [],
+  optionPackageIdSet: [],
+  roofIdSet: [],
 };
 
 const pageSize = 20;
@@ -334,6 +471,14 @@ export default {
       settleFundTypeOptions: [],
       orderStatusOptions: [],
       settleStatusOptions: [],
+      seriesList: [],
+      modelList: [],
+      yearModelList: [],
+      exteriorList: [],
+      interiorList: [],
+      wheelHubList: [],
+      optionPackageList: [],
+      roofList: [],
       showBatchCancelDialog: false,
       showSetEmergencyOrderDialog: false,
       showEditRemarkDialog: false,
@@ -574,6 +719,8 @@ export default {
     this.fetchSettleFundTypeOptions();
     this.fetchSOrderStatusOptions();
     this.fetchsettleStatusOptions();
+    this.seriesSearch();
+    this.getVehicleModelList();
   },
   methods: {
     async fetchsettleStatusOptions () {
@@ -612,6 +759,136 @@ export default {
           code: String(item.code)
         };
       });
+    },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    async seriesListChange (val) {
+      if (val.length) {
+        this.getVehicleModelList(val);
+      } else {
+        this.modelList = [];
+        this.form.modelIdSet = [];
+        this.yearModelList = [];
+        this.form.yearTypeIdSet = [];
+        this.getVehicleModelList();
+      }
+    },
+    async modelSearch (query) {
+      let params = {
+        modelNameLike: query || '',
+        seriesIdList: this.form.seriesIds || []
+      };
+      let res = await vehicleModelList(params);
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      } else {
+        this.modelList = [];
+      }
+    },
+    async modelListChange (val) {
+      if (val.length) {
+        this.yearTypeSearch('');
+      } else {
+        this.yearModelList = [];
+        this.form.yearTypeIdSet = [];
+      }
+    },
+    async getVehicleModelList (val) {
+      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000, limitSize: 500 });
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      }
+    },
+    async yearTypeSearch (query) {
+      const params = {
+        yearTypeNameLike: query || '',
+        modelIdList: this.form.modelIdSet || []
+      };
+      const res = await listVehicleYearType(params);
+      this.yearModelList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async exteriorSearch (query) {
+      const res = await vehicleExterior({ exteriorNameLike: query || '' });
+      this.exteriorList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async interiorSearch (query) {
+      const res = await vehicleInterior({ interiorNameLike: query || '' });
+      this.interiorList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async wheelHubSearch (query) {
+      const res = await vehicleWheelHub({ wheelHubNameLike: query || '' });
+      this.wheelHubList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async optionPackageSearch (query) {
+      const res = await vehicleOptionPackage({ optionPackageNameLike: query || '' });
+      this.optionPackageList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async roofSearch (query) {
+      const res = await vehicleRoof({ roofNameLike: query || '' });
+      this.roofList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
     },
     emergencyApproval (data) {
       return setEmergencyOrder(data).then(() => {
@@ -880,6 +1157,14 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.seriesSearch();
+      this.getVehicleModelList();
+      this.yearModelList = [];
+      this.exteriorList = [];
+      this.interiorList = [];
+      this.wheelHubList = [];
+      this.optionPackageList = [];
+      this.roofList = [];
       this.getData();
     },
     exportExcel () {
@@ -971,7 +1256,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (Array.isArray(data[key]) && data[key].length === 0)) {
           delete data[key];
         }
       });

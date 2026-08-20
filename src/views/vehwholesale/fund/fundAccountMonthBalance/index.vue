@@ -22,6 +22,9 @@
           label-key="companyName"
         />
       </el-form-item>
+      <el-form-item label="编号">
+        <tag-input v-model="form.codes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="年份">
         <el-input
           placeholder="请输入"
@@ -135,9 +138,11 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import dateranges from '@/libs/components/dateranges';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  codes: [],
   parentCompanyNames: [],
   year: '',
   month: '',
@@ -159,7 +164,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {

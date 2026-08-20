@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="账户编号">
+        <tag-input v-model="form.fundAccountCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="母公司编码">
         <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         <!-- <el-input
@@ -139,7 +142,7 @@ import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  fundAccountCode: '',
+  fundAccountCodes: [],
   dealerCompanyCode: '',
   dealerCompanyNames: [],
   dealerCompanyCodes: [],
@@ -398,7 +401,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (Array.isArray(data[key]) && data[key].length === 0)) {
           delete data[key];
         }
       });

@@ -35,13 +35,9 @@
           clearable
         /> -->
       </el-form-item>
-      <!-- <el-form-item label="流水编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.transLogCode"
-          clearable
-        />
-      </el-form-item> -->
+      <el-form-item label="流水编号">
+        <tag-input v-model="form.transLogCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="资金类型"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
@@ -165,7 +161,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyNames: [],
   dealerComapnyCodes: [],
-  transLogCode: '',
+  transLogCodes: [],
   fundTypes: [],
   financialOrganizationId: '',
   transactionTypes: [],

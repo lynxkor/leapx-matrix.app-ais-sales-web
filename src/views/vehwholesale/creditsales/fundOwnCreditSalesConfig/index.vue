@@ -47,6 +47,9 @@
         <el-form-item label="母公司编码" >
           <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="配置编号">
+          <tag-input v-model="form.configCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="复核时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -182,6 +185,7 @@ const defaultForm = {
   reviewOpinion: '',
   modifierName: '',
   updateTime: '',
+  configCodes: [],
 };
 
 const pageSize = 20;

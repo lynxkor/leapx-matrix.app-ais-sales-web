@@ -179,6 +179,7 @@ const defaultForm = {
   fundFinancialOrganizationCode: '',
   mainDealerCompanyName: '',
   mainDealerCompanyCode: '',
+  codes: [],
 };
 
 const pageSize = 20;

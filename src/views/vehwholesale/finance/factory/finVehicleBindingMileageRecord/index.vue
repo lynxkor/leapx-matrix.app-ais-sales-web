@@ -25,6 +25,9 @@
           clearable
         />
       </el-form-item>
+      <el-form-item label="编码">
+        <tag-input v-model="form.codes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="是否人车绑定"  v-show="this.visibleCount === 3 || show">
           <fetch-select
             :request="fetchOptions"
@@ -154,6 +157,7 @@ const defaultForm = {
   syncStatus: '',
   createTime: '',
   status: '1',
+  codes: [],
 };
 
 const pageSize = 20;
