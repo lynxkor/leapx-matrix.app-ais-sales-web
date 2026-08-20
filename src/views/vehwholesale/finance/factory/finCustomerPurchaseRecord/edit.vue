@@ -139,11 +139,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="金额合计：" prop="totalAmount">
-                  <el-input
-                    :value="formatAmount(form.totalAmount)"
-                    @input="onTotalAmountInput"
+                  <el-input-number
                     placeholder="请输入"
-                    clearable
+                    v-model="form.totalAmount"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                   />
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
@@ -603,10 +605,7 @@ export default {
       }
     },
     submitRequest () {
-      // 千分位字段：el-input onTotalAmountInput 已转回数字，此处 Number() 兜底
       const submitForm = { ...this.form };
-      const numAmount = Number(submitForm.totalAmount);
-      submitForm.totalAmount = isNaN(numAmount) ? 0 : numAmount;
       return addOrUpdate(submitForm);
     },
     // 打开侧边栏
@@ -646,10 +645,6 @@ export default {
         return getEnum(code);
       }
       return [];
-    },
-    onTotalAmountInput (val) {
-      const num = parseFloat(String(val).replace(/,/g, ''));
-      this.form.totalAmount = isNaN(num) ? '' : num;
     },
     formatAmount (value) {
       return fmtAmount(value);

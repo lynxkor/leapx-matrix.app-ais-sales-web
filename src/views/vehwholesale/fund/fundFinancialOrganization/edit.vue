@@ -82,12 +82,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
-                  <el-input
-                    :value="formatAmount(form.rebateUsageQuota)"
-                    @input="onRebateUsageQuotaInput"
+                  <el-input-number
                     placeholder="请输入开启返利使用额度"
-                    clearable
-                    maxlength="20"
+                    v-model="form.rebateUsageQuota"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                   />
                 </el-form-item>
                 <el-form-item label="是否生成采购记录：" prop="createPurchaseRecord">
@@ -317,9 +318,6 @@ export default {
     submitRequest () {
       // 提交时移除只读字段
       const submitForm = { ...this.form };
-      // 千分位字段：el-input onRebateUsageQuotaInput 已转回数字，此处 Number() 兜底
-      const numQuota = Number(submitForm.rebateUsageQuota);
-      submitForm.rebateUsageQuota = isNaN(numQuota) ? 0 : numQuota;
       delete submitForm.creatorName;
       delete submitForm.createTime;
       delete submitForm.statusLabel;
@@ -343,10 +341,6 @@ export default {
         return getEnum(code);
       }
       return [];
-    },
-    onRebateUsageQuotaInput (val) {
-      const num = parseFloat(String(val).replace(/,/g, ''));
-      this.form.rebateUsageQuota = isNaN(num) ? '' : num;
     },
     formatAmount (value) {
       return fmtAmount(value);

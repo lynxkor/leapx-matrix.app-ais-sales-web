@@ -64,11 +64,13 @@
                       />
                 </el-form-item>
                  <el-form-item label="推荐额度(万元)：" prop="recAmount">
-                  <el-input
-                    :value="formatAmount(form.recAmount)"
-                    @input="onRecAmountInput"
+                  <el-input-number
                     placeholder="请输入推荐额度"
-                    clearable
+                    v-model="form.recAmount"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                   />
                 </el-form-item>
                  <el-form-item label="推荐日期：" prop="recDate">
@@ -443,11 +445,8 @@ export default {
       }
     },
     submitRequest () {
-      // 千分位字段：el-input onRecAmountInput 已转回数字，此处 Number() 兜底
-      const numRec = Number(this.form.recAmount);
       let params = {
         ...this.form,
-        recAmount: isNaN(numRec) ? 0 : numRec,
         createTime: this.formatIsoToDatetime(this.form.createTime),
         recDate: this.formatIsoToDatetime(this.form.recDate),
         depositRatio: this.form.depositRatio === null || this.form.depositRatio === '' ? null : Number(this.form.depositRatio)
@@ -492,7 +491,6 @@ export default {
       // 避免 el-input-number 等组件导致的数据格式变化
       return {
         ...data,
-        recAmount: data.recAmount !== undefined && data.recAmount !== null ? Number(data.recAmount) : '',
         depositRatio: data.depositRatio !== undefined && data.depositRatio !== null ? String(data.depositRatio) : null,
       };
     },
@@ -501,10 +499,6 @@ export default {
         return getEnum(code);
       }
       return [];
-    },
-    onRecAmountInput (val) {
-      const num = parseFloat(String(val).replace(/,/g, ''));
-      this.form.recAmount = isNaN(num) ? '' : num;
     },
     formatAmount (value) {
       return fmtAmount(value);
