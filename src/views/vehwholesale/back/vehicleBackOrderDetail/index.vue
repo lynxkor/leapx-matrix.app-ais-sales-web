@@ -28,6 +28,9 @@
           <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
       <template v-if="show">
+        <el-form-item label="退车明细单号">
+          <tag-input v-model="form.backOrderDetailCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="母公司名称">
           <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         </el-form-item>
@@ -141,6 +144,7 @@ const defaultForm = {
   vins: [],
   dealerCompanyNames: [],
   modelName: '',
+  backOrderDetailCodes: [],
 };
 
 const pageSize = 20;

@@ -221,6 +221,16 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="税务开票">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.taxInvoiceFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="物流预留备注">
           <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
         </el-form-item>
@@ -360,17 +370,84 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-            :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+        <el-form-item label="车顶">
+          <fetch-select
+            :remote-method="roofSearch"
+            remote
+            reserve-keyword
+            :options="roofList"
+            v-model="form.roofIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="外观">
+          <fetch-select
+            :remote-method="exteriorSearch"
+            remote
+            reserve-keyword
+            :options="exteriorList"
+            v-model="form.exteriorIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="内饰">
+          <fetch-select
+            :remote-method="interiorSearch"
+            remote
+            reserve-keyword
+            :options="interiorList"
+            v-model="form.interiorIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="轮毂">
+          <fetch-select
+            :remote-method="wheelHubSearch"
+            remote
+            reserve-keyword
+            :options="wheelHubList"
+            v-model="form.wheelHubIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="选装包">
+          <fetch-select
+            :remote-method="optionPackageSearch"
+            remote
+            reserve-keyword
+            :options="optionPackageList"
+            v-model="form.optionPackageIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
           />
         </el-form-item>
         <el-form-item label="允许锁零售节点">
@@ -382,6 +459,19 @@
             clearable
             multiple
             filterable
+          />
+        </el-form-item>
+        <el-form-item label="创建时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
       </template>
@@ -500,7 +590,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, batchSetAllowLockRetail, editSpecialRemark } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleRoof } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -592,6 +682,12 @@ const defaultForm = {
   allowLockNodes: [],
   deliveryStatuses: [],
   logisticsReserveRemarks: [],
+  exteriorIdSet: [],
+  interiorIdSet: [],
+  wheelHubIdSet: [],
+  optionPackageIdSet: [],
+  roofIdSet: [],
+  taxInvoiceFlag: '',
 };
 
 const pageSize = 20;
@@ -645,6 +741,11 @@ export default {
       seriesList: [],
       options: [],
       modelList: [],
+      exteriorList: [],
+      interiorList: [],
+      wheelHubList: [],
+      optionPackageList: [],
+      roofList: [],
       cityOptions: [], // 市
       settleFundTypeOptions: [],
       ALLOWED_STATUS: [0, 11],
@@ -746,6 +847,7 @@ export default {
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
+          { props: 'taxInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
@@ -804,7 +906,7 @@ export default {
           },
           {
             props: 'exteriorName',
-            label: '外饰风格',
+            label: '外观',
             visible: true,
             width: 200,
             buttons: [{
@@ -889,6 +991,66 @@ export default {
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
           { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
+          {
+            props: 'exteriorName',
+            label: '外观',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'interiorName',
+            label: '内饰',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'wheelHubName',
+            label: '轮毂',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'optionPackageName',
+            label: '选装包',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'roofName',
+            label: '车顶',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
@@ -981,6 +1143,61 @@ export default {
       });
     },
     repairItemSearch (query) { return listFundFinancialOrganization({ organizationNameLike: query, status: 1 }); },
+    async exteriorSearch (query) {
+      const res = await vehicleExterior({ exteriorNameLike: query || '' });
+      this.exteriorList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async interiorSearch (query) {
+      const res = await vehicleInterior({ interiorNameLike: query || '' });
+      this.interiorList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async wheelHubSearch (query) {
+      const res = await vehicleWheelHub({ wheelHubNameLike: query || '' });
+      this.wheelHubList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async optionPackageSearch (query) {
+      const res = await vehicleOptionPackage({ optionPackageNameLike: query || '' });
+      this.optionPackageList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async roofSearch (query) {
+      const res = await vehicleRoof({ roofNameLike: query || '' });
+      this.roofList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {

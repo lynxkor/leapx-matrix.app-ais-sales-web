@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+    <el-form-item label="返利核算单明细编号">
+      <tag-input v-model="form.rebateBillDetailCodes" placeholder="请输入" />
+    </el-form-item>
     <el-form-item label="返利类型">
       <fetch-select
         :request="fetchOptions"
@@ -241,6 +244,7 @@ import dateranges from '@/libs/components/dateranges';
 import auditDialog from '@/libs/components/auditDialog';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  rebateBillDetailCodes: [],
   creatorName: '',
   createTime: [],
   dealerCompanyName: '',

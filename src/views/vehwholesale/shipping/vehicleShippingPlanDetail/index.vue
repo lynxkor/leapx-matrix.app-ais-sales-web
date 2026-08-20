@@ -515,7 +515,7 @@ export default {
           },
           {
             props: 'interiorName',
-            label: '内饰风格',
+            label: '内饰',
             visible: true,
             width: 150,
             buttons: [

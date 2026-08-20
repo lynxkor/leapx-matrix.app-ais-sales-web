@@ -34,6 +34,9 @@
         <el-form-item label="门店名称">
           <tag-input v-model="form.dealerNames" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="返利核算单编号">
+          <tag-input v-model="form.rebateBillCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="年度" prop="years">
           <fetch-select
             :remote-method="listVehicleYearType"
@@ -153,6 +156,7 @@ const defaultForm = {
   auditTime: '',
   billStatus: '',
   deliveryOrderCode: '',
+  rebateBillCodes: [],
 };
 
 const pageSize = 20;

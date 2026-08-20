@@ -81,6 +81,13 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="编码">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.codes"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="发车日期">
           <el-date-picker
             v-model="form.shipmentDate"
@@ -209,6 +216,7 @@ const defaultForm = {
   mainDealerCompanyCodes: [],
   mainDealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
+  codes: [],
   shipmentDate: '',
   receiveDate: '',
   syncStatus: '',

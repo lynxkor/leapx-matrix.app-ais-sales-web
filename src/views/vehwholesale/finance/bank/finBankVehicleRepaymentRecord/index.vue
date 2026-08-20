@@ -34,6 +34,9 @@
           label-key="companyName"
         />
       </el-form-item>
+      <el-form-item label="编码">
+        <tag-input v-model="form.codes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :remote-method="repairItemSearch"
@@ -178,6 +181,7 @@ const defaultForm = {
   customerOrderCodes: [],
   status: '1',
   createTime: '',
+  codes: [],
 };
 
 const pageSize = 20;

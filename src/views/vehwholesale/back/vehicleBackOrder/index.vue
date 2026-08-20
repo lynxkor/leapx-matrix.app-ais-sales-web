@@ -27,6 +27,9 @@
           <tag-input v-model="form.entCustomerNames" placeholder="请输入" />
         </el-form-item>
       <template v-if="show">
+        <el-form-item label="退车订单号">
+          <tag-input v-model="form.backOrderCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="退车日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -182,6 +185,7 @@ const defaultForm = {
   returnType: '',
   orderType: '',
   auditStatus: '',
+  backOrderCodes: [],
 };
 
 const pageSize = 20;

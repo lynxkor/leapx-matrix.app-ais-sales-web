@@ -51,6 +51,13 @@
           />
         </el-form-item>
       <template v-if="show">
+        <el-form-item label="编码">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.codes"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="主体母公司名称">
            <fetch-select
             :remote-method="getDealerParentOrgListByName"
@@ -168,6 +175,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -179,6 +187,7 @@ const defaultForm = {
   fundFinancialOrganizationCode: '',
   mainDealerCompanyName: '',
   mainDealerCompanyCode: '',
+  codes: [],
 };
 
 const pageSize = 20;
@@ -192,7 +201,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage
+    EditPage,
+    TagInput
   },
   data () {
     return {
