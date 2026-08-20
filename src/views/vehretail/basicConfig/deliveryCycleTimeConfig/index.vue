@@ -13,9 +13,10 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_time_index"
-          v-model="form.timeIndex"
+          v-model="form.dimensionList"
           placeholder="请选择"
           clearable
+          multiple
           filterable
         />
       </el-form-item>
@@ -23,10 +24,11 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_dimension"
-          v-model="form.dimension"
+          v-model="form.dimensionList"
           placeholder="请选择"
           clearable
           filterable
+          multiple
         />
       </el-form-item>
       <el-form-item label="车型" v-show="this.visibleCount === 3 || show">
@@ -34,8 +36,9 @@
           filterable
           clearable
           remote
+          multiple
           reserve-keyword
-          v-model="form.modelId"
+          v-model="form.modelIdList"
           :remote-method="getModelList"
           value-key="id"
           label-key="name"
@@ -72,7 +75,8 @@
             filterable
             clearable
             remote
-            v-model="form.regionId"
+            multiple
+            v-model="form.regionIdList"
             :remote-method="getRegionList"
             value-key="orgCode"
             label-key="orgName"
@@ -162,6 +166,10 @@ const defaultForm = {
   regionCode: '',
   provinceCode: '',
   cityCode: '',
+  timeIndexList: [],
+  dimensionList: [],
+  modelIdList: [],
+  regionIdList: [],
 };
 
 const pageSize = 20;
