@@ -1029,7 +1029,7 @@ export default {
         checkField: '公告车型',
         checkValue: this.form.carSalesVersionName,
         isHighlighted: !this.form.brandModel || !this.form.carSalesVersionName || this.form.brandModel !== this.form.carSalesVersionName,
-        disabled: true
+        disabled: false
       });
       return comparisonData;
     },
