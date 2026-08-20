@@ -815,6 +815,22 @@ export default {
       //     this.addHeaderActions({ target: header.querySelector('h2') });
       //   }
       // });
+
+      // 监听门店编码，表单数据从父组件同步下来后触发下拉搜索
+      // 用一次性 watcher（手动 unwatch），避免后续门店变更时重复触发
+      const unwatchSale = this.$watch('form.saleDealerCode', (val) => {
+        if (val) {
+          this.handleRemoteSearch('', 'saleUser');
+          unwatchSale();
+        }
+      });
+      const unwatchDelivery = this.$watch('form.deliveryDealerCode', (val) => {
+        if (!val) return;
+        this.handleRemoteSearch('', 'deliveryUser');
+        this.handleRemoteSearch('', 'deliveryDerive');
+        this.handleRemoteSearch('', 'onSiteDeliveryUser');
+        unwatchDelivery();
+      });
     });
     // this.loadCityDeliveryOrderMin();
   },
