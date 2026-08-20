@@ -906,7 +906,7 @@ export default {
           },
           {
             props: 'exteriorName',
-            label: '外饰风格',
+            label: '外观',
             visible: true,
             width: 200,
             buttons: [{

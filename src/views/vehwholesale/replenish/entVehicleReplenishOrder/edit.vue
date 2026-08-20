@@ -704,7 +704,7 @@ export default {
         },
         {
           field: 'interiorName',
-          title: '内饰风格',
+          title: '内饰',
           width: '100',
           // formatter: (cellValue, row) => {
           //   if (!row || !row.interiorId) return cellValue || '';

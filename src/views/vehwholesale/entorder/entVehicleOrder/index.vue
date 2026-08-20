@@ -575,7 +575,7 @@ export default {
           { props: 'address', label: '交车地址', visible: true, width: 200 },
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },
-          { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
+          { props: 'orderTime', label: '订单时间', visible: true, width: 200, sortable: true },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
           { props: 'saleUserName', label: '销售人员', visible: true, width: 200 },
           { props: 'remark', label: '订单备注', visible: true, width: 200 },
@@ -640,7 +640,7 @@ export default {
           },
           {
             props: 'exteriorName',
-            label: '外饰风格',
+            label: '外观',
             visible: true,
             width: 200,
             buttons: [{
@@ -652,7 +652,7 @@ export default {
           },
           {
             props: 'interiorName',
-            label: '内饰风格',
+            label: '内饰',
             visible: true,
             width: 200,
             buttons: [{
@@ -670,6 +670,30 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'optionPackageName',
+            label: '选装包',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'roofName',
+            label: '车顶',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`, '_blank');
               },
               type: 'primary'
             }]

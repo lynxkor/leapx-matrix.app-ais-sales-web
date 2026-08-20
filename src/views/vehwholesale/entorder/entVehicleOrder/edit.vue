@@ -756,7 +756,7 @@
                 <el-form-item label="外饰风格：" prop="exteriorName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleExterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
                 </el-form-item>
-                <el-form-item label="内饰风格：" prop="interiorName">
+                <el-form-item label="内饰：" prop="interiorName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleInterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
