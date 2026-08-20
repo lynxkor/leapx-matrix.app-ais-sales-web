@@ -462,6 +462,7 @@
             </div>
             <div class="common-section-body">
               <AisAttachment
+                v-show="isEditing"
                 v-for="(item, index) in attachmentList" :key="index"
                 :businessId="_id"
                 :ref="'attachment' + index"
@@ -472,6 +473,14 @@
                 :readonly="form.status === 20 || !isEditing"
                 type="card"
                 @upload-loading-change="handleUploadLoadingChange($event)"
+              />
+              <AttachmentList
+                v-if="!isEditing"
+                :business-id="_id"
+                :config-code="'mcs_specialcarsalesreport'"
+                type="card"
+                :readonly="true"
+                onlyShowUnclassifiedType
               />
               <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
 <!--              <simple-dialog :_id="_id" :readonly="!(form.status === 0 && isEditing)" :attachType="'mcs_specialcarsalesreport'" ref="uploadDialogRef"/>-->
@@ -517,6 +526,7 @@ import { generateSoldPlateInfoByVin, getEffectiveByVin } from '@/api/vehretail/o
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import { getByCode } from '@/libs/api/attachment/index';
 import { validateAttachments } from '@/libs/utils';
+import AttachmentList from '@/libs/components/AttachmentList/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -587,6 +597,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     AisAttachment,
+    AttachmentList,
     EditPageLayout,
     EditBaseContainer,
     VehicleAttributeDialog,
@@ -628,9 +639,9 @@ export default {
       uploadLoadingCounter: 0,
       // 附件列表配置
       attachmentList: [
-        { label: '车辆销售发票', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车辆销售发票' },
         { label: '车辆合格证', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车辆合格证' },
         { label: '车主身份证件', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车主身份证件' },
+        { label: '车辆销售发票', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车辆销售发票' },
         { label: '附件资料', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '附件资料' }
       ],
       yes_no_enum: YES_NO_ENUM,
