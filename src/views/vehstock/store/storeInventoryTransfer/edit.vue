@@ -439,7 +439,7 @@ export default {
     },
     // 查询门店编码或名称
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ keyword: params });
+      return listOrgStoreInfo({ keyword: params, status: [2, 3, 4] });
     },
     // 门店编码或名称选择框回调
     handleStoreChange (val, record) {
