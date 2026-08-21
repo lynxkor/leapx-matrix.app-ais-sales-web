@@ -644,11 +644,15 @@ export default {
     },
     onReset () {
       if (this.activeName === 'full') {
-        this.form = { ...defaultFormFull };
+        // this.form = { ...defaultFormFull };
+        this.form.stockAgeGe = null;
+        this.form.stockAgeLe = null;
+        this.erpInvoiceFilterMode = '';
+        this.sapSyncStatusFilterMode = '';
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'homePage') {
-        this.form = { ...defaultForm };
+        // this.form = { ...defaultForm };
         this.form.lowBatteryCar = 0;
         this.form.stockAgeGe = null;
         this.form.stockAgeLe = null;
@@ -657,7 +661,7 @@ export default {
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
-        this.form = { ...defaultFormFull };
+        // this.form = { ...defaultFormFull };
         this.form.lowBatteryCar = 1;
         this.form.stockAgeGe = null;
         this.form.stockAgeLe = null;
@@ -762,7 +766,8 @@ export default {
     getActiveTabConfig () {
       const configMap = {
         full: {
-          pageKey: 'optionObj'
+          pageKey: 'optionObj',
+          formValue: 0
         },
         homePage: {
           pageKey: 'optionObj',
