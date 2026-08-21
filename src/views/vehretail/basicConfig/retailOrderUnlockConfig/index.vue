@@ -14,12 +14,14 @@
           :remote-method="remoteMethods.model"
           v-model="form.modelIdList"
           v-bind="selectOptions"
+          multiple
           @change="modelListChange"
         />
       </el-form-item>
       <el-form-item label="年款名称">
         <fetch-select
           :options="yearModelList"
+          multiple
           v-model="form.yearTypeIdList"
           placeholder="请选择"
           labelKey="label"
@@ -82,20 +84,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="提交时间">
-          <el-date-picker
-            :default-time="['00:00:00', '23:59:59']"
-            v-model="form.submitTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-      </template>
+        </template>
       <page-search-action
         v-if="canList"
         v-model="show"
@@ -170,7 +159,6 @@ const defaultForm = {
   allowManualCarStatus: '',
   statusDesc: '',
   createTime: '',
-  submitTime: '',
 };
 
 const pageSize = 20;
@@ -257,7 +245,6 @@ export default {
           { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -295,7 +282,7 @@ export default {
       this.listVehicleYearType(val);
     },
     async listVehicleYearType (val) {
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelId: val, limitSize: 50 });
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, limitSize: 50 });
       this.yearModelList = res.map(item => {
         return {
           ...item,
@@ -430,14 +417,6 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
-        }
-      }
-
-      if (this.form.submitTime) {
-        delete data.submitTime;
-        if (this.form.submitTime.length > 1) {
-          data.submitTimeStart = this.form.submitTime[0];
-          data.submitTimeEnd = this.form.submitTime[1];
         }
       }
 
