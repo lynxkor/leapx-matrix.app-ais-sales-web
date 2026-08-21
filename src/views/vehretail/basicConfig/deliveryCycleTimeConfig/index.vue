@@ -13,7 +13,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_time_index"
-          v-model="form.dimensionList"
+          v-model="form.timeIndexList"
           placeholder="请选择"
           clearable
           multiple
