@@ -82,6 +82,19 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+        <el-form-item label="提交时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.submitTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -155,6 +168,7 @@ const defaultForm = {
   allowManualCarStatus: '',
   statusDesc: '',
   createTime: '',
+  submitTime: '',
 };
 
 const pageSize = 20;
@@ -241,6 +255,7 @@ export default {
           { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -437,6 +452,14 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+
+      if (this.form.submitTime) {
+        delete data.submitTime;
+        if (this.form.submitTime.length > 1) {
+          data.submitTimeStart = this.form.submitTime[0];
+          data.submitTimeEnd = this.form.submitTime[1];
         }
       }
 
