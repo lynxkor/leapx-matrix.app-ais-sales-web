@@ -167,7 +167,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel, formatAmount } from '@/libs/utils';
 import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
@@ -370,6 +370,9 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              repaymentAmount: formatAmount(item.repaymentAmount),
+              creditOccupiedExposure: formatAmount(item.creditOccupiedExposure),
+              creditAvailableExposure: formatAmount(item.creditAvailableExposure),
               deleteLoading: false
             };
           });

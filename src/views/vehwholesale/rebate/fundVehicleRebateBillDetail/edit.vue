@@ -53,7 +53,7 @@
                   {{ form.rebateTypeLabel }}
                 </el-form-item>
                 <el-form-item label="核销金额：">
-                  {{ form.rebateAmount }}
+                  {{ formatAmount(form.rebateAmount) }}
                 </el-form-item>
                 <el-form-item label="业务单据号：">
                   {{ form.bizOrderNo }}
@@ -136,6 +136,7 @@ import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   rebateBillDetailCode: '',
@@ -221,6 +222,9 @@ export default {
     },
     getDefautlForm () {
       return { ...defaultForm };
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

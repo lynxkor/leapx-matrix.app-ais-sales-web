@@ -37,22 +37,22 @@
           <fetch-select :options="yearModelList" v-model="form.yearTypeIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
         <el-form-item label="外观">
-          <fetch-select :options="exteriorList" v-model="form.exteriorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select :remote-method="remoteMethods.exterior" v-model="form.exteriorIdSet" v-bind="selectOptions"/>
         </el-form-item>
         <el-form-item label="内饰">
-          <fetch-select :options="interiorList" v-model="form.interiorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags/>
+          <fetch-select :remote-method="remoteMethods.interior" v-model="form.interiorIdSet" v-bind="selectOptions"/>
         </el-form-item>
         <el-form-item label="轮毂">
-          <fetch-select :options="wheelHubList" v-model="form.wheelHubIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select :remote-method="remoteMethods.wheel" v-model="form.wheelHubIdSet" v-bind="selectOptions"/>
         </el-form-item>
         <el-form-item label="选装包">
-          <fetch-select :options="optionPackageList" v-model="form.optionPackageIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select :remote-method="remoteMethods.optional" v-model="form.optionPackageIdSet" v-bind="selectOptions"/>
         </el-form-item>
         <el-form-item label="电池电芯">
-          <fetch-select :options="batteryCellList" v-model="form.batteryCellIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select :remote-method="remoteMethods.battery" v-model="form.batteryCellIdSet" v-bind="selectOptions"/>
         </el-form-item>
         <el-form-item label="车顶">
-          <fetch-select :options="roofList" v-model="form.roofIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select :remote-method="remoteMethods.roof" v-model="form.roofIdSet" v-bind="selectOptions"/>
         </el-form-item>
         <el-form-item label="是否允许现车批售">
           <fetch-select :options="yes_no_enum" v-model="form.allowWholesale" placeholder="请选择" clearable  />
@@ -376,12 +376,39 @@ export default {
       seriesList: [],
       modelList: [],
       yearModelList: [],
-      exteriorList: [],
-      interiorList: [],
-      wheelHubList: [],
-      optionPackageList: [],
-      batteryCellList: [],
-      roofList: [],
+      // 外观/内饰/轮毂/选装包/电池电芯/车顶 公共配置（远程搜索）
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法（按需懒加载，取代预加载列表）
+      remoteMethods: {
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query || '' });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query || '' });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query || '' });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query || '' });
+        },
+        battery: async (query) => {
+          return await vehicleBatteryCell({ batteryCellNameLike: query || '' });
+        },
+        roof: async (query) => {
+          return await vehicleRoof({ roofNameLike: query || '' });
+        }
+      },
       batchSetAttrVisible: false,
       allowWholesale: null,
       allowProductionSchedule: null,
@@ -404,12 +431,6 @@ export default {
     this.getData();
     this.getVehicleModelList();
     this.listVehicleYearType();
-    this.getVehicleExteriorList();
-    this.getVehicleInteriorList();
-    this.getVehicleWheelHubList();
-    this.getVehicleOptionPackageList();
-    this.getVehicleBatteryCellList();
-    this.geVehicleRoofList();
   },
   methods: {
     async seriesSearch (query) {
@@ -723,71 +744,6 @@ export default {
       });
     },
 
-    async getVehicleExteriorList () {
-      const res = await vehicleExterior({ limitSize: 1000 });
-      this.exteriorList = res.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleInteriorList () {
-      const res = await vehicleInterior({ limitSize: 1000 });
-      this.interiorList = res.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleWheelHubList () {
-      const res = await vehicleWheelHub({ limitSize: 1000 });
-      this.wheelHubList = res.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleOptionPackageList () {
-      const res = await vehicleOptionPackage({ limitSize: 1000 });
-      this.optionPackageList = res.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleBatteryCellList () {
-      const res = await vehicleBatteryCell({ limitSize: 1000 });
-      this.batteryCellList = res.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
-    },
-
-    async geVehicleRoofList () {
-      const res = await vehicleRoof({ limitSize: 1000 });
-      this.roofList = res.map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
-    },
     closeSetAttr () {
       this.allowWholesale = null;
       this.allowProductionSchedule = null;

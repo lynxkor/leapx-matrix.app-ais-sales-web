@@ -113,7 +113,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel, formatAmount } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
@@ -317,6 +317,12 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              creditAmount: formatAmount(item.creditAmount),
+              totalDrawnAmount: formatAmount(item.totalDrawnAmount),
+              usedCreditAmount: formatAmount(item.usedCreditAmount),
+              availableCreditAmount: formatAmount(item.availableCreditAmount),
+              totalCreditSalesAmount: formatAmount(item.totalCreditSalesAmount),
+              remainingReceivableAmount: formatAmount(item.remainingReceivableAmount),
               valid: item.valid ? '是' : '否',
               deleteLoading: false
             };

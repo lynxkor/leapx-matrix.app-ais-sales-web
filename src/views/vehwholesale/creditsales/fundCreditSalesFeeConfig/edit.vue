@@ -83,13 +83,10 @@
                   />
                 </el-form-item>
                 <el-form-item label="赊销费用：" prop="creditSalesFee">
-                  <el-input-number
+                  <el-input
+                    v-model="creditSalesFeeInput"
                     placeholder="请输入赊销费用"
-                    v-model="form.creditSalesFee"
-                    :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
+                    clearable
                   />
                 </el-form-item>
                 <el-form-item label="有效开始日期：" prop="effectiveStartTime">
@@ -163,7 +160,7 @@
                   {{ form.maxUsageDays }}
                 </el-form-item>
                 <el-form-item label="赊销费用：" prop="creditSalesFee">
-                  {{ form.creditSalesFee }}
+                  {{ formatAmount(form.creditSalesFee) }}
                 </el-form-item>
                 <el-form-item label="有效开始日期：" prop="effectiveStartTime">
                   {{ form.effectiveStartTime }}
@@ -207,6 +204,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 const defaultForm = {
   creditSalesFeeConfigCode: '',
@@ -255,6 +253,16 @@ export default {
     },
     title () {
       return '记录编号：' + this.form.creditSalesFeeConfigCode;
+    },
+    // 千分位输入双向桥接：getter 显示用千分位字符串，setter 写入时去除逗号并转回数字
+    creditSalesFeeInput: {
+      get () {
+        return fmtAmount(this.form.creditSalesFee);
+      },
+      set (val) {
+        const num = parseFloat(String(val).replace(/,/g, ''));
+        this.form.creditSalesFee = isNaN(num) ? '' : num;
+      }
     }
   },
   watch: {
@@ -337,8 +345,8 @@ export default {
           { type: 'number', min: 0, message: '使用天数上限必须大于等于0', trigger: 'change' }
         ],
         creditSalesFee: [
-          { required: true, message: '请输入赊销费用', trigger: 'change' },
-          { type: 'number', min: 0, message: '赊销费用必须大于等于0', trigger: 'change' }
+          { required: true, message: '请输入赊销费用', trigger: 'blur' },
+          // { type: 'number', min: 0, message: '赊销费用必须大于等于0', trigger: 'change' }
         ],
         effectiveStartTime: [
           { required: true, message: '请选择有效开始日期', trigger: 'change' }
@@ -365,6 +373,9 @@ export default {
     submitRequest () {
       // 提交时移除只读字段
       const submitForm = { ...this.form };
+      // 千分位字段：computed setter 已转回数字，此处 Number() 兜底处理空字符串/异常值
+      const numFee = Number(submitForm.creditSalesFee);
+      submitForm.creditSalesFee = isNaN(numFee) ? 0 : numFee;
       // const readOnlyFields = ['creatorName', 'createTime', 'modifierName', 'updateTime',
       //   'seriesName', 'yearTypeName', 'downPaymentRatio', 'useRebateLabel',
       //   'statusLabel', 'creditSalesFeeConfigCode'];
@@ -392,6 +403,14 @@ export default {
         return Promise.reject(new Error('使用天数下限必须小于使用天数上限'));
       }
 
+      if (this.form.creditSalesFee <= 0) {
+        this.$message({
+          message: '赊销费用必须大于等于0',
+          type: 'error'
+        });
+        return Promise.reject(new Error('赊销费用必须大于等于0'));
+      }
+
       return addOrUpdate(submitForm);
     },
     openPane () {
@@ -410,6 +429,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };
