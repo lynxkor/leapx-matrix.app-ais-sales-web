@@ -1811,10 +1811,17 @@ export default {
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
       const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
-      this.sortColumns = [{
-        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-        sort: (latest.order || '').toUpperCase()
-      }];
+      const sort = (latest.order || '').toUpperCase();
+      this.sortColumns = [
+        {
+          column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: sort
+        },
+        {
+          column: 'id',
+          sort: sort
+        }
+      ];
       this.getData();
     },
     exportExcel () {
@@ -1824,6 +1831,12 @@ export default {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
       }
+      const sortColumns = [...(reqParams.sortColumns || [])];
+      if (!sortColumns.some(col => col.column === 'id')) {
+        const lastSort = sortColumns.length > 0 ? sortColumns[sortColumns.length - 1].sort : 'DESC';
+        sortColumns.push({ column: 'id', sort: lastSort });
+      }
+      reqParams.sortColumns = sortColumns;
       exportTable({
         businessType: '整车批售-批售主数据-整车批售订单',
         dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrder/page',
@@ -1947,7 +1960,13 @@ export default {
         }
       }
 
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
 
       return data;
     },

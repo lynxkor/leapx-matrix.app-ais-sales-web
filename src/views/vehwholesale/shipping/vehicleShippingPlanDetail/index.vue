@@ -193,28 +193,6 @@
             multiple
           />
        </el-form-item>
-        <el-form-item label="车辆交付状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_vehicle_delivery_status"
-            v-model="form.vehicleDeliveryStatus"
-            placeholder="请选择"
-            clearable
-            filterable
-            multiple
-          />
-       </el-form-item>
-        <el-form-item label="车辆库存状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_ vdcInventory_status"
-            v-model="form.vdcInventoryStatus"
-            placeholder="请选择"
-            clearable
-            filterable
-            multiple
-          />
-       </el-form-item>
        <el-form-item label="创建时间">
          <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -715,12 +693,21 @@ export default {
     repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const sortColumns = list.map(item => {
         return {
           column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
           sort: (item.order || '').toUpperCase()
         };
       });
+      const lastSort = sortColumns[sortColumns.length - 1]?.sort || 'DESC';
+      sortColumns.push({ column: 'id', sort: lastSort });
+      this.sortColumns = sortColumns;
       this.getData();
     },
     handleListSelect (row) {
@@ -754,6 +741,12 @@ export default {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
       }
+      const sortColumns = [...(reqParams.sortColumns || [])];
+      if (!sortColumns.some(col => col.column === 'id')) {
+        const lastSort = sortColumns.length > 0 ? sortColumns[sortColumns.length - 1].sort : 'DESC';
+        sortColumns.push({ column: 'id', sort: lastSort });
+      }
+      reqParams.sortColumns = sortColumns;
       exportTable({
         businessType: '发运计划明细',
         dataFetchPath: 'vw/web/shipping/vehicleShippingPlanDetail/page',
@@ -863,7 +856,13 @@ export default {
         }
       }
       // 排序字段
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
       return data;
     },
     async fetchOptions (code) {
