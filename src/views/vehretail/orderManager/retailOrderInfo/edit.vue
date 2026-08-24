@@ -812,7 +812,7 @@ export default {
       }
     },
     getRequiredRule (prop) {
-      return this.form.orderStatus === 7
+      return this.form.orderStatus === 7 || this.form.orderStatus === 10
         ? (this.requiredRulesMap[prop] || [])
         : [];
     },
