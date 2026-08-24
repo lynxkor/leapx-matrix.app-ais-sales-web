@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99"
+        :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99 && form.orderStatus !== 15"
       >
         <template #status>
           <!-- 支持 primary,warning,success,danger 等状态 -->
