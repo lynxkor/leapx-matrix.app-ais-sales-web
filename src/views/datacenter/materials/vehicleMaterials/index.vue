@@ -622,7 +622,15 @@ export default {
         }
       }
       // 排序字段
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      // 有排序但无id列时，追加id列，方向与最后一列一致
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      // 无排序时，默认按id倒序
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
       return data;
     },
     async fetchOptions (code) {
