@@ -64,7 +64,20 @@
                     :disabled="form.orderCategory === '1' || form.orderCategory === '8' || form.orderCategory === 1 || form.orderCategory === 8"
                   />
                 </el-form-item>
-                 <el-form-item label="企业客户名称：" prop="entCustomerName">
+                <el-form-item label="目的地国家：" prop="destinationCountry">
+                  <fetch-select
+                    :remote-method="sysCountrySearch"
+                    remote
+                    v-model="form.destinationCountry"
+                    placeholder="请选择"
+                    labelKey="name"
+                    valueKey="code"
+                    clearable
+                    filterable
+                    @change="handleDestinationCountryChange"
+                  />
+                </el-form-item>
+                <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <fetch-select
                       :remote-method="listNetworkParentCompany"
                       remote
@@ -195,6 +208,9 @@
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarketLabel">
                   {{ form.salesMarketLabel }}
+                </el-form-item>
+                <el-form-item label="目的地国家：" prop="destinationCountryName">
+                  {{ form.destinationCountryName }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
@@ -513,7 +529,7 @@ import { getDetail, addOrUpdate, listDealersForParentCompany, addOrUpdateDetail,
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, cityListByName, getProvinceTree, getParentCompany } from '@/api/common';
+import { getEnum, cityListByName, getProvinceTree, getParentCompany, sysCountryList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -548,6 +564,8 @@ const defaultForm = {
   orderCategory: '',
   acceptanceMethod: '',
   salesMarket: '',
+  destinationCountry: '',
+  destinationCountryName: '',
   creditSaleFlag: 0,
   totalAmount: '',
   settleFundType: '',
@@ -1223,6 +1241,17 @@ export default {
     },
     async listNetworkParentCompany (query) {
       return getParentCompany({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+    },
+    async sysCountrySearch (query) {
+      const res = await sysCountryList({ fullNameLike: query });
+      return res;
+    },
+    handleDestinationCountryChange (val, row) {
+      if (row && row.name) {
+        this.form.destinationCountryName = row.name;
+      } else {
+        this.form.destinationCountryName = '';
+      }
     },
     getOtherInfoBysaleCompany (val, row) {
       // 安全赋值门店信息
