@@ -462,6 +462,7 @@
             </div>
             <div class="common-section-body">
               <AisAttachment
+                v-show="isEditing"
                 v-for="item in attachmentList" :key="item.attachType"
                 :businessId="_id"
                 :ref="el => registerAttachmentRef(el, item.attachType)"
@@ -474,7 +475,7 @@
                 @upload-loading-change="handleUploadLoadingChange($event)"
               />
               <AttachmentList
-                v-if="!isEditing"
+                v-show="!isEditing"
                 :business-id="_id"
                 :config-code="'mcs_specialcarsalesreport'"
                 type="card"
