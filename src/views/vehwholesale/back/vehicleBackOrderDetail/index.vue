@@ -307,6 +307,8 @@ export default {
           { props: 'storeOutboundTime', label: '门店出库确认时间', visible: true, width: 160 },
           { props: 'vdcInboundConfirmer', label: 'VDC入库确认人', visible: true, width: 150 },
           { props: 'vdcInboundTime', label: 'VDC入库确认时间', visible: true, width: 160 },
+          { props: 'backTypeLabel', label: '退车类型', visible: true, width: 120 },
+          { props: 'backRemark', label: '退车备注', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',

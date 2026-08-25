@@ -440,6 +440,7 @@
           <!-- <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane> -->
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
+          <el-tab-pane label="未确认批售单" name="6"></el-tab-pane>
         </el-tabs>
       </div>
       <LPVxeTable
@@ -1525,6 +1526,10 @@ export default {
         // 待配车批售 ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
+      } else if (this.tabName === '6') {
+        // 未确认批售单 ①确认状态：未确认；②订单状态：除已作废之外全选
+        this.form.orderStatuses = ['0', '10', '11', '1', '2', '21', '4', '5', '3'];
+        this.form.confirmStatuses = ['1010'];
       }
       this.getData();
     },
@@ -1627,10 +1632,17 @@ export default {
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
       const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
-      this.sortColumns = [{
-        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-        sort: (latest.order || '').toUpperCase()
-      }];
+      const sort = (latest.order || '').toUpperCase();
+      this.sortColumns = [
+        {
+          column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: sort
+        },
+        {
+          column: 'id',
+          sort: sort
+        }
+      ];
       this.getData();
     },
     onReset () {
@@ -1769,7 +1781,13 @@ export default {
         }
       }
 
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
 
       return data;
     },

@@ -337,6 +337,12 @@
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
+                <el-form-item label="退车类型：" prop="backTypeLabel">
+                  {{ form.backTypeLabel }}
+                </el-form-item>
+                <el-form-item label="退车备注：" prop="backRemark">
+                  {{ form.backRemark }}
+                </el-form-item>
                  <el-form-item label="订单接口同步结果：" prop="syncSapMsg"  class="form-item-full">
                   {{ form.syncSapMsg }}
                 </el-form-item>
