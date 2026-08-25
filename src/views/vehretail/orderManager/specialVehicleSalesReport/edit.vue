@@ -837,6 +837,19 @@ export default {
         delete this.attachmentRefs[attachType];
       }
     },
+    // 为 validateAttachments 构造 refs 映射：key 形如 attachment0/1/2/3，值为包裹组件实例的数组
+    // 说明：validateAttachments 默认按 ${refNamePrefix}${index}（即 attachment+下标）去 refs 取组件，
+    // 而本组件把 ref 存进了 this.attachmentRefs（key 是中文 attachType），所以这里做一次转换。
+    buildValidateAttachmentRefs () {
+      const refs = {};
+      this.attachmentList.forEach((item, index) => {
+        const comp = this.attachmentRefs[item.attachType];
+        if (comp) {
+          refs[`attachment${index}`] = [comp];
+        }
+      });
+      return refs;
+    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {
@@ -865,7 +878,7 @@ export default {
         // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
         const { valid, errors } = validateAttachments({
           attachmentList: this.attachmentList,
-          refs: this.$refs
+          refs: this.buildValidateAttachmentRefs()
         });
         if (!valid) {
           this.$message.error(errors.join('；'));
@@ -1008,7 +1021,7 @@ export default {
       // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
       const { valid, errors } = validateAttachments({
         attachmentList: this.attachmentList,
-        refs: this.$refs
+        refs: this.buildValidateAttachmentRefs()
       });
       if (!valid) {
         this.$message.error(errors.join('；'));
