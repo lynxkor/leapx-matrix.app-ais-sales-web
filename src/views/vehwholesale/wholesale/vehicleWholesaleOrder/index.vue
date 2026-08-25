@@ -440,6 +440,7 @@
           <!-- <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane> -->
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
+          <el-tab-pane label="未确认批售单" name="6"></el-tab-pane>
         </el-tabs>
       </div>
       <LPVxeTable
@@ -1525,6 +1526,10 @@ export default {
         // 待配车批售 ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
+      } else if (this.tabName === '6') {
+        // 未确认批售单 ①确认状态：未确认；②订单状态：除已作废之外全选
+        this.form.orderStatuses = ['0', '10', '11', '1', '2', '21', '4', '5', '3'];
+        this.form.confirmStatuses = ['1010'];
       }
       this.getData();
     },

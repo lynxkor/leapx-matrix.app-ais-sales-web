@@ -435,7 +435,7 @@ export default {
           { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'carrierRecordCode', label: '承运记录编码', visible: true, width: 180 },
-          { props: 'entCustomerName', label: '企业客户', visible: true, width: 150 },
+          { props: 'entCustomerName', label: '企业客户（母公司）', visible: true, width: 150 },
           { props: 'entCustomerOrderTime', label: '企业下单时间', visible: true, width: 180 },
           {
             props: 'materialsDesc',
@@ -559,7 +559,8 @@ export default {
           },
           { props: 'statusLabel', label: '状态', visible: true, width: 90 },
           { props: 'creatorName', label: '创建者', visible: true, width: 120 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160, sortable: true },
+          { props: 'cancelTime', label: '作废时间', visible: true, width: 160, sortable: true },
           // {
           //   props: 'operate',
           //   label: '操作',
