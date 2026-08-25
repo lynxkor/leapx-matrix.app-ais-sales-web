@@ -505,11 +505,15 @@ export default {
 
       if (this.tabName === 'all') {
         this.form.appointmentTime = [];
+        this.form.appointmentTimeStart = '';
+        this.form.appointmentTimeEnd = '';
         // 全部：不设置任何 Tab 过滤，使用默认兜底 statusList
       } else if (this.tabName === 'pending') {
         // 待邀约交车单：交车状态 = 待预约(1)
         this.form.statusList = ['1'];
         this.form.appointmentTime = [];
+        this.form.appointmentTimeStart = '';
+        this.form.appointmentTimeEnd = '';
       } else if (this.tabName === 'today') {
         // 今日待交车：预约提车时间为当日，且状态不等于交车完成(7)和作废(99)
         const start = new Date(); start.setHours(0, 0, 0, 0);
@@ -530,6 +534,8 @@ export default {
         // 剩余可交订单：状态不等于作废(99)和交车完成(7)
         this.form.statusList = ['1', '2', '3', '4', '5', '6'];
         this.form.appointmentTime = [];
+        this.form.appointmentTimeStart = '';
+        this.form.appointmentTimeEnd = '';
       }
       // 切回第一页，避免停留在之前 Tab 的页码
       this.optionObj.form.page = 1;
