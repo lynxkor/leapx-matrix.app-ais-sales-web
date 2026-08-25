@@ -581,6 +581,19 @@ export default {
           this.$refs.paymentRecordTable.refresh();
         }
       }
+    },
+    'form.saleDealerCode': {
+      handler (val) {
+        if (val) this.handleRemoteSearch('', 'saleUser');
+      }
+    },
+    'form.deliveryDealerCode': {
+      handler (val) {
+        if (!val) return;
+        this.handleRemoteSearch('', 'deliveryUser');
+        this.handleRemoteSearch('', 'deliveryDerive');
+        this.handleRemoteSearch('', 'onSiteDeliveryUser');
+      }
     }
   },
   data () {
@@ -960,13 +973,8 @@ export default {
           res.deliveryUserId = res.deliveryUserId ? Number(res.deliveryUserId) : '';
           res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? Number(res.deliveryDerivativeUserId) : '';
           res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? Number(res.onSiteDeliveryUserId) : '';
-          // 初始化下拉数据（无论是否有值都查询一次，确保下拉有数据）
-          this.$nextTick(() => {
-            this.handleRemoteSearch('', 'saleUser');
-            this.handleRemoteSearch('', 'deliveryUser');
-            this.handleRemoteSearch('', 'deliveryDerive');
-            this.handleRemoteSearch('', 'onSiteDeliveryUser');
-          });
+          // 初始化下拉数据交给 watch('form.saleDealerCode'/'form.deliveryDealerCode') 触发，
+          // 避免 $nextTick 时机早于父组件 await this.detailRequest() 续段执行导致查询时 form 为空
           return res;
         });
       }

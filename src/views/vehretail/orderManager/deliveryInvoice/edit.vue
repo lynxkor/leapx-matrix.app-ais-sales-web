@@ -1029,7 +1029,7 @@ export default {
         checkField: '公告车型',
         checkValue: this.form.carSalesVersionName,
         isHighlighted: !this.form.brandModel || !this.form.carSalesVersionName || this.form.brandModel !== this.form.carSalesVersionName,
-        disabled: true
+        disabled: false
       });
       return comparisonData;
     },
@@ -1062,6 +1062,7 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           let params = {
+            ...res,
             yearTypeName: res.retailOrderMaterials.yearTypeId,
             modelLineId: res.retailOrderMaterials.seriesId
           };

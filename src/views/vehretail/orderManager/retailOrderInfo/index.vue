@@ -627,7 +627,7 @@ export default {
             }, {
               name: '编辑',
               show: (row) => {
-                return row.orderStatus !== 9 && row.orderStatus !== 99;
+                return row.orderStatus !== 9 && row.orderStatus !== 99 && row.orderStatus !== 15;
               },
               click: (rowIndex, row) => {
                 this.$router.push({

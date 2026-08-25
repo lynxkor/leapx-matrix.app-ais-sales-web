@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99"
+        :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99 && form.orderStatus !== 15"
       >
         <template #status>
           <!-- 支持 primary,warning,success,danger 等状态 -->
@@ -153,12 +153,13 @@
                     :disabled="!canEditField('saleDealerName')"
                   />
                 </el-form-item>
-                <el-form-item label="订单销售顾问：" prop="saleUserId">
+                <el-form-item label="订单销售顾问：" prop="saleUserId" :rules="getRequiredRule('saleUserId')">
                   <fetch-select
                     filterable
                     clearable
                     remote
                     v-model="form.saleUserId"
+                    :params="form.saleUserName"
                     :remote-method="remoteMethods.saleUser"
                     value-key="userId"
                     label-key="username"
@@ -178,12 +179,13 @@
                     :disabled="!canEditField('deliveryDealerName')"
                   />
                 </el-form-item>
-                <el-form-item label="订单交付顾问：">
+                <el-form-item label="订单交付顾问：" prop="deliveryUserId" :rules="getRequiredRule('deliveryUserId')">
                   <fetch-select
                     filterable
                     clearable
                     remote
                     v-model="form.deliveryUserId"
+                    :params="form.deliveryUserName"
                     :remote-method="remoteMethods.deliveryUser"
                     value-key="userId"
                     label-key="username"
@@ -325,7 +327,7 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" ref="ruleForm2" label-width="180px" class="form-edit">
-                <el-form-item label="金融方案：">
+                <el-form-item label="金融方案：" prop="finance.financialScheme" :rules="getRequiredRule('finance.financialScheme')">
                   <fetch-select
                     v-model="form.finance.financialScheme"
                     placeholder="请选择"
@@ -361,7 +363,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="保险方案：">
+                <el-form-item label="保险方案：" prop="finance.insuranceScheme" :rules="getRequiredRule('finance.insuranceScheme')">
                   <fetch-select
                     v-model="form.finance.insuranceScheme"
                     placeholder="请选择"
@@ -661,6 +663,13 @@ export default {
           { required: true, message: '请输入合同解除协议文件地址', trigger: 'change' }
         ],
       },
+      // 等待交车时必填的字段及对应提示文案，key 与 el-form-item 的 prop 一致
+      requiredRulesMap: {
+        saleUserId: [{ required: true, message: '请输入订单销售顾问', trigger: 'change' }],
+        deliveryUserId: [{ required: true, message: '请输入订单交付顾问', trigger: 'change' }],
+        'finance.financialScheme': [{ required: true, message: '请选择金融方案', trigger: 'change' }],
+        'finance.insuranceScheme': [{ required: true, message: '请选择保险方案', trigger: 'change' }]
+      },
       displayFields: retailOrderDisplayFields,
       carOwnerDisplayFields: carOwnerDisplayFields,
       orderFundDisplayFields: orderFundDisplayFields,
@@ -796,7 +805,16 @@ export default {
     orderConfigChangeList,
     orderChangeList,
     handleSaleUserChange (val, row, name) {
-      this.form[name + 'Name'] = row.username;
+      if (val) {
+        this.form[name + 'Name'] = row.username;
+      } else {
+        this.form[name + 'Name'] = '';
+      }
+    },
+    getRequiredRule (prop) {
+      return this.form.orderStatus === 7 || this.form.orderStatus === 10
+        ? (this.requiredRulesMap[prop] || [])
+        : [];
     },
     // 权益查询
     handleEquityInquiry () {
@@ -1043,6 +1061,8 @@ export default {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
           processedData.deliveryOrder = response.deliveryOrder || { ...defaultForm.deliveryOrder };
+          processedData.saleUserId = String(response.saleUserId);
+          processedData.deliveryUserId = String(response.deliveryUserId);
           // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
           const addSaleDealerName = (array) => {
             if (array && Array.isArray(array) && response.saleDealerName) {
