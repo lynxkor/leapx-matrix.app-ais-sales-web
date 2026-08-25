@@ -198,6 +198,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -306,6 +307,7 @@ export default {
       batchAuditDialogVisible: false,
       reviewFalg: false,
       clickItemId: '',
+      sortColumns: [],
       optionObj: {
         id: 'fundVehicleRebateBillDetailTable',
         dataList: [],
@@ -396,15 +398,15 @@ export default {
             }]
           },
           { props: 'auditorName', label: '初审人', visible: true, width: 100 },
-          { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
+          { props: 'auditTime', label: '初审时间', visible: true, width: 200, sortable: true },
           { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },
           { props: 'reviewName', label: '复审人', visible: true, width: 100 },
-          { props: 'reviewTime', label: '复审时间', visible: true, width: 200 },
+          { props: 'reviewTime', label: '复审时间', visible: true, width: 200, sortable: true },
           { props: 'reviewOpinion', label: '复审意见', visible: true, width: 120 },
           { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
           { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + row.deliveryOrderId); }, type: 'primary' }] },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
           // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
@@ -508,6 +510,24 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const sortColumns = list.map(item => {
+        return {
+          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: (item.order || '').toUpperCase()
+        };
+      });
+      const lastSort = sortColumns[sortColumns.length - 1]?.sort || 'DESC';
+      sortColumns.push({ column: 'id', sort: lastSort });
+      this.sortColumns = sortColumns;
+      this.getData();
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -533,6 +553,13 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      // 排序兜底：无排序时导出默认按id倒序
+      const sortColumns = [...(reqParams.sortColumns || [])];
+      if (!sortColumns.some(col => col.column === 'id')) {
+        const lastSort = sortColumns.length > 0 ? sortColumns[sortColumns.length - 1].sort : 'DESC';
+        sortColumns.push({ column: 'id', sort: lastSort });
+      }
+      reqParams.sortColumns = sortColumns;
       if (this.selectionList.length > 0) {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
@@ -649,6 +676,14 @@ export default {
         }
       }
 
+      // 排序字段
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
       return data;
     },
     async fetchOptions (code) {
