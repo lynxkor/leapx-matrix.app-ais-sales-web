@@ -483,6 +483,11 @@ export default {
         this.form.targetDealerWarehouseName = first.warehouseName || '';
         this.form.targetDealerWarehouseAddress = first.warehouseDetailAddress || '';
       }
+      if (autoSelectFirst && records.length === 0) {
+        this.form.targetDealerWarehouseCode = '';
+        this.form.targetDealerWarehouseName = '';
+        this.form.targetDealerWarehouseAddress = '';
+      }
     },
     // 门店仓库选择时触发的事件
     handleWarehouseChange (val, record) {
