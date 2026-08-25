@@ -233,7 +233,7 @@
     <MoveDialog
       :visible="moveDialog"
       :selectionId="selectionListIds"
-      :saleDealerCode="dealerCode"
+      :saleDealerCode="deliveryDealerCode"
       @close="closeMoveDialog"
       @submit="submitBatchMove"
     />
@@ -871,7 +871,7 @@ export default {
     },
     submitBatchMove () {
       this.moveDialog = false;
-      this.dealerCode = '';
+      this.deliveryDealerCode = '';
       this.getData();
     },
     // 批量车辆类型转换
