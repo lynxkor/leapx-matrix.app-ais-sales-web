@@ -477,6 +477,9 @@
                         {{ row.optionPackageName }}
                       </el-link>
                     </template>
+                    <template v-else-if="column.property === 'vehicleAttribute'">
+                      {{ row.vehicleAttributeLabel || getVehicleAttributeLabel(row.vehicleAttribute) }}
+                    </template>
                     <template v-else>
                       {{ row[column.property] }}
                     </template>
@@ -624,6 +627,7 @@ export default {
     },
     columns () {
       const isEdit = this.isEditing;
+      const isBigCustomerDirect = this.form.orderCategory === 1 || this.form.orderCategory === '1';
       return [
         {
           field: 'qty',
@@ -664,6 +668,19 @@ export default {
           field: 'relatedTxnExTaxPrice',
           title: '关联交易不含税价',
           width: '150',
+        },
+        {
+          field: 'vehicleAttribute',
+          title: '车辆属性',
+          width: '120',
+          editable: isEdit && isBigCustomerDirect,
+          editRender: {
+            name: 'ElSelect',
+            props: {
+              options: this.vehicleAttributeOptions,
+              placeholder: '请选择'
+            }
+          }
         },
         {
           field: 'materialsCode',
@@ -850,6 +867,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       areaCode: [],
       orderCategoryOptions: [],
+      vehicleAttributeOptions: [],
       settleFundTypeOptions: [],
       defaultNewRow: { },
       districtOptions: [],
@@ -914,6 +932,7 @@ export default {
     this.fetchOrderCategoryOptions();
     this.listNetworkParentCompany();
     this.getCompanyList();
+    this.fetchVehicleAttributeOptions();
   },
   created () {
     this.initPermissions();
@@ -1337,6 +1356,19 @@ export default {
         };
       });
     },
+    async fetchVehicleAttributeOptions () {
+      const response = await getEnum('vw_vehicle_attribute');
+      this.vehicleAttributeOptions = (response || []).map(item => ({
+        ...item,
+        value: String(item.code),
+        label: item.name
+      }));
+    },
+    getVehicleAttributeLabel (code) {
+      if (code === '' || code === null || code === undefined) return '';
+      const item = this.vehicleAttributeOptions.find(o => o.value === String(code));
+      return item ? item.label : code;
+    },
     handleAddDetail () {
       this.showAddDetailDialog = true;
     },
@@ -1368,6 +1400,7 @@ export default {
           }
           res.detailList = res.detailList.map(detail => ({
             ...detail,
+            vehicleAttribute: detail.vehicleAttribute !== null && detail.vehicleAttribute !== undefined ? String(detail.vehicleAttribute) : '',
             materialsId: detail.vehicleMaterials?.id,
             materialsCode: detail.vehicleMaterials?.materialsCode || '',
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',
