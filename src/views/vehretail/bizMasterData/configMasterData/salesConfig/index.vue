@@ -217,6 +217,67 @@
               </el-form>
             </div>
           </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>门店查询配置</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm3" label-width="180px" class="form-edit">
+                <el-form-item label="销售门店配置：" prop="saleDealerAuthName">
+                  <el-tooltip
+                    :content="tooltipContentMap.saleDealerAuth.join(', ')"
+                    placement="top"
+                    effect="light"
+                    :disabled="!tooltipContentMap.saleDealerAuth || tooltipContentMap.saleDealerAuth.length === 0"
+                  >
+                    <el-select
+                      v-model="formData.saleDealerAuthName"
+                      placeholder="请选择"
+                      clearable
+                      collapse-tags
+                      filterable
+                      multiple
+                      :disabled="!showEditBtn"
+                      @change="(val) => handleChange(val, 'saleDealerAuth')"
+                    >
+                      <el-option
+                        v-for="item in authorityOptions"
+                        :key="item.authorityId"
+                        :label="item.authorityName"
+                        :value="item.authorityCode"
+                      />
+                    </el-select>
+                  </el-tooltip>
+                </el-form-item>
+                <el-form-item label="交付门店配置：" prop="deliveryDealerAuthName">
+                  <el-tooltip
+                    :content="tooltipContentMap.deliveryDealerAuth.join(', ')"
+                    placement="top"
+                    effect="light"
+                    :disabled="!tooltipContentMap.deliveryDealerAuth || tooltipContentMap.deliveryDealerAuth.length === 0"
+                  >
+                    <el-select
+                      v-model="formData.deliveryDealerAuthName"
+                      placeholder="请选择"
+                      clearable
+                      collapse-tags
+                      filterable
+                      multiple
+                      :disabled="!showEditBtn"
+                      @change="(val) => handleChange(val, 'deliveryDealerAuth')"
+                    >
+                      <el-option
+                        v-for="item in authorityOptions"
+                        :key="item.authorityId"
+                        :label="item.authorityName"
+                        :value="item.authorityCode"
+                      />
+                    </el-select>
+                  </el-tooltip>
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
           <!-- <AttachedFilesDialog ref="attachedFilesDialog"/> -->
         </el-main>
     </template>
@@ -301,7 +362,9 @@ export default {
       tooltipContentMap: {
         saleUser: [],
         deliveryUser: [],
-        deliveryDerive: []
+        deliveryDerive: [],
+        saleDealerAuth: [],
+        deliveryDealerAuth: []
       },
       // 存储全量权限数据（用于 el-select 选项）
       authorityOptions: [],
@@ -329,6 +392,12 @@ export default {
         ],
         realNameAuth: [
           { required: true, message: '请选择交车实名认证校验', trigger: 'change' }
+        ],
+        saleDealerAuthName: [
+          { required: true, message: '请选择销售门店配置', trigger: 'change' }
+        ],
+        deliveryDealerAuthName: [
+          { required: true, message: '请选择交付门店配置', trigger: 'change' }
         ],
       }
     };
@@ -430,6 +499,20 @@ export default {
               salesConfigName: '交车单分派通知',
               salesConfigType: 'multiple',
               saleConfigValue: ''
+            },
+            {
+              salesConfigGroup: 'dealerAuthConfig',
+              salesConfigKey: 'saleDealerAuth',
+              salesConfigName: '销售门店配置',
+              salesConfigType: 'multiple',
+              saleConfigValue: ''
+            },
+            {
+              salesConfigGroup: 'dealerAuthConfig',
+              salesConfigKey: 'deliveryDealerAuth',
+              salesConfigName: '交付门店配置',
+              salesConfigType: 'multiple',
+              saleConfigValue: ''
             }
           ];
         } else {
@@ -461,13 +544,17 @@ export default {
         financeStatus: this.getConfigValue('finance'),
         phoneRegisterStatus: this.getConfigValue('phoneRegister'),
         realNameAuth: this.getConfigValue('realNameAuth'),
-        deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment')
+        deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment'),
+        saleDealerAuthName: this.getConfigValue('saleDealerAuth'),
+        deliveryDealerAuthName: this.getConfigValue('deliveryDealerAuth')
       };
       // 初始化 tooltip 内容
       this.tooltipContentMap = {
         saleUser: this.getTooltipContent('saleUser'),
         deliveryUser: this.getTooltipContent('deliveryUser'),
-        deliveryDerive: this.getTooltipContent('deliveryDerive')
+        deliveryDerive: this.getTooltipContent('deliveryDerive'),
+        saleDealerAuth: this.getTooltipContent('saleDealerAuth'),
+        deliveryDealerAuth: this.getTooltipContent('deliveryDealerAuth')
       };
     },
     // 根据salesConfigKey获取对应的值用于表单绑定
@@ -509,11 +596,12 @@ export default {
     },
     async save () {
       // 并行校验两个表单
-      const [valid1, valid2] = await Promise.all([
+      const [valid1, valid2, valid3] = await Promise.all([
         this.validateForm('ruleForm2'),
-        this.validateForm('ruleForm')
+        this.validateForm('ruleForm'),
+        this.validateForm('ruleForm3')
       ]);
-      if (!valid1 || !valid2) {
+      if (!valid1 || !valid2 || !valid3) {
         return; // 任一表单校验失败则不提交
       }
 
