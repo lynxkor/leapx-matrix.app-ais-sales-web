@@ -418,6 +418,15 @@
                     :disabled="true"
                   />
                 </el-form-item>
+                <el-form-item label="订单交车时间：" prop="deliveryTime">
+                  <el-date-picker
+                    v-model="form.deliveryTime"
+                    type="datetime"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="选择日期时间"
+                    :disabled="true"
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="商城订单编号：">
@@ -461,6 +470,9 @@
                 </el-form-item>
                 <el-form-item label="市：">
                   {{ form.cityName }}
+                </el-form-item>
+                <el-form-item label="订单交车时间：">
+                  {{ form.deliveryTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -784,6 +796,7 @@ const defaultForm = {
   regionName: '',
   provinceName: '',
   cityName: '',
+  deliveryTime: '',
   materialsCode: '',
   materialsDesc: '',
   seriesName: '',
@@ -1175,6 +1188,8 @@ export default {
           { retailOrderId: this.form.orderId }
         );
       }
+      console.log('order:', order);
+
       // 更新订单相关信息
       this.form.mallOrderNo = order?.orderInfo?.mallOrderCode || '';
       this.form.vehicleOrderNo = order?.orderInfo?.retailOrderCode || '';
@@ -1205,6 +1220,7 @@ export default {
       this.form.optionPackageId = order?.orderMaterials?.optionPackageId || '';
       this.form.optionPackageName = order?.orderMaterials?.optionPackageName || '';
       this.form.orderStatus = order?.orderInfo?.orderStatus || null;
+      this.form.deliveryTime = order?.orderInfo?.deliveryTime || null;
       this.form.originalBenefitDate = order?.orderInfo?.rightsEnjoyDate ? formatDateTime(order.orderInfo.rightsEnjoyDate, 'data') : '';
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();

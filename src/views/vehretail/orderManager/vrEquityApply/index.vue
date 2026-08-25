@@ -196,6 +196,19 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+        <el-form-item label="订单交车时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.deliveryTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -273,7 +286,8 @@ const defaultForm = {
   otherBrand: '',
   submitTime: '',
   depositTime: '',
-  lockTime: ''
+  lockTime: '',
+  deliveryTime: ''
 };
 
 const pageSize = 20;
@@ -344,6 +358,7 @@ export default {
           { props: 'orderUserId', label: '下单人ID', visible: true, width: 240 },
           { props: 'depositTime', label: '缴定金时间', visible: true, width: 180 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
+          { props: 'deliveryTime', label: '订单交车时间', visible: true, width: 180 },
           { props: 'agentContact', label: '代办联系人', visible: true, width: 150 },
           {
             props: 'equityCategoryName',
@@ -611,6 +626,13 @@ export default {
         if (this.form.lockTime.length > 1) {
           data.lockTimeStart = this.form.lockTime[0];
           data.lockTimeEnd = this.form.lockTime[1];
+        }
+      }
+      if (this.form.deliveryTime) {
+        delete data.deliveryTime;
+        if (this.form.deliveryTime.length > 1) {
+          data.deliveryTimeStart = this.form.deliveryTime[0];
+          data.deliveryTimeEnd = this.form.deliveryTime[1];
         }
       }
 

@@ -463,9 +463,9 @@
             <div class="common-section-body">
               <AisAttachment
                 v-show="isEditing"
-                v-for="(item, index) in attachmentList" :key="index"
+                v-for="item in attachmentList" :key="item.attachType"
                 :businessId="_id"
-                :ref="'attachment' + index"
+                :ref="el => registerAttachmentRef(el, item.attachType)"
                 :configCode="item.configCode"
                 :attachType="item.attachType"
                 :title="item.label"
@@ -475,7 +475,7 @@
                 @upload-loading-change="handleUploadLoadingChange($event)"
               />
               <AttachmentList
-                v-if="!isEditing"
+                v-show="!isEditing"
                 :business-id="_id"
                 :config-code="'mcs_specialcarsalesreport'"
                 type="card"
@@ -637,6 +637,8 @@ export default {
       uploadOperate: false,
       uploadLoading: false,
       uploadLoadingCounter: 0,
+      // 附件组件实例映射：key 为 attachType，value 为组件 ref，避免使用数组下标
+      attachmentRefs: {},
       // 附件列表配置
       attachmentList: [
         { label: '车辆合格证', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车辆合格证' },
@@ -826,6 +828,28 @@ export default {
       this.canVehicleAttribute = this.permissions.has(`${this.moduleKey}-vehicleAttribute`);
       this.canVehicleSubmit = this.permissions.has(`${this.moduleKey}-submit`);
     },
+    // 注册/注销附件组件实例 ref：以 attachType 作为 key
+    // 避免使用数组下标，访问时可通过 this.attachmentRefs['车辆销售发票'] 直接拿到组件实例
+    registerAttachmentRef (el, attachType) {
+      if (el) {
+        this.attachmentRefs[attachType] = el;
+      } else {
+        delete this.attachmentRefs[attachType];
+      }
+    },
+    // 为 validateAttachments 构造 refs 映射：key 形如 attachment0/1/2/3，值为包裹组件实例的数组
+    // 说明：validateAttachments 默认按 ${refNamePrefix}${index}（即 attachment+下标）去 refs 取组件，
+    // 而本组件把 ref 存进了 this.attachmentRefs（key 是中文 attachType），所以这里做一次转换。
+    buildValidateAttachmentRefs () {
+      const refs = {};
+      this.attachmentList.forEach((item, index) => {
+        const comp = this.attachmentRefs[item.attachType];
+        if (comp) {
+          refs[`attachment${index}`] = [comp];
+        }
+      });
+      return refs;
+    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {
@@ -854,7 +878,7 @@ export default {
         // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
         const { valid, errors } = validateAttachments({
           attachmentList: this.attachmentList,
-          refs: this.$refs
+          refs: this.buildValidateAttachmentRefs()
         });
         if (!valid) {
           this.$message.error(errors.join('；'));
@@ -997,13 +1021,16 @@ export default {
       // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
       const { valid, errors } = validateAttachments({
         attachmentList: this.attachmentList,
-        refs: this.$refs
+        refs: this.buildValidateAttachmentRefs()
       });
       if (!valid) {
         this.$message.error(errors.join('；'));
         return Promise.reject(new Error('附件校验未通过'));
       }
-      if (!this.form.invoiceDate) {
+      // 仅当"车辆销售发票"附件有值时，开票日期才必填
+      const invoiceAttachment = this.attachmentRefs['车辆销售发票'];
+      const invoiceFileList = invoiceAttachment?.getFileList?.() || [];
+      if (invoiceFileList.length > 0 && !this.form.invoiceDate) {
         this.$message.error('开票日期为空，不允许提交');
         return Promise.reject(new Error('开票日期为空，不允许提交'));
       }

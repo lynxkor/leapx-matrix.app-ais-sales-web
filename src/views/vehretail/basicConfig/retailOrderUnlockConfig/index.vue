@@ -12,15 +12,17 @@
       <el-form-item label="车型名称">
         <fetch-select
           :remote-method="remoteMethods.model"
-          v-model="form.modelId"
+          v-model="form.modelIdList"
           v-bind="selectOptions"
+          multiple
           @change="modelListChange"
         />
       </el-form-item>
       <el-form-item label="年款名称">
         <fetch-select
           :options="yearModelList"
-          v-model="form.yearTypeId"
+          multiple
+          v-model="form.yearTypeIdList"
           placeholder="请选择"
           labelKey="label"
           valueKey="value"
@@ -82,7 +84,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-      </template>
+        </template>
       <page-search-action
         v-if="canList"
         v-model="show"
@@ -149,7 +151,9 @@ import EditPage from './edit.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   modelId: '',
+  modelIdList: [],
   yearTypeId: '',
+  yearTypeIdList: [],
   orderStatus: '',
   allowUnlockStatus: '',
   allowManualCarStatus: '',
@@ -204,7 +208,7 @@ export default {
           return await listVehicleModel({ modelNameLike: query });
         },
         yearType: async (query) => {
-          return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
+          return await listVehicleYearType({ yearTypeNameLike: query });
         },
       },
       yearModelList: [],
@@ -266,17 +270,6 @@ export default {
       }
     };
   },
-  watch: {
-    'form.seriesId': {
-      handler (newVal) {
-        // 车系变化时清空车型选择
-        this.form.modelId = '';
-        this.searchModel();
-      },
-      deep: true,
-      immediate: true
-    },
-  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
@@ -289,7 +282,7 @@ export default {
       this.listVehicleYearType(val);
     },
     async listVehicleYearType (val) {
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelId: val, limitSize: 50 });
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, limitSize: 50 });
       this.yearModelList = res.map(item => {
         return {
           ...item,
@@ -297,19 +290,6 @@ export default {
           value: item.yearTypeId
         };
       });
-    },
-    // 车型支持车系 ID 和 车型输入 方法
-    async searchModel (query) {
-      console.log('searchModel:', query);
-
-      const params = {};
-      if (query) {
-        params.modelNameLike = query;
-      }
-      if (this.form.seriesId?.length) {
-        params.seriesIds = this.form.seriesId;
-      }
-      return await listVehicleModel(params);
     },
     handleListSelect (row) {
       this.clickItemId = row.id;

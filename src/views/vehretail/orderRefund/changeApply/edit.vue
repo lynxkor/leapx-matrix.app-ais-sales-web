@@ -292,6 +292,7 @@
                     maxlength="50"
                     show-word-limit
                     clearable
+                    @blur="stripSpaces('newBuyerName')"
                     :disabled="[9, 10, 15, 99].includes(form.originalOrderStatus)"
                   />
                 </el-form-item>
@@ -302,6 +303,7 @@
                     v-model="form.newBuyerPhone"
                     maxlength="11"
                     clearable
+                    @blur="stripSpaces('newBuyerPhone')"
                   />
                 </el-form-item>
                 <el-form-item label="变更后购车人证件类型：" prop="newIdCardType">
@@ -322,6 +324,7 @@
                     type="text"
                     maxlength="100"
                     show-word-limit
+                    @blur="stripSpaces('newIdCardNo')"
                     :disabled="form.originalOrderStatus === 9"
                     clearable
                   />
@@ -338,6 +341,7 @@
                     maxlength="20"
                     show-word-limit
                     clearable
+                    @blur="stripSpaces('newAgentName')"
                   />
                 </el-form-item>
                 <el-form-item label="变更后销售门店：" prop="newSaleDealerCode">
@@ -925,6 +929,11 @@ export default {
             message: '请输入变更后购车人证件号码',
             trigger: 'change',
           },
+          {
+            pattern: /^[a-zA-Z0-9]+$/,
+            message: '只能输入数字和字母',
+            trigger: 'blur',
+          },
         ],
         newAgentName: [
           {
@@ -1019,6 +1028,12 @@ export default {
   mounted () {
   },
   methods: {
+    // 失焦去除空格（统一处理）
+    stripSpaces (key) {
+      if (this.form[key] && typeof this.form[key] === 'string') {
+        this.form[key] = this.form[key].replace(/\s/g, '');
+      }
+    },
     // 初始化权限
     initPermissions () {
       this.canCancel = this.permissions.has(`${this.moduleKey}-cancel`);
