@@ -644,27 +644,24 @@ export default {
     },
     onReset () {
       if (this.activeName === 'full') {
-        // this.form = { ...defaultFormFull };
-        this.form.stockAgeGe = null;
-        this.form.stockAgeLe = null;
+        this.form = { ...defaultFormFull };
         this.erpInvoiceFilterMode = '';
         this.sapSyncStatusFilterMode = '';
+        this.form.vehicleDeliveryStatusList = [];
+        this.form.lowBatteryCar = null;
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'homePage') {
-        // this.form = { ...defaultForm };
+        this.form = { ...defaultForm };
         this.form.lowBatteryCar = 0;
-        this.form.stockAgeGe = null;
-        this.form.stockAgeLe = null;
         this.erpInvoiceFilterMode = 'include';
         this.sapSyncStatusFilterMode = 'include';
+        this.form.vehicleDeliveryStatusList = ['3'];
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
-        // this.form = { ...defaultFormFull };
+        this.form = { ...defaultFormFull };
         this.form.lowBatteryCar = 1;
-        this.form.stockAgeGe = null;
-        this.form.stockAgeLe = null;
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
@@ -964,17 +961,32 @@ export default {
     handleClick (item) {
       this.activeName = item.name;
       if (item.name === 'full') {
-        this.onReset();
-        return;
+        this.form.carAllocated = null;
+        this.form.logisticsReserved = null;
+        this.form.lowBatteryCar = null;
+        this.erpInvoiceFilterMode = '';
+        this.sapSyncStatusFilterMode = '';
+        this.form.vehicleDeliveryStatusList = [];
+        this.optionObj.form.page = 1;
+        this.optionObj.form.pageSize = pageSize;
+        // this.onReset();
+        // return;
+      }
+      if (item.name === 'homePage') {
+        this.form.lowBatteryCar = 0;
+        this.form.carAllocated = '0';
+        this.form.logisticsReserved = '0';
+        this.form.vehicleDeliveryStatusList = ['3'];
       }
       if (item.name === 'lowBattery') {
         this.form.carAllocated = '';
         this.form.logisticsReserved = '';
-      } else {
-        this.form.carAllocated = '0';
-        this.form.logisticsReserved = '0';
+        this.form.lowBatteryCar = 1;
       }
-      this.onReset();
+      this.$nextTick(() => {
+        this.getData();
+      });
+      // this.onReset();
     },
     // 批量编辑
     handleEdit () {
