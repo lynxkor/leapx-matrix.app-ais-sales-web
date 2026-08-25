@@ -348,6 +348,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      // 无排序时，导出默认按id倒序
+      reqParams.sortColumns = [{ column: 'id', sort: 'DESC' }];
       if (this.selectionList.length > 0) {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
