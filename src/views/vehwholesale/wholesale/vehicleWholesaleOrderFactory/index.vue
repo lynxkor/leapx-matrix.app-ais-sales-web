@@ -474,6 +474,13 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+        <el-form-item label="申请原因">
+          <el-input
+            placeholder="请输入"
+            v-model="form.applyReasonLike"
+            clearable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -514,6 +521,7 @@
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
           <el-tab-pane label="未出库质量问题车" name="6"></el-tab-pane>
+          <el-tab-pane label="未确认批售单" name="7"></el-tab-pane>
           <el-tab-pane label="全量" name="1"></el-tab-pane>
         </el-tabs>
       </div>
@@ -642,6 +650,7 @@ const defaultForm = {
   createTime: '',
   dealerCompanyCode: '',
   applyReason: '',
+  applyReasonLike: '',
   dealerCompanyName: '',
   interiorName: '',
   modelName: '',
@@ -985,6 +994,7 @@ export default {
           { props: 'logisticsReserveRemark', label: '物流预留备注', visible: true, width: 200 },
 
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
+          { props: 'actualDeliveryWayLabel', label: '实际发运方式', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
@@ -1695,6 +1705,10 @@ export default {
         // 待配车批售 ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
+      } else if (this.tabName === '7') {
+        // 未确认批售单 ①确认状态：未确认；②订单状态：除已作废之外全选
+        this.form.orderStatuses = ['0', '10', '11', '1', '2', '21', '4', '5', '3'];
+        this.form.confirmStatuses = ['1010'];
       } else if (this.tabName === '6') {
         // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；
         // ②车辆交付状态：VDC入库、计划发运、VDC出库 ；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
@@ -1811,10 +1825,17 @@ export default {
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
       const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
-      this.sortColumns = [{
-        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-        sort: (latest.order || '').toUpperCase()
-      }];
+      const sort = (latest.order || '').toUpperCase();
+      this.sortColumns = [
+        {
+          column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: sort
+        },
+        {
+          column: 'id',
+          sort: sort
+        }
+      ];
       this.getData();
     },
     exportExcel () {
@@ -1824,6 +1845,12 @@ export default {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;
       }
+      const sortColumns = [...(reqParams.sortColumns || [])];
+      if (!sortColumns.some(col => col.column === 'id')) {
+        const lastSort = sortColumns.length > 0 ? sortColumns[sortColumns.length - 1].sort : 'DESC';
+        sortColumns.push({ column: 'id', sort: lastSort });
+      }
+      reqParams.sortColumns = sortColumns;
       exportTable({
         businessType: '整车批售-批售主数据-整车批售订单',
         dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrder/page',
@@ -1947,7 +1974,13 @@ export default {
         }
       }
 
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
 
       return data;
     },
