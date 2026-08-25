@@ -269,7 +269,6 @@ const defaultForm = {
   dealerCompanyCodeList: [],
   dealerCompanyNameList: [],
   // seriesIdList: [],
-  statusExcludeList: [],
 };
 
 const pageSize = 20;
@@ -499,7 +498,6 @@ export default {
     handleClickTab () {
       // 切换 Tab 时清空 Tab 控制的过滤字段，避免与上一次 Tab 冲突
       this.form.statusList = [];
-      this.form.statusExcludeList = [];
       delete this.form.appointmentTimeStart;
       delete this.form.appointmentTimeEnd;
       const pad = (n) => String(n).padStart(2, '0');
@@ -514,19 +512,19 @@ export default {
         // 今日待交车：预约提车时间为当日，且状态不等于交车完成(7)和作废(99)
         const start = new Date(); start.setHours(0, 0, 0, 0);
         const end = new Date(); end.setHours(23, 59, 59, 0);
-        this.form.statusExcludeList = ['7', '99'];
+        this.form.statusList = ['1', '2', '3', '4', '5', '6'];
         this.form.appointmentTimeStart = fmtDate(start) + ' 00:00:00';
         this.form.appointmentTimeEnd = fmtDate(end) + ' 23:59:59';
       } else if (this.tabName === 'tomorrow') {
         // 明日待交车：预约提车时间为次日，且状态不等于交车完成(7)和作废(99)
         const start = new Date(); start.setDate(start.getDate() + 1); start.setHours(0, 0, 0, 0);
         const end = new Date(); end.setDate(end.getDate() + 1); end.setHours(23, 59, 59, 0);
-        this.form.statusExcludeList = ['7', '99'];
+        this.form.statusList = ['1', '2', '3', '4', '5', '6'];
         this.form.appointmentTimeStart = fmtDate(start) + ' 00:00:00';
         this.form.appointmentTimeEnd = fmtDate(end) + ' 23:59:59';
       } else if (this.tabName === 'remain') {
         // 剩余可交订单：状态不等于作废(99)和交车完成(7)
-        this.form.statusExcludeList = ['7', '99'];
+        this.form.statusList = ['1', '2', '3', '4', '5', '6'];
       }
       // 切回第一页，避免停留在之前 Tab 的页码
       this.optionObj.form.page = 1;
@@ -667,7 +665,7 @@ export default {
       delete data.areaCodes;
       // 交车状态 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废
       // 如果未选择交车状态，且没有排除状态，默认按照 1,2,3,4,5,6,7 顺序查询
-      if ((!data.statusList || data.statusList.length === 0) && (!data.statusExcludeList || data.statusExcludeList.length === 0)) {
+      if (!data.statusList || data.statusList.length === 0) {
         data.statusList = [1, 2, 3, 4, 5, 6, 7];
       }
 
