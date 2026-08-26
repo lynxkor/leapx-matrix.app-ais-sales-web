@@ -180,8 +180,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCode', label: '门店编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'openAutoConfirmLabel', label: '开启自动批售确认', visible: true, width: 160 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },

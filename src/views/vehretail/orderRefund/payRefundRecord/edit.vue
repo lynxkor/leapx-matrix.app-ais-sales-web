@@ -310,7 +310,7 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="收款类型 0-贷款;1-定金;2-尾款;3-权益抵扣;4-贷款首付款;5-定金权益;6-门店优惠;7-机动车发票其他费用;8-意向金：" prop="payCategory">
                   {{ form.payCategory }}

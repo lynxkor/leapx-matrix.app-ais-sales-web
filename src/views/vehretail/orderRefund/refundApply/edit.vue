@@ -1412,9 +1412,9 @@ export default {
     handleRouteToStoreDetail (storeCode) {
       navigate(
         {
-          path: '/partner/channelManagement/shopDetail',
+          path: '/service/datacenter/store/store/detail',
           query: {
-            dealerCode: storeCode
+            storeCode: storeCode
           },
         },
         true,

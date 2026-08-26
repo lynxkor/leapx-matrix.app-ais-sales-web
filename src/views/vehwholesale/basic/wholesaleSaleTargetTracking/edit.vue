@@ -55,7 +55,7 @@
                   {{ form.month }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  <!-- <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerParentOrgCode)">{{ form.dealerParentOrgName }}</el-button> -->
+                  <!-- <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/parentCompany/detail?companyCode=' + form.dealerParentOrgCode)">{{ form.dealerParentOrgName }}</el-button> -->
                   {{ form.dealerParentOrgName }}
                 </el-form-item>
                 <el-form-item label="大区：">
@@ -68,7 +68,7 @@
                   {{ form.cityName }}
                 </el-form-item>
                 <el-form-item label="门店编码：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/store/detail?storeCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   {{ form.dealerName }}

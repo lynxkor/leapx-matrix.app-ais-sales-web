@@ -341,7 +341,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'

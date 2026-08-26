@@ -22,9 +22,9 @@
             <el-form-item label="门店名称：" prop="dealerName">
               <el-button class="link" style="padding: 0;"
                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
+                      path: '/service/datacenter/store/store/detail',
                       query: {
-                        dealerCode: info.dealerCode,
+                        storeCode: info.dealerCode,
                       },
                     })"
                    type="text">{{info.dealerName}}</el-button>

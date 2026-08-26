@@ -119,12 +119,12 @@
                   </el-form-item>
                   <el-form-item label="销售门店：" prop="saleDealerName">
                     <el-link type="primary"
-                      :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`"
+                      :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`"
                       target="_blank">{{ form.saleDealerName }}</el-link>
                   </el-form-item>
                   <el-form-item label="交付门店名称：" prop="deliveryDealerName">
                     <el-link type="primary"
-                      :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`"
+                      :href="`/service/datacenter/store/store/detail?storeCode=${form.deliveryDealerCode}`"
                       target="_blank">{{ form.deliveryDealerName }}</el-link>
                   </el-form-item>
                   <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">

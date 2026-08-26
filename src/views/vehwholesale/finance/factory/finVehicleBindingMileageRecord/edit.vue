@@ -37,11 +37,11 @@
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link> -->
                   {{ form.dealerName }}
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCode">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link> -->
                   {{ form.dealerCode }}
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
