@@ -280,11 +280,11 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
                   {{ form.entCustomerName }}
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -756,7 +756,7 @@
                 <el-form-item label="外饰风格：" prop="exteriorName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleExterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
                 </el-form-item>
-                <el-form-item label="内饰风格：" prop="interiorName">
+                <el-form-item label="内饰：" prop="interiorName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleInterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">

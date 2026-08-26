@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="编码">
+        <tag-input v-model="form.codes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="母公司编码">
         <fetch-select
           filterable
@@ -86,13 +89,6 @@
             placeholder="请选择"
             clearable
             filterable
-          />
-        </el-form-item>
-        <el-form-item label="融资申请编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.financingApplicationCode"
-            clearable
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -177,9 +173,11 @@ import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  codes: [],
   dealerCompanyCode: '',
   dealerCompanyCodes: [],
   dealerCompanyNames: [],
@@ -206,7 +204,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    dateranges
+    dateranges,
+    TagInput
   },
   data () {
     return {
@@ -250,8 +249,8 @@ export default {
               type: 'primary'
             }]
           },
-          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280 },
           {

@@ -47,6 +47,9 @@
         <el-form-item label="母公司编码" >
           <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="配置编号">
+          <tag-input v-model="form.configCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="复核时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -182,6 +185,7 @@ const defaultForm = {
   reviewOpinion: '',
   modifierName: '',
   updateTime: '',
+  configCodes: [],
 };
 
 const pageSize = 20;
@@ -241,8 +245,8 @@ export default {
               type: 'primary'
             }]
           },
-          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 150 },

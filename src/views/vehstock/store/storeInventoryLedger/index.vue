@@ -233,7 +233,7 @@
     <MoveDialog
       :visible="moveDialog"
       :selectionId="selectionListIds"
-      :saleDealerCode="dealerCode"
+      :saleDealerCode="deliveryDealerCode"
       @close="closeMoveDialog"
       @submit="submitBatchMove"
     />
@@ -344,7 +344,7 @@ export default {
       moveDialog: false, // 同门店移库弹窗
       convertTypeDialog: false, // 批量车辆类型转换弹窗
       warehouseDialog: false, // 调整默认仓库弹窗
-      dealerCode: '', // 销售门店编码
+      deliveryDealerCode: '', // 交付门店编码
       activeName: 'homePage',
       clickItemId: '',
       areaOptions: (() => {
@@ -845,10 +845,11 @@ export default {
     handleBatchMove () {
       this.selectionListIds = this.selectionList.map(item => item.id) || [];
       // 获取第一个数据的 code 作为基准
-      const firstCode = this.selectionList[0].saleDealerCode;
-      this.dealerCode = firstCode;
+      const firstCode = this.selectionList[0].deliveryDealerCode;
+      const firstCode1 = this.selectionList[0].saleDealerCode;
+      this.deliveryDealerCode = firstCode;
       // 检查是否每一个数据的 code 都等于第一个数据的 code
-      const isAllSame = this.selectionList.every(item => item.saleDealerCode === firstCode);
+      const isAllSame = this.selectionList.every(item => item.saleDealerCode === firstCode1);
 
       if (!isAllSame) {
         // 如果不一致，阻止操作并提示
@@ -870,7 +871,7 @@ export default {
     },
     submitBatchMove () {
       this.moveDialog = false;
-      this.dealerCode = '';
+      this.deliveryDealerCode = '';
       this.getData();
     },
     // 批量车辆类型转换

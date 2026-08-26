@@ -6,6 +6,41 @@
       <el-form-item label="活动名称">
         <tag-input v-model="form.activityNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="活动编码">
+        <tag-input v-model="form.activityCodes" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="车系名称">
+        <fetch-select
+          :remote-method="seriesSearch"
+          remote
+          v-model="form.seriesIds"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          clearable
+          multiple
+          collapseTags
+          filterable
+          :options="seriesList"
+          @change="seriesListChange"
+        />
+      </el-form-item>
+      <el-form-item label="车型名称">
+        <fetch-select
+          :remote-method="modelSearch"
+          remote
+          reserve-keyword
+          :options="modelList"
+          v-model="form.modelIdSet"
+          placeholder="请选择"
+          labelKey="label"
+          valueKey="value"
+          clearable
+          multiple
+          collapseTags
+          filterable
+        />
+      </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
         unlink-panels
@@ -94,7 +129,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, getDetail, updateQuotaQty } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -112,7 +147,9 @@ const defaultForm = {
   needAutoAllocateCar: '',
   deliveryWay: '',
   allowLockRetail: '',
-  allowLockNodes: []
+  allowLockNodes: [],
+  seriesIds: [],
+  modelIdSet: []
 };
 
 const pageSize = 20;
@@ -152,6 +189,8 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      seriesList: [],
+      modelList: [],
       show: false,
       submitLoading: false,
       loading: false,
@@ -254,8 +293,60 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.seriesSearch();
+    this.getVehicleModelList();
   },
   methods: {
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    async seriesListChange (val) {
+      if (val.length) {
+        this.getVehicleModelList(val);
+      } else {
+        this.modelList = [];
+        this.form.modelIdSet = [];
+        this.getVehicleModelList();
+      }
+    },
+    async modelSearch (query) {
+      let params = {
+        modelNameLike: query || '',
+        seriesIdList: this.form.seriesIds || []
+      };
+      let res = await vehicleModelList(params);
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      } else {
+        this.modelList = [];
+      }
+    },
+    async getVehicleModelList (val) {
+      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000, limitSize: 500 });
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      }
+    },
     changeClose () {
       this.totalQuotaQtyDialogVisible = false;
     },
@@ -400,7 +491,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
+        if (data[key] === '' || data[key] === null || (Array.isArray(data[key]) && data[key].length === 0) || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });

@@ -34,6 +34,9 @@
         <el-form-item label="门店名称">
           <tag-input v-model="form.dealerNames" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="返利核算单编号">
+          <tag-input v-model="form.rebateBillCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="年度" prop="years">
           <fetch-select
             :remote-method="listVehicleYearType"
@@ -153,6 +156,7 @@ const defaultForm = {
   auditTime: '',
   billStatus: '',
   deliveryOrderCode: '',
+  rebateBillCodes: [],
 };
 
 const pageSize = 20;
@@ -217,7 +221,7 @@ export default {
             }]
           },
           // { pops: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
           {
             props: 'dealerName',
@@ -226,7 +230,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+                window.open(`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]

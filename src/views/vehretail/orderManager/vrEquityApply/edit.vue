@@ -457,7 +457,7 @@
                   {{ form.orderUserId }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：">
                   {{ form.cooperationTypeLabel }}
@@ -1188,6 +1188,8 @@ export default {
           { retailOrderId: this.form.orderId }
         );
       }
+      console.log('order:', order);
+
       // 更新订单相关信息
       this.form.mallOrderNo = order?.orderInfo?.mallOrderCode || '';
       this.form.vehicleOrderNo = order?.orderInfo?.retailOrderCode || '';
@@ -1218,6 +1220,7 @@ export default {
       this.form.optionPackageId = order?.orderMaterials?.optionPackageId || '';
       this.form.optionPackageName = order?.orderMaterials?.optionPackageName || '';
       this.form.orderStatus = order?.orderInfo?.orderStatus || null;
+      this.form.deliveryTime = order?.orderInfo?.deliveryTime || null;
       this.form.originalBenefitDate = order?.orderInfo?.rightsEnjoyDate ? formatDateTime(order.orderInfo.rightsEnjoyDate, 'data') : '';
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();

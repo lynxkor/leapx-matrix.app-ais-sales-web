@@ -34,6 +34,9 @@
           label-key="companyName"
         />
       </el-form-item>
+      <el-form-item label="编码">
+        <tag-input v-model="form.codes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :remote-method="repairItemSearch"
@@ -178,6 +181,7 @@ const defaultForm = {
   customerOrderCodes: [],
   status: '1',
   createTime: '',
+  codes: [],
 };
 
 const pageSize = 20;
@@ -238,8 +242,8 @@ export default {
               type: 'primary'
             }]
           },
-          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280 },
           {

@@ -33,11 +33,11 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.parentCompanyCode}`" target="_blank">{{ form.parentCompanyName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.parentCompanyCode}`" target="_blank">{{ form.parentCompanyName }}</el-link> -->
                   {{ form.parentCompanyName }}
                 </el-form-item>
                 <el-form-item label="门店：" prop="dealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">
                   {{ form.enterpriseCustomerName }}

@@ -81,6 +81,13 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="编码">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.codes"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="发车日期">
           <el-date-picker
             v-model="form.shipmentDate"
@@ -209,6 +216,7 @@ const defaultForm = {
   mainDealerCompanyCodes: [],
   mainDealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
+  codes: [],
   shipmentDate: '',
   receiveDate: '',
   syncStatus: '',
@@ -290,8 +298,8 @@ export default {
           { props: 'vin', label: 'VIN号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'financingAmount', label: '融资金额', visible: true, width: 120, align: 'right' },
           { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 120, align: 'right' },
-          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 120 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280 },
           {
@@ -301,7 +309,7 @@ export default {
             width: 200,
             // buttons: [{
             //   click: (rowIndex, row) => {
-            //     this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCode);
+            //     this.openWindow('/service/datacenter/store/parentCompany/detail?companyCode=' + row.dealerCode);
             //   },
             //   type: 'primary'
             // }]
@@ -311,7 +319,7 @@ export default {
             label: '经销商名称',
             visible: true,
             width: 280,
-            // buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
+            // buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           {

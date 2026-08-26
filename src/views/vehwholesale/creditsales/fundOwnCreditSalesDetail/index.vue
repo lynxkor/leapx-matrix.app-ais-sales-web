@@ -26,6 +26,9 @@
     <el-form-item label="门店名称" >
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="赊销明细编号">
+        <tag-input v-model="form.creditSalesDetailCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="整车批售订单">
         <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
       </el-form-item>
@@ -158,6 +161,7 @@ const defaultForm = {
   createTime: [],
   repaymentTime: [],
   status: 1,
+  creditSalesDetailCodes: [],
 };
 
 const pageSize = 20;
@@ -218,7 +222,7 @@ export default {
               type: 'primary'
             }]
           },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           {
             props: 'dealerName',
@@ -227,7 +231,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+                window.open(`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]

@@ -35,13 +35,9 @@
           clearable
         /> -->
       </el-form-item>
-      <!-- <el-form-item label="流水编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.transLogCode"
-          clearable
-        />
-      </el-form-item> -->
+      <el-form-item label="流水编号">
+        <tag-input v-model="form.transLogCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="资金类型"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
@@ -165,7 +161,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyNames: [],
   dealerComapnyCodes: [],
-  transLogCode: '',
+  transLogCodes: [],
   fundTypes: [],
   financialOrganizationId: '',
   transactionTypes: [],
@@ -295,13 +291,13 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
+                this.openWindow('/service/datacenter/store/store/detail?storeCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
           },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
-          // { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
           { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150 },
           { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${row.fundAccountId}`, '_blank'); }, type: 'primary' }] },
@@ -352,6 +348,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      // 无排序时，导出默认按id倒序
+      reqParams.sortColumns = [{ column: 'id', sort: 'DESC' }];
       if (this.selectionList.length > 0) {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;

@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="账户编号">
+        <tag-input v-model="form.fundAccountCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="母公司编码">
         <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         <!-- <el-input
@@ -139,7 +142,7 @@ import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  fundAccountCode: '',
+  fundAccountCodes: [],
   dealerCompanyCode: '',
   dealerCompanyNames: [],
   dealerCompanyCodes: [],
@@ -223,9 +226,9 @@ export default {
             label: '母公司编码',
             visible: true,
             width: 120,
-            // buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }]
+            // buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }]
           },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
@@ -402,7 +405,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (Array.isArray(data[key]) && data[key].length === 0)) {
           delete data[key];
         }
       });

@@ -28,6 +28,9 @@
           <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
       <template v-if="show">
+        <el-form-item label="退车明细单号">
+          <tag-input v-model="form.backOrderDetailCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="母公司名称">
           <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         </el-form-item>
@@ -141,6 +144,7 @@ const defaultForm = {
   vins: [],
   dealerCompanyNames: [],
   modelName: '',
+  backOrderDetailCodes: [],
 };
 
 const pageSize = 20;
@@ -222,7 +226,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -276,7 +280,7 @@ export default {
             // buttons: [{
             //   click: (rowIndex, row) => {
             //     if (row.dealerCompanyCode) {
-            //       window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
+            //       window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank');
             //     }
             //   },
             //   type: 'primary'
@@ -303,6 +307,8 @@ export default {
           { props: 'storeOutboundTime', label: '门店出库确认时间', visible: true, width: 160 },
           { props: 'vdcInboundConfirmer', label: 'VDC入库确认人', visible: true, width: 150 },
           { props: 'vdcInboundTime', label: 'VDC入库确认时间', visible: true, width: 160 },
+          { props: 'backTypeLabel', label: '退车类型', visible: true, width: 120 },
+          { props: 'backRemark', label: '退车备注', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',

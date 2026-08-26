@@ -130,20 +130,86 @@
             :options="yearTypeList"
           />
         </el-form-item>
-        <!-- <el-form-item label="车顶">
+        <el-form-item label="外观">
           <fetch-select
-            v-model="form.roofId"
-            v-bind="selectOptions"
-            :remote-method="remoteMethods.roof"
+            :remote-method="exteriorSearch"
+            remote
+            reserve-keyword
+            :options="exteriorList"
+            v-model="form.exteriorIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
           />
-          </el-form-item>
+        </el-form-item>
+        <el-form-item label="内饰">
+          <fetch-select
+            :remote-method="interiorSearch"
+            remote
+            reserve-keyword
+            :options="interiorList"
+            v-model="form.interiorIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="轮毂">
+          <fetch-select
+            :remote-method="wheelHubSearch"
+            remote
+            reserve-keyword
+            :options="wheelHubList"
+            v-model="form.wheelHubIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="选装包">
           <fetch-select
-            v-model="form.optionPackageId"
-            v-bind="selectOptions"
-            :remote-method="remoteMethods.optional"
+            :remote-method="optionPackageSearch"
+            remote
+            reserve-keyword
+            :options="optionPackageList"
+            v-model="form.optionPackageIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
           />
-        </el-form-item> -->
+        </el-form-item>
+        <el-form-item label="车顶">
+          <fetch-select
+            :remote-method="roofSearch"
+            remote
+            reserve-keyword
+            :options="roofList"
+            v-model="form.roofIdSet"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="是否已锁定">
           <fetch-select
             :request="fetchOptions"
@@ -231,6 +297,16 @@
             :request="fetchOptions"
             enumCode="BooleanEnum"
             v-model="form.invoiceFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="税务开票">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.taxInvoiceFlag"
             placeholder="请选择"
             clearable
             filterable
@@ -364,6 +440,7 @@
           <!-- <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane> -->
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
+          <el-tab-pane label="未确认批售单" name="6"></el-tab-pane>
         </el-tabs>
       </div>
       <LPVxeTable
@@ -456,7 +533,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, adjustWarehouse } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo, vehicleRoof, vehicleOptionPackage } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo, vehicleRoof, vehicleOptionPackage, vehicleExterior, vehicleInterior, vehicleWheelHub } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -543,6 +620,11 @@ const defaultForm = {
   wholesaleOrderId: '',
   orderStatuses: [],
   confirmStatuses: [],
+  exteriorIdSet: [],
+  interiorIdSet: [],
+  wheelHubIdSet: [],
+  optionPackageIdSet: [],
+  roofIdSet: [],
 };
 
 const pageSize = 20;
@@ -597,6 +679,11 @@ export default {
       seriesList: [],
       options: [],
       modelList: [],
+      exteriorList: [],
+      interiorList: [],
+      wheelHubList: [],
+      optionPackageList: [],
+      roofList: [],
       cityOptions: [],
       ALLOWED_STATUS: [0, 11],
       settleFundTypeOptions: [],
@@ -662,7 +749,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -715,9 +802,10 @@ export default {
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
+          { props: 'taxInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
@@ -773,7 +861,7 @@ export default {
           },
           {
             props: 'exteriorName',
-            label: '外饰风格',
+            label: '外观',
             visible: true,
             width: 200,
             buttons: [{
@@ -796,6 +884,30 @@ export default {
                 type: 'primary'
               }
             ]
+          },
+          {
+            props: 'optionPackageName',
+            label: '选装包',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'roofName',
+            label: '车顶',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`, '_blank');
+              },
+              type: 'primary'
+            }]
           },
           { props: 'specialRemark', label: '特殊备注', visible: true, width: 200 },
           { props: 'firstCancelAllocateTime', label: '首次取消配车时间', visible: true, width: 200 },
@@ -879,6 +991,61 @@ export default {
   },
   methods: {
     repairItemSearch (query) { return listFundFinancialOrganization({ organizationNameLike: query, status: 1 }); },
+    async exteriorSearch (query) {
+      const res = await vehicleExterior({ exteriorNameLike: query || '' });
+      this.exteriorList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async interiorSearch (query) {
+      const res = await vehicleInterior({ interiorNameLike: query || '' });
+      this.interiorList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async wheelHubSearch (query) {
+      const res = await vehicleWheelHub({ wheelHubNameLike: query || '' });
+      this.wheelHubList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async optionPackageSearch (query) {
+      const res = await vehicleOptionPackage({ optionPackageNameLike: query || '' });
+      this.optionPackageList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
+    async roofSearch (query) {
+      const res = await vehicleRoof({ roofNameLike: query || '' });
+      this.roofList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+      return res;
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
@@ -1359,6 +1526,10 @@ export default {
         // 待配车批售 ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
+      } else if (this.tabName === '6') {
+        // 未确认批售单 ①确认状态：未确认；②订单状态：除已作废之外全选
+        this.form.orderStatuses = ['0', '10', '11', '1', '2', '21', '4', '5', '3'];
+        this.form.confirmStatuses = ['1010'];
       }
       this.getData();
     },
@@ -1461,10 +1632,17 @@ export default {
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
       const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
-      this.sortColumns = [{
-        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-        sort: (latest.order || '').toUpperCase()
-      }];
+      const sort = (latest.order || '').toUpperCase();
+      this.sortColumns = [
+        {
+          column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: sort
+        },
+        {
+          column: 'id',
+          sort: sort
+        }
+      ];
       this.getData();
     },
     onReset () {
@@ -1603,7 +1781,13 @@ export default {
         }
       }
 
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
 
       return data;
     },

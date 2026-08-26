@@ -27,6 +27,9 @@
           <tag-input v-model="form.entCustomerNames" placeholder="请输入" />
         </el-form-item>
       <template v-if="show">
+        <el-form-item label="退车订单号">
+          <tag-input v-model="form.backOrderCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="退车日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -182,6 +185,7 @@ const defaultForm = {
   returnType: '',
   orderType: '',
   auditStatus: '',
+  backOrderCodes: [],
 };
 
 const pageSize = 20;
@@ -254,7 +258,7 @@ export default {
             // buttons: [{
             //   click: (rowIndex, row) => {
             //     if (row.dealerCompanyCode) {
-            //       window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
+            //       window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank');
             //     }
             //   },
             //   type: 'primary'
@@ -269,7 +273,7 @@ export default {
             // buttons: [{
             //   click: (rowIndex, row) => {
             //     if (row.entCustomerCode) {
-            //       window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank');
+            //       window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.entCustomerCode}`, '_blank');
             //     }
             //   },
             //   type: 'primary'

@@ -672,7 +672,7 @@
                 <el-form-item label="外饰风格：" prop="exteriorName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleExterior/edit?id=' + form.exteriorId)"> {{ form.exteriorName }}</el-button>
                 </el-form-item>
-                <el-form-item label="内饰风格：" prop="interiorName">
+                <el-form-item label="内饰：" prop="interiorName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleInterior/edit?id=' + form.interiorId)"> {{ form.interiorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">

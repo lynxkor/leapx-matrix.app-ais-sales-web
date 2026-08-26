@@ -23,6 +23,7 @@
       <el-form-item label="车型名称">
         <fetch-select
           :remote-method="remoteMethods.model"
+          reserve-keyword
           v-model="form.modelIdList"
           placeholder="请选择"
           clearable

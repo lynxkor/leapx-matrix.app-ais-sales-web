@@ -268,7 +268,7 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆处理状态：" prop="processStatusLabel">
                   {{ form.processStatusLabel }}
@@ -277,7 +277,7 @@
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
@@ -336,6 +336,12 @@
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
+                </el-form-item>
+                <el-form-item label="退车类型：" prop="backTypeLabel">
+                  {{ form.backTypeLabel }}
+                </el-form-item>
+                <el-form-item label="退车备注：" prop="backRemark">
+                  {{ form.backRemark }}
                 </el-form-item>
                  <el-form-item label="订单接口同步结果：" prop="syncSapMsg"  class="form-item-full">
                   {{ form.syncSapMsg }}

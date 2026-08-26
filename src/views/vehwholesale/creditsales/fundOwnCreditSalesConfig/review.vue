@@ -23,7 +23,7 @@
               {{ info.creditAccountStatusLabel  }}
             </el-form-item>
             <el-form-item label="授信额度：" prop="creditAmount">
-              {{ info.creditAmount  }}
+              {{ formatAmount(info.creditAmount) }}
             </el-form-item>
             <el-form-item label="首付款比例%：" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
@@ -96,6 +96,7 @@ import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import auditDialog from '@/libs/components/auditDialog';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 
 export default {
   name: 'fundOwnCreditSalesConfigDetail',
@@ -192,6 +193,9 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
     }
   }
 };

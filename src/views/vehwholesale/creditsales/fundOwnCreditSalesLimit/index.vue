@@ -44,6 +44,9 @@
           clearable
         /> -->
       </el-form-item>
+      <el-form-item label="赊销额度记录编号">
+          <tag-input v-model="form.creditSalesLimitCodes" placeholder="请输入" />
+        </el-form-item>
       <el-form-item label="额度是否有效">
           <fetch-select
             :request="fetchOptions"
@@ -122,6 +125,7 @@ const defaultForm = {
   dealerCompanyCode: '',
   dealerCompanyName: '',
   creditAccountStatus: '',
+  creditSalesLimitCodes: [],
 };
 
 const pageSize = 20;
@@ -181,8 +185,8 @@ export default {
               type: 'primary'
             }]
           },
-          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
           { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 120 },
