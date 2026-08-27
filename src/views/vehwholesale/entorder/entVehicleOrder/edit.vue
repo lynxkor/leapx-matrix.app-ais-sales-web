@@ -238,6 +238,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="目的地国家：" prop="destinationCountryName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.destinationCountryName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="VIN年份：" prop="vinYear">
                   <el-input
                     placeholder="请输入"
@@ -339,6 +347,9 @@
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarketLabel">
                   {{ form.salesMarketLabel }}
+                </el-form-item>
+                <el-form-item label="目的地国家：" prop="destinationCountryName">
+                  {{ form.destinationCountryName }}
                 </el-form-item>
                 <el-form-item label="VIN年份：" prop="vinYear">
                   {{ form.vinYear }}
@@ -959,6 +970,8 @@ const defaultForm = {
   salesMarket: '',
   creditSaleFlag: '',
   vehicleAttribute: '',
+  destinationCountry: '',
+  destinationCountryName: '',
   orderTime: '',
   allocateTime: '',
   outboundTime: '',

@@ -529,6 +529,7 @@ export default {
           // { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
+          { props: 'vehicleAttributeLabel', label: '车辆属性', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'needAsyncSapLabel', label: '是否需要同步SAP', visible: true, width: 200 },
           {
@@ -567,6 +568,7 @@ export default {
           },
           { props: 'acceptanceMethodLabel', label: '验收方式', visible: true, width: 200 },
           { props: 'salesMarketLabel', label: '销售市场', visible: true, width: 200 },
+          { props: 'destinationCountryName', label: '目的地国家', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
