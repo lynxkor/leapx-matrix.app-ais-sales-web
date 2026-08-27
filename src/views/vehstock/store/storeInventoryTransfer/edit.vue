@@ -289,15 +289,15 @@ export default {
       },
       immediate: true
     },
-    'form.targetDealerCode': {
-      handler (newVal) {
-        if (newVal) {
-          // 拉取仓库列表，以确保回显时能从列表中匹配到名称
-          this.fetchWarehouseOptions(newVal, false); // 第二个参数设为 false，防止自动重置
-        }
-      },
-      immediate: true
-    }
+    // 'form.targetDealerCode': {
+    //   handler (newVal) {
+    //     if (newVal) {
+    //       // 拉取仓库列表，以确保回显时能从列表中匹配到名称
+    //       this.fetchWarehouseOptions(newVal, false); // 第二个参数设为 false，防止自动重置
+    //     }
+    //   },
+    //   immediate: true
+    // }
   },
   data () {
     const form = this.getDefautlForm();
@@ -361,7 +361,15 @@ export default {
         // 详情加载完成后取一次子级组织编码和门店关联关系，保证审批按钮的 show 判断可用
         this.fetchDescendantOrgCodes();
         this.fetchStoreRelation();
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          this.warehouseOptions = [{
+            value: res.targetDealerWarehouseCode,
+            warehouseCode: res.targetDealerWarehouseCode,
+            // label: `${res.targetDealerWarehouseCode}-${res.targetDealerWarehouseName}`,
+            warehouseName: `${res.targetDealerWarehouseName}`
+          }];
+          return res;
+        });
       }
     },
     submitRequest () {
@@ -446,7 +454,7 @@ export default {
       if (val) {
         this.form.targetDealerCode = val;
         this.form.targetDealerName = record.storeName || '';
-        this.fetchWarehouseOptions(val);
+        this.fetchWarehouseOptions(record.exclusiveDeliveryStore);
       } else {
         // 清空处理
         this.form.targetDealerCode = '';
@@ -458,41 +466,27 @@ export default {
       }
     },
     // 门店仓库编码或名称选择框回调（联动查询）
-    async fetchWarehouseOptions (storeCode, autoSelectFirst = true) {
-      try {
-        // 先调用 queryStoreRelation 获取关联门店编码
-        const relationRes = await queryStoreRelation({
-          queryType: 1,
-          storeCodes: [storeCode]
-        });
-        const relatedStoreCodes = relationRes?.storeCodes || [];
-        if (Array.isArray(relatedStoreCodes) && relatedStoreCodes.length && relatedStoreCodes.length > 0) {
-          // 有后续关联门店，用关联编码作为 storeCode 调用 listOrgWarehouseStoreInfo
-          const res = await listOrgWarehouseStoreInfo({
-            storeCode: relatedStoreCodes[0], // 门店编码
-          });
-          const records = res.records || [];
-          this.warehouseOptions = records.map(item => ({
-            ...item,
-            label: `${item.warehouseCode}-${item.warehouseName}`,
-          }));
+    async fetchWarehouseOptions (storeId, autoSelectFirst = true) {
+      const res = await listOrgWarehouseStoreInfo({
+        storeIdList: [storeId], // 门店编码
+      });
+      const records = res.records || [];
+      this.warehouseOptions = records.map(item => ({
+        ...item,
+        label: `${item.warehouseCode}-${item.warehouseName}`,
+      }));
 
-          // 默认选中第一个（仅在手动切换门店时触发，回显时不触发）
-          if (autoSelectFirst && records.length > 0) {
-            const first = records[0];
-            this.form.targetDealerWarehouseCode = first.warehouseCode || '';
-            this.form.targetDealerWarehouseName = first.warehouseName || '';
-            this.form.targetDealerWarehouseAddress = first.warehouseDetailAddress || '';
-          }
-        } else {
-          // 没有后续关联门店，不再调用 listOrgWarehouseStoreInfo，清空仓库
-          this.warehouseOptions = [];
-          this.form.targetDealerWarehouseCode = '';
-          this.form.targetDealerWarehouseName = '';
-          this.form.targetDealerWarehouseAddress = '';
-        }
-      } catch (e) {
-        console.error('fetchWarehouseOptions error:', e);
+      // 默认选中第一个（仅在手动切换门店时触发，回显时不触发）
+      if (autoSelectFirst && records.length > 0) {
+        const first = records[0];
+        this.form.targetDealerWarehouseCode = first.warehouseCode || '';
+        this.form.targetDealerWarehouseName = first.warehouseName || '';
+        this.form.targetDealerWarehouseAddress = first.warehouseDetailAddress || '';
+      }
+      if (autoSelectFirst && records.length === 0) {
+        this.form.targetDealerWarehouseCode = '';
+        this.form.targetDealerWarehouseName = '';
+        this.form.targetDealerWarehouseAddress = '';
       }
     },
     // 门店仓库选择时触发的事件
