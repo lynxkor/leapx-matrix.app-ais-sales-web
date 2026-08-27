@@ -50,6 +50,20 @@
             :min="0" :controls="false" disabled style="width: 100%;" />
         </el-form-item>
 
+        <el-form-item v-if="isBigCustomerDirect" label="车辆属性：" prop="vehicleAttribute">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_vehicle_attribute"
+            v-model="materialsform.vehicleAttribute"
+            labelKey="name"
+            valueKey="code"
+            placeholder="请选择"
+            clearable
+            filterable
+            style="width: 100%;"
+          />
+        </el-form-item>
+
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -74,6 +88,7 @@ const defaultForm = {
   qty: 1,
   relatedTxnExTaxPrice: '',
   relatedTxnPriceRate: '',
+  vehicleAttribute: '',
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
@@ -139,6 +154,10 @@ export default {
       set (val) {
         this.$emit('update:visible', val);
       }
+    },
+    isBigCustomerDirect () {
+      const cat = this.orderInfo && this.orderInfo.orderCategory;
+      return cat === 1 || cat === '1';
     }
   },
   watch: {
@@ -237,6 +256,7 @@ export default {
       this.materialsform.salesPrice = '';
       this.materialsform.materialsId = '';
       this.materialsform.qty = '';
+      this.materialsform.vehicleAttribute = '';
     },
     handleSubmit () {
       this.$refs.materialsForm.validate((valid) => {
