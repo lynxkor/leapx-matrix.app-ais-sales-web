@@ -1089,7 +1089,7 @@ export default {
       }
       const res = await addOrUpdate({ ...this.form });
       // 保存成功后强制刷新浏览器当前页面
-      window.location.reload();
+      // window.location.reload();
       return res;
     },
     // 打开侧边栏
