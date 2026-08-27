@@ -27,6 +27,19 @@
       <el-form-item label="城市">
         <tag-input v-model="form.cityNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="车系">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="name"
+        />
+      </el-form-item>
       <template v-if="show">
         <el-form-item label="开启自动配车">
           <fetch-select
@@ -95,6 +108,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button size="small" @click="handleBatchSet" :disabled="selectionList.length === 0">批量设置</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
@@ -120,6 +134,44 @@
       :id="'wholesaleDealerWholesaleConfImport'"
       @close="handleUploadDialogClose"
     />
+    <el-dialog
+      title="批量设置门店配置"
+      :visible.sync="batchSetDialogVisible"
+      width="520px"
+      :close-on-click-modal="false"
+      @closed="batchSetForm = { autoAllocationEnabled: null, autoSettlementEnabled: null, productionRequestEnabled: null, spotWholesaleEnabled: null }"
+    >
+      <el-form :model="batchSetForm" label-width="140px" size="small">
+        <el-form-item label="开启自动配车">
+          <el-radio-group v-model="batchSetForm.autoAllocationEnabled">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="开启自动结算">
+          <el-radio-group v-model="batchSetForm.autoSettlementEnabled">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="允许排产申请">
+          <el-radio-group v-model="batchSetForm.productionRequestEnabled">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="允许现车批售">
+          <el-radio-group v-model="batchSetForm.spotWholesaleEnabled">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button size="small" @click="batchSetDialogVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" :loading="batchSetLoading" @click="handleBatchSetSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -127,8 +179,8 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
+import { getList, deleteItem, enableItem, batchSet } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -146,6 +198,7 @@ const defaultForm = {
   regionNames: [],
   provinceNames: [],
   cityNames: [],
+  seriesIds: [],
   autoAllocationEnabled: '',
   autoSettlementEnabled: '',
   productionRequestEnabled: '',
@@ -182,6 +235,14 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      batchSetDialogVisible: false,
+      batchSetLoading: false,
+      batchSetForm: {
+        autoAllocationEnabled: null,
+        autoSettlementEnabled: null,
+        productionRequestEnabled: null,
+        spotWholesaleEnabled: null
+      },
       optionObj: {
         id: 'wholesaleDealerWholesaleConfTable',
         dataList: [],
@@ -233,6 +294,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'seriesName', label: '车系', visible: true, width: 120 },
           { props: 'regionName', label: '大区', visible: true, width: 150 },
           { props: 'provinceName', label: '省份', visible: true, width: 180 },
           { props: 'cityName', label: '城市', visible: true, width: 150 },
@@ -287,6 +349,32 @@ export default {
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
+    },
+    handleBatchSet () {
+      this.batchSetDialogVisible = true;
+    },
+    handleBatchSetSubmit () {
+      const switches = {};
+      Object.keys(this.batchSetForm).forEach(key => {
+        if (this.batchSetForm[key] !== null && this.batchSetForm[key] !== '') {
+          switches[key] = this.batchSetForm[key];
+        }
+      });
+      if (Object.keys(switches).length === 0) {
+        this.$message({ type: 'warning', message: '请至少勾选一个配置项' });
+        return;
+      }
+      this.batchSetLoading = true;
+      batchSet({
+        ids: this.selectionList.map(item => item.id),
+        ...switches
+      }).then(() => {
+        this.$message({ type: 'success', message: '批量设置成功!' });
+        this.batchSetDialogVisible = false;
+        this.getData();
+      }).finally(() => {
+        this.batchSetLoading = false;
+      });
     },
     handleAdd () {
       this.$router.push({
@@ -439,6 +527,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
     // 批量删除
     handleBatchDelete () {

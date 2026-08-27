@@ -49,6 +49,19 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
+                <el-form-item label="系列：" prop="seriesId">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.seriesId"
+                    :remote-method="getVehicleSeriesList"
+                    value-key="id"
+                    label-key="name"
+                    @change="handleChangeSeries"
+                    :disabled="!!_id"
+                  />
+                </el-form-item>
                 <el-form-item label="大区：">
                   <el-input
                     placeholder="请输入"
@@ -130,6 +143,9 @@
                 <el-form-item label="门店名称：">
                   <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
+                <el-form-item label="系列：">
+                  {{ form.seriesName }}
+                </el-form-item>
                 <el-form-item label="大区：">
                   {{ form.regionName }}
                 </el-form-item>
@@ -172,7 +188,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, listOrgStoreInfo, getParentCompany } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getParentCompany, vehicleSeriesList } from '@/api/common';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -184,6 +200,8 @@ const defaultForm = {
   wholesaleDealerWholesaleConfName: '',
   dealerCode: '',
   dealerName: '',
+  seriesId: '',
+  seriesName: '',
   dealerParentOrgName: '',
   autoAllocationEnabled: '1',
   autoSettlementEnabled: '1',
@@ -247,6 +265,9 @@ export default {
         dealerCode: [
           { required: true, message: '请输入门店编码', trigger: 'blur' }
         ],
+        seriesId: [
+          { required: true, message: '请选择系列', trigger: 'change' }
+        ],
         autoAllocationEnabled: [
           { required: true, message: '请选择开启自动配车', trigger: 'change' }
         ],
@@ -290,6 +311,18 @@ export default {
     },
     async getDealerListByName (params) {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    handleChangeSeries (val, selectedOption) {
+      if (val) {
+        this.form.seriesId = selectedOption?.id || '';
+        this.form.seriesName = selectedOption?.name || '';
+      } else {
+        this.form.seriesId = '';
+        this.form.seriesName = '';
+      }
     },
     async getDealerParentOrgList (params) {
       return getParentCompany({ parentCompanyName: params });

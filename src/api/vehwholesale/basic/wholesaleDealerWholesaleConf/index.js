@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 批量设置开关（开启自动配车/开启自动结算/允许排产申请/允许现车批售，仅非空字段生效）
+ * @param {Object} data
+ */
+export function batchSet (data) {
+  return api.jsonPost(prefix + 'batchSet', data);
+}
