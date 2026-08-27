@@ -55,8 +55,6 @@
             :request="fetchOptions"
             enumCode="vw_vehicle_attribute"
             v-model="materialsform.vehicleAttribute"
-            labelKey="name"
-            valueKey="code"
             placeholder="请选择"
             clearable
             filterable
