@@ -57,6 +57,7 @@
                     value-key="id"
                     clearable
                     filterable
+                    @change="handleChangeModelLine"
                     :disabled="!!_id"
                   />
                 </el-form-item>
@@ -317,6 +318,15 @@ export default {
     async getModelLineOptions () {
       const data = await vehicleModelLineList({ size: 1000 });
       this.modelLineOptions = data || [];
+    },
+    handleChangeModelLine (val, selectedOption) {
+      if (val) {
+        this.form.modelLineId = selectedOption?.id || '';
+        this.form.modelLineName = selectedOption?.name || '';
+      } else {
+        this.form.modelLineId = '';
+        this.form.modelLineName = '';
+      }
     },
     async getDealerParentOrgList (params) {
       return getParentCompany({ parentCompanyName: params });
