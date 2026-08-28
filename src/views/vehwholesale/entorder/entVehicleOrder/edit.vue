@@ -96,6 +96,7 @@
                         placeholder="请选择"
                         clearable
                         filterable
+                        disabled
                       />
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">

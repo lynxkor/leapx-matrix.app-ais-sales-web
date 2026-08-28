@@ -1324,9 +1324,12 @@ export default {
       if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
         data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
       }
-      // 无排序时，默认按id倒序
+      // 无排序时，默认按更新时间倒序，再按id倒序
       if (data.sortColumns.length === 0) {
-        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+        data.sortColumns = [
+          { column: 'update_time', sort: 'DESC' },
+          { column: 'id', sort: 'DESC' }
+        ];
       }
       return data;
     },
