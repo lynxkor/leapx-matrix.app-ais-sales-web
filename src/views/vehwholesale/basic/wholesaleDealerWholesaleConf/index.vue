@@ -27,17 +27,16 @@
       <el-form-item label="城市">
         <tag-input v-model="form.cityNames" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="车系">
+      <el-form-item label="系列">
         <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.seriesIds"
-          :remote-method="getVehicleSeriesList"
-          value-key="id"
+          v-model="form.modelLineIds"
+          :options="modelLineOptions"
           label-key="name"
+          value-key="id"
+          clearable
+          filterable
+          multiple
+          collapseTags
         />
       </el-form-item>
       <template v-if="show">
@@ -180,7 +179,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchSet } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo, vehicleModelLineList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -198,7 +197,7 @@ const defaultForm = {
   regionNames: [],
   provinceNames: [],
   cityNames: [],
-  seriesIds: [],
+  modelLineIds: [],
   autoAllocationEnabled: '',
   autoSettlementEnabled: '',
   productionRequestEnabled: '',
@@ -243,6 +242,7 @@ export default {
         productionRequestEnabled: null,
         spotWholesaleEnabled: null
       },
+      modelLineOptions: [],
       optionObj: {
         id: 'wholesaleDealerWholesaleConfTable',
         dataList: [],
@@ -294,7 +294,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 },
+          { props: 'modelLineName', label: '系列', visible: true, width: 120 },
           { props: 'regionName', label: '大区', visible: true, width: 150 },
           { props: 'provinceName', label: '省份', visible: true, width: 180 },
           { props: 'cityName', label: '城市', visible: true, width: 150 },
@@ -341,6 +341,7 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    this.getModelLineOptions();
     this.getData();
   },
   methods: {
@@ -528,8 +529,9 @@ export default {
       }
       return [];
     },
-    async getVehicleSeriesList (params) {
-      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    async getModelLineOptions () {
+      const data = await vehicleModelLineList({ size: 1000 });
+      this.modelLineOptions = data || [];
     },
     // 批量删除
     handleBatchDelete () {
