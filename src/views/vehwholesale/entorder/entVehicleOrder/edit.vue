@@ -80,6 +80,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperateType">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cooperateTypeLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                    <el-input
                     placeholder="请输入"
