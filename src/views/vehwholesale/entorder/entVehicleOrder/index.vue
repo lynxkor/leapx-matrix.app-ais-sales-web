@@ -731,7 +731,7 @@ export default {
       },
       sortColumns: [
         {
-          column: 'createTime',
+          column: 'order_time',
           sort: 'DESC'
         },
         {
