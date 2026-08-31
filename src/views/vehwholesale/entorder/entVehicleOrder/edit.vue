@@ -294,6 +294,9 @@
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperateTypeLabel">
+                  {{ form.cooperateTypeLabel }}
+                </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
