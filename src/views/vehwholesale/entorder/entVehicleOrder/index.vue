@@ -201,6 +201,17 @@
             multiple
           />
         </el-form-item>
+        <el-form-item label="合作类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_cooperation_type"
+            v-model="form.cooperateTypes"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
          <el-form-item label="金融机构">
            <fetch-select
           :remote-method="repairItemSearch"
@@ -436,6 +447,7 @@ const defaultForm = {
   wheelHubIdSet: [],
   optionPackageIdSet: [],
   roofIdSet: [],
+  cooperateTypes: [],
 };
 
 const pageSize = 20;
@@ -569,6 +581,7 @@ export default {
           { props: 'salesMarketLabel', label: '销售市场', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'districtName', label: '区/县', visible: true, width: 200 },
