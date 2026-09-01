@@ -141,6 +141,14 @@ export function listVehicleYearType (data) {
 }
 
 /**
+ * 国家列表
+ * @param {*} data
+ */
+export function sysCountryList (data) {
+  return api.jsonPost('/datacenter/web/common/sysCountry/list', data);
+}
+
+/**
  * 维修类型模糊搜索
  * @param {*} data
  */
