@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        @validate-fail="onValidateFail"
         :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99 && form.orderStatus !== 15"
       >
         <template #status>
@@ -816,6 +817,30 @@ export default {
         ? (this.requiredRulesMap[prop] || [])
         : [];
     },
+    // 表单校验失败：滚动到第一个错误字段并提示
+    onValidateFail (error) {
+      console.log('表单校验失败：', error);
+      this.$nextTick(() => {
+        // 遍历页面上参与校验的 form refs，找到第一个校验失败的字段
+        const formRefs = [this.$refs.ruleForm1, this.$refs.ruleForm2].filter(Boolean);
+        for (const formRef of formRefs) {
+          if (!formRef?.fields) continue;
+          for (const key in formRef.fields) {
+            const field = formRef.fields[key];
+            if (field?.validateState === 'error') {
+              const el = field?.$el;
+              if (el && typeof el.scrollIntoView === 'function') {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+              this.$message.error('请填写必填项');
+              return;
+            }
+          }
+        }
+        // 未找到具体错误字段时的兜底提示
+        this.$message.error('请填写必填项');
+      });
+    },
     // 权益查询
     handleEquityInquiry () {
       console.log('执行权益查询');
@@ -1061,8 +1086,8 @@ export default {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
           processedData.deliveryOrder = response.deliveryOrder || { ...defaultForm.deliveryOrder };
-          processedData.saleUserId = String(response.saleUserId);
-          processedData.deliveryUserId = String(response.deliveryUserId);
+          processedData.saleUserId = response.saleUserId ? String(response.saleUserId) : response.saleUserId;
+          processedData.deliveryUserId = response.deliveryUserId ? String(response.deliveryUserId) : response.deliveryUserId;
           // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
           const addSaleDealerName = (array) => {
             if (array && Array.isArray(array) && response.saleDealerName) {

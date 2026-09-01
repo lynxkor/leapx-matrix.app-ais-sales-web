@@ -64,7 +64,20 @@
                     :disabled="form.orderCategory === '1' || form.orderCategory === '8' || form.orderCategory === 1 || form.orderCategory === 8"
                   />
                 </el-form-item>
-                 <el-form-item label="企业客户名称：" prop="entCustomerName">
+                <el-form-item label="目的地国家：" prop="destinationCountry">
+                  <fetch-select
+                    :remote-method="sysCountrySearch"
+                    remote
+                    v-model="form.destinationCountry"
+                    placeholder="请选择"
+                    labelKey="name"
+                    valueKey="code"
+                    clearable
+                    filterable
+                    @change="handleDestinationCountryChange"
+                  />
+                </el-form-item>
+                <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <fetch-select
                       :remote-method="listNetworkParentCompany"
                       remote
@@ -195,6 +208,9 @@
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarketLabel">
                   {{ form.salesMarketLabel }}
+                </el-form-item>
+                <el-form-item label="目的地国家：" prop="destinationCountryName">
+                  {{ form.destinationCountryName }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
@@ -461,6 +477,9 @@
                         {{ row.optionPackageName }}
                       </el-link>
                     </template>
+                    <template v-else-if="column.property === 'vehicleAttribute'">
+                      {{ row.vehicleAttributeLabel || getVehicleAttributeLabel(row.vehicleAttribute) }}
+                    </template>
                     <template v-else>
                       {{ row[column.property] }}
                     </template>
@@ -513,7 +532,7 @@ import { getDetail, addOrUpdate, listDealersForParentCompany, addOrUpdateDetail,
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, cityListByName, getProvinceTree, getParentCompany } from '@/api/common';
+import { getEnum, cityListByName, getProvinceTree, getParentCompany, sysCountryList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -548,6 +567,8 @@ const defaultForm = {
   orderCategory: '',
   acceptanceMethod: '',
   salesMarket: '',
+  destinationCountry: '',
+  destinationCountryName: '',
   creditSaleFlag: 0,
   totalAmount: '',
   settleFundType: '',
@@ -606,6 +627,7 @@ export default {
     },
     columns () {
       const isEdit = this.isEditing;
+      const isBigCustomerDirect = this.form.orderCategory === 1 || this.form.orderCategory === '1';
       return [
         {
           field: 'qty',
@@ -646,6 +668,19 @@ export default {
           field: 'relatedTxnExTaxPrice',
           title: '关联交易不含税价',
           width: '150',
+        },
+        {
+          field: 'vehicleAttribute',
+          title: '车辆属性',
+          width: '120',
+          editable: isEdit && isBigCustomerDirect,
+          editRender: {
+            name: 'ElSelect',
+            props: {
+              options: this.vehicleAttributeOptions,
+              placeholder: '请选择'
+            }
+          }
         },
         {
           field: 'materialsCode',
@@ -832,6 +867,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       areaCode: [],
       orderCategoryOptions: [],
+      vehicleAttributeOptions: [],
       settleFundTypeOptions: [],
       defaultNewRow: { },
       districtOptions: [],
@@ -896,6 +932,7 @@ export default {
     this.fetchOrderCategoryOptions();
     this.listNetworkParentCompany();
     this.getCompanyList();
+    this.fetchVehicleAttributeOptions();
   },
   created () {
     this.initPermissions();
@@ -1224,6 +1261,17 @@ export default {
     async listNetworkParentCompany (query) {
       return getParentCompany({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
+    async sysCountrySearch (query) {
+      const res = await sysCountryList({ fullNameLike: query });
+      return res;
+    },
+    handleDestinationCountryChange (val, row) {
+      if (row && row.name) {
+        this.form.destinationCountryName = row.name;
+      } else {
+        this.form.destinationCountryName = '';
+      }
+    },
     getOtherInfoBysaleCompany (val, row) {
       // 安全赋值门店信息
       this.form.saleDealerName = row.storeName || '';
@@ -1308,6 +1356,19 @@ export default {
         };
       });
     },
+    async fetchVehicleAttributeOptions () {
+      const response = await getEnum('vw_vehicle_attribute');
+      this.vehicleAttributeOptions = (response || []).map(item => ({
+        ...item,
+        value: String(item.code),
+        label: item.name
+      }));
+    },
+    getVehicleAttributeLabel (code) {
+      if (code === '' || code === null || code === undefined) return '';
+      const item = this.vehicleAttributeOptions.find(o => o.value === String(code));
+      return item ? item.label : code;
+    },
     handleAddDetail () {
       this.showAddDetailDialog = true;
     },
@@ -1339,6 +1400,7 @@ export default {
           }
           res.detailList = res.detailList.map(detail => ({
             ...detail,
+            vehicleAttribute: detail.vehicleAttribute !== null && detail.vehicleAttribute !== undefined ? String(detail.vehicleAttribute) : '',
             materialsId: detail.vehicleMaterials?.id,
             materialsCode: detail.vehicleMaterials?.materialsCode || '',
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',

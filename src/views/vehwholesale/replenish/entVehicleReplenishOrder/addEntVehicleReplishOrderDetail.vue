@@ -74,6 +74,7 @@ const defaultForm = {
   qty: 1,
   relatedTxnExTaxPrice: '',
   relatedTxnPriceRate: '',
+  vehicleAttribute: '',
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
@@ -139,6 +140,10 @@ export default {
       set (val) {
         this.$emit('update:visible', val);
       }
+    },
+    isBigCustomerDirect () {
+      const cat = this.orderInfo && this.orderInfo.orderCategory;
+      return cat === 1 || cat === '1';
     }
   },
   watch: {
@@ -237,6 +242,7 @@ export default {
       this.materialsform.salesPrice = '';
       this.materialsform.materialsId = '';
       this.materialsform.qty = '';
+      this.materialsform.vehicleAttribute = '';
     },
     handleSubmit () {
       this.$refs.materialsForm.validate((valid) => {
