@@ -812,7 +812,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -875,7 +875,7 @@ export default {
           { props: 'taxInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },

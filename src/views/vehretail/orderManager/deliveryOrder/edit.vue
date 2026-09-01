@@ -704,9 +704,9 @@ export default {
         { value: '1040', label: '已办结' }
       ],
       orderBelongingFields: [
-        { key: 'saleDealerName', label: '订单销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
+        { key: 'saleDealerName', label: '订单销售门店', link: '/service/datacenter/store/store/detail', paramKey: 'saleDealerCode', paramName: 'storeCode' },
         { key: 'saleUserName', label: '订单销售顾问' },
-        { key: 'deliveryDealerName', label: '订单交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
+        { key: 'deliveryDealerName', label: '订单交付门店', link: '/service/datacenter/store/store/detail', paramKey: 'deliveryDealerCode', paramName: 'storeCode' },
         { key: 'deliveryUserName', label: '订单交付顾问' },
         { key: 'deliveryDerivativeUserName', label: '交付衍生工程师' },
         { key: 'onSiteDeliveryUserName', label: '现场交付工程师' },
@@ -743,8 +743,8 @@ export default {
         { key: 'depositAmount', label: '定金金额' },
         { key: 'orderMaterialCode', label: '订单物料码', link: '/sales/datacenter/materials/vehicleMaterials/edit', paramKey: 'orderMaterialCode' },
         { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehicleMaterials/edit', paramKey: 'allocationMaterialCode' },
-        { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
-        { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
+        { key: 'saleDealerName', label: '销售门店', link: '/service/datacenter/store/store/detail', paramKey: 'saleDealerCode', paramName: 'storeCode' },
+        { key: 'deliveryDealerName', label: '交付门店', link: '/service/datacenter/store/store/detail', paramKey: 'deliveryDealerCode', paramName: 'storeCode' },
         { key: 'deliveryVin', label: '交车VIN码' },
         { key: 'deliveryTime', label: '交车时间' },
       ],

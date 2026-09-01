@@ -254,12 +254,12 @@
                       </el-link>
                     </template>
                     <template v-else-if="column.property === 'dealerCode' && row.dealerCode">
-                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
+                      <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`" target="_blank">
                         {{ row.dealerCode }}
                       </el-link>
                     </template>
                     <template v-else-if="column.property === 'dealerName' && row.dealerCode">
-                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
+                      <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`" target="_blank">
                         {{ row.dealerName }}
                       </el-link>
                     </template>
