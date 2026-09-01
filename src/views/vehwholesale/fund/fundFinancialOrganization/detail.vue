@@ -71,13 +71,13 @@
         </div>
       </section>
 
-      <section class="common-section">
+      <section v-if="info.id" class="common-section">
         <div class="common-section-header">
           <h2>金融机构-资金结算类型列表</h2>
         </div>
         <div class="common-section-body">
           <el-table
-            :data="info.relList || []"
+            :data="relList"
             border
             size="small"
             style="width: 100%"
@@ -133,6 +133,11 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['金融机构', '详情']);
     this.getData();
+  },
+  computed: {
+    relList () {
+      return this.info && this.info.relList ? this.info.relList : [];
+    }
   },
   methods: {
     handleEdit () {
