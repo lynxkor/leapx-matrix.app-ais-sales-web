@@ -1183,7 +1183,7 @@ export default {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
         const codeStr = String(item.code);
-        return ['1050', '1010', '2010'].includes(codeStr + '');
+        return ['1050', '1010', '2010', '2020', '2030'].includes(codeStr + '');
       }).map(item => {
         return {
           ...item,
