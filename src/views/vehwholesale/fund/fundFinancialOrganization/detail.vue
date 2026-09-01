@@ -70,6 +70,40 @@
           </el-form>
         </div>
       </section>
+
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>金融机构-资金结算类型列表</h2>
+        </div>
+        <div class="common-section-body">
+          <el-table
+            :data="info.relList || []"
+            border
+            size="small"
+            style="width: 100%"
+          >
+            <el-table-column label="序号" type="index" width="55" align="center" />
+            <el-table-column label="结算资金类型" min-width="180">
+              <template #default="{ row }">
+                {{ row.settleFundTypeLabel }}
+              </template>
+            </el-table-column>
+            <el-table-column label="SAP资金类型编码" min-width="200">
+              <template #default="{ row }">
+                {{ row.sapFundType }}
+              </template>
+            </el-table-column>
+            <el-table-column label="备注" min-width="200">
+              <template #default="{ row }">
+                {{ row.remark }}
+              </template>
+            </el-table-column>
+            <template #empty>
+              <div class="ais-empty-tip">暂无关联的结算资金类型</div>
+            </template>
+          </el-table>
+        </div>
+      </section>
     </template>
   </div>
 </template>
@@ -120,3 +154,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.ais-empty-tip {
+  padding: 16px 0;
+  color: #909399;
+  font-size: 13px;
+  text-align: center;
+}
+</style>
