@@ -37,6 +37,13 @@
             提交审核
           </el-button>
           <el-button
+            @click="openCancelShow"
+            :loading="cancelLoading"
+            v-if="canCancel && form.status === 1010"
+            size="small">
+            作废
+          </el-button>
+          <el-button
             @click="openRevocationSubmitShow"
             v-if="canRevocation && form.status === 1020"
             size="small">
@@ -764,6 +771,7 @@
 import {
   addOrUpdate,
   audit,
+  cancel,
   effectiveVinValidate,
   getDetail,
   revocation,
@@ -906,8 +914,10 @@ export default {
       canSubmit: false, // 提交审核
       canRevocation: false, // 撤回提交/撤回
       canAudit: false, // 审核
+      canCancel: false, // 作废
       loading: false,
       submitLoading: false,
+      cancelLoading: false,
       uploadLoading: false,
       uploadLoadingCounter: 0,
       // 附件列表配置
@@ -1152,6 +1162,7 @@ export default {
       this.canSubmit = this.permissions.has(`${this.moduleKey}-submit`);
       this.canRevocation = this.permissions.has(`${this.moduleKey}-revocation`);
       this.canAudit = this.permissions.has(`${this.moduleKey}-audit`);
+      this.canCancel = this.permissions.has(`${this.moduleKey}-cancel`);
     },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
@@ -1444,6 +1455,23 @@ export default {
       }).then(() => {
         revocationSubmit(this.form).then(() => {
           this.reloadDetail();
+        });
+      }).catch(() => {});
+    },
+    openCancelShow () {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将作废当前单据, 作废后无法恢复, 是否继续?</div>';
+      this.$confirm(message, '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
+      }).then(() => {
+        this.cancelLoading = true;
+        cancel({ id: this.form.id }).then(() => {
+          this.reloadDetail();
+        }).finally(() => {
+          this.cancelLoading = false;
         });
       }).catch(() => {});
     },
