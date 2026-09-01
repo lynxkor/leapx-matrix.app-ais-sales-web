@@ -280,7 +280,7 @@ export default {
         const response = await getEnum('vw_fundtype');
         const list = (response && response.data) || response || [];
         this.fundTypeOptions = list
-          .filter(item => ['1010', '1050', '2010'].includes(String(item.code)))
+          .filter(item => ['2010', '2020', '2030'].includes(String(item.code)))
           .map(item => ({ ...item, code: String(item.code) }));
       } catch (e) {
         this.fundTypeOptions = [];
