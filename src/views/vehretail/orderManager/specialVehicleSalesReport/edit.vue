@@ -73,7 +73,6 @@
                     placeholder="请选择车辆属性"
                     clearable
                     filterable
-                    :disabled="isExclusiveWarranty"
                   />
                 </el-form-item>
                 <el-form-item label="车辆用途：" prop="vehiclePurpose">
@@ -610,11 +609,6 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
-    },
-    // 车辆属性原始值是否为专属质保（枚举值 70）
-    // 仅当初始值为专属质保时禁止修改；新增页面 originalForm.vehicleAttribute 为空，始终允许修改
-    isExclusiveWarranty () {
-      return Number(this.originalForm.vehicleAttribute) === 70;
     },
   },
   watch: {
