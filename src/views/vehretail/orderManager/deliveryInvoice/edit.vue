@@ -623,7 +623,7 @@
               <el-table-column
                 prop="fieldName"
                 label="识别字段"
-                width="270"
+                width="200"
                 align="center"
               >
               </el-table-column>
@@ -646,6 +646,7 @@
                     clearable
                     filterable
                     :class="{ 'warning-value': scope.row.isHighlighted }"
+                    @change="handleFieldBlur(scope.row)"
                   />
                   <!-- 其他字段使用普通输入框 -->
                   <el-input
@@ -654,6 +655,7 @@
                     size="small"
                     :disabled="scope.row.disabled"
                     :class="{ 'warning-value': scope.row.isHighlighted }"
+                    @blur="handleFieldBlur(scope.row)"
                   />
                 </template>
               </el-table-column>
@@ -661,7 +663,7 @@
               <el-table-column
                 prop="checkField"
                 label="检验字段"
-                width="270"
+                width="200"
                 align="center"
               >
               </el-table-column>
@@ -669,7 +671,7 @@
               <el-table-column
                 prop="checkValue"
                 label="校验信息"
-                width="270"
+                min-width="170"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -687,7 +689,7 @@
           <!-- 弹框底部按钮 -->
           <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleConfirmUpload">保存</el-button>
-        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button @click="handleCancelDialog">取消</el-button>
       </span>
         </el-dialog>
         <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
@@ -868,6 +870,8 @@ export default {
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
+      // 是否曾点击过取消按钮；下次打开弹窗时清除所有标红
+      hasCancelledBefore: false,
       rules: {
         // 仅保留实际生效的 required:true 规则；required:false 的不会触发校验，对应字段多为 disabled 输入或后端自动回填
         status: [{ required: true, message: '请选择整车开票状态', trigger: 'change' }],
@@ -910,6 +914,15 @@ export default {
         }
       }
     },
+    // 失焦时仅重算当前行的标红状态
+    handleFieldBlur (row) {
+      row.isHighlighted = !row.recognizedValue || !row.checkValue || row.recognizedValue !== row.checkValue;
+    },
+    // 点击取消按钮：关闭弹窗 + 标记，下次打开不再显示标红
+    handleCancelDialog () {
+      this.dialogVisible = false;
+      this.hasCancelledBefore = true;
+    },
     // 附件上传前判断
     handleBeforeUploadClick (index, { allow, openFileDialog: _openFileDialog }) {
       checkUpload(this.form.id).then(res => {
@@ -931,6 +944,8 @@ export default {
         });
         confirmUploadNew(uploadConfirm).then(res => {
           this.dialogVisible = false;
+          // 保存成功后重置标记，下次打开回到首次打开行为
+          this.hasCancelledBefore = false;
           // 重新加载详情数据
           this.reloadDetail();
         });
@@ -946,6 +961,12 @@ export default {
       }).then(() => {
         // 比对数据
         const comparisonData = this.doComparisonData();
+        // 取消后再打开：清除所有标红
+        if (this.hasCancelledBefore) {
+          comparisonData.forEach(item => {
+            item.isHighlighted = false;
+          });
+        }
         this.comparisonData = comparisonData;
         this.dialogVisible = true;
       }).catch(() => {
@@ -1173,3 +1194,19 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+@import '@/libs/assets/styles/variables.scss';
+
+// 附件识别字段错误对比弹窗——输入框标红样式
+// 使用 ::v-deep 穿透 scoped CSS 到 Element UI 子组件的内部元素
+.warning-value.el-input,
+.warning-value.el-select {
+  ::v-deep .el-input__inner {
+    border-color: $--leap-color-danger;
+  }
+  ::v-deep .el-input__inner:focus {
+    border-color: $--leap-color-danger;
+  }
+}
+</style>
