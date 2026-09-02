@@ -433,7 +433,7 @@
                   v-show="isEditing || !_id">
                   <el-form-item label="结算资金类型：" prop="settleFundType">
                     <fetch-select :options="fundTypeList" v-model="settleFundTypeOptionKey" placeholder="请选择" clearable
-                      filterable labelKey="fundTypeLabel" valueKey="fundTypeOrgKey" @change="clearCache" />
+                      filterable labelKey="fundTypeLabel" valueKey="fundType" @change="clearCache" />
                   </el-form-item>
                   <el-form-item label="金融机构名称：" prop="financialOrganizationId" v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')">
                     <fetch-select :options="financingOrgOptions" v-model="form.financialOrganizationId"
@@ -776,10 +776,9 @@ export default {
     },
     settleFundTypeOptionKey: {
       get () {
-        const ft = this.form.settleFundType + '';
-        const orgId = this.form.financialOrganizationId || '';
-        if (!ft || ft === 'undefined') return '';
-        return `${ft}_${orgId || 'none'}`;
+        const ft = this.form.settleFundType;
+        if (ft === '' || ft === null || ft === undefined) return '';
+        return String(ft);
       },
       // set 由 @change 回调 clearCache 负责写回 form 字段，避免双向绑定循环
       set () {}
@@ -1182,30 +1181,22 @@ export default {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
           const financingOrgListMap = new Map();
-          // 资金类型下拉选项：1010/1050 单项；2010/2020/2030 按 (fundType, orgId) 展开
+          // 资金类型下拉选项：按资金类型去重；机构名单独下拉选择，避免拼接误导
+          // （同一资金类型可对应多家金融机构，"融资（兴业银行）" 这种拼接与列表行 1 对 1 机构的语义不同）
           const fundTypeOptions = [];
+          const fundTypeSet = new Set();
 
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
               if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
                 const ftKey = String(account.fundType);
-                const orgId = account.financialOrganizationId || '';
-                const orgName = account.financialOrganizationName || '';
-                const orgKey = orgId || 'none';
-                const fundTypeOrgKey = `${ftKey}_${orgKey}`;
-
-                if (!fundTypeOptions.some(opt => opt.fundTypeOrgKey === fundTypeOrgKey)) {
-                  let label = account.fundTypeLabel;
-                  if (['2010', '2020', '2030'].includes(ftKey) && orgName) {
-                    label = `${account.fundTypeLabel}（${orgName}）`;
-                  }
+                // 下拉仅按资金类型去重，不再拼接机构名
+                if (!fundTypeSet.has(ftKey)) {
+                  fundTypeSet.add(ftKey);
                   fundTypeOptions.push({
                     fundType: ftKey,
-                    financialOrganizationId: orgId,
-                    financialOrganizationName: orgName,
-                    fundTypeOrgKey,
-                    fundTypeLabel: label
+                    fundTypeLabel: account.fundTypeLabel
                   });
                 }
               }
@@ -1261,10 +1252,11 @@ export default {
       }
       // 2010/2020/2030 统一以数字形式保存，与后端/下游比较一致
       const ftKey = row.fundType + '';
-      this.form.settleFundType = ['2010', '2020', '2030'].includes(ftKey) ? Number(ftKey) : row.fundType;
+      this.form.settleFundType = ['2010', '2020', '2030'].includes(ftKey) ? Number(ftKey) : ftKey;
       this.form.settleFundTypeLabel = row.fundTypeLabel || '';
-      this.form.financialOrganizationId = row.financialOrganizationId || '';
-      this.form.financialOrganizationName = row.financialOrganizationName || '';
+      // 机构由独立的"金融机构名称"下拉选择，这里清空，避免上一次选的资金类型与新机构不匹配
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
     },
     getNewfinancialOrganization (val, row) {
       if (!val) {
