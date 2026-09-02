@@ -217,23 +217,49 @@
       <el-form
         ref="fundForm"
         :model="fundForm"
-        :rules="fundFormRules"
+        :rules="dynamicFundFormRules"
         label-width="120px"
         size="small"
         class="fund-form"
       >
         <el-form-item label="结算资金类型：" prop="fundType" v-if="settleAccountList && settleAccountList.length > 0">
-          <el-radio-group v-model="fundForm.fundType" class="fund-type-radios" :rules="fundFormRules.fundType">
-            <el-radio
-              v-for="item in settleAccountList"
-              :key="item.id"
-              :label="item.id"
-            >
-              {{ getFundTypeLabel(item) }}
-            </el-radio>
-          </el-radio-group>
+          <el-select
+            v-model="fundForm.fundType"
+            placeholder="请选择结算资金类型"
+            clearable
+            filterable
+            class="fund-type-select"
+            @change="handleFundTypeChange"
+          >
+            <el-option
+              v-for="item in fundTypeOptions"
+              :key="item.fundType"
+              :label="item.fundTypeLabel"
+              :value="item.fundType"
+            />
+          </el-select>
         </el-form-item>
-        <div class="no-fund-type-section" v-else>
+        <el-form-item
+          label="金融机构："
+          prop="financialOrganizationId"
+          v-if="['2010', '2020', '2030'].includes((fundForm.fundType || '') + '')"
+        >
+          <el-select
+            v-model="fundForm.financialOrganizationId"
+            placeholder="请选择金融机构"
+            clearable
+            filterable
+            class="financing-org-select"
+          >
+            <el-option
+              v-for="item in financingOrgOptions"
+              :key="item.financialOrganizationId"
+              :label="item.financialOrganizationName"
+              :value="item.financialOrganizationId"
+            />
+          </el-select>
+        </el-form-item>
+        <div class="no-fund-type-section" v-else-if="!settleAccountList || settleAccountList.length === 0">
           <p>暂无可用的结算资金类型</p>
         </div>
       </el-form>
@@ -285,10 +311,12 @@ export default {
         ...defaultForm
       },
       fundForm: {
-        fundType: ''
+        fundType: '',
+        financialOrganizationId: ''
       },
       fundFormRules: {
-        fundType: [{ required: true, message: '请选择结算资金类型', trigger: 'change' }]
+        fundType: [{ required: true, message: '请选择结算资金类型', trigger: 'change' }],
+        financialOrganizationId: [{ required: true, message: '请选择金融机构', trigger: 'change' }]
       },
       tableData: [],
       originalTableData: [],
@@ -336,6 +364,41 @@ export default {
       const start = (this.pagination.currentPage - 1) * this.pagination.pageSize;
       const end = start + this.pagination.pageSize;
       return this.tableData.slice(start, end);
+    },
+    // 资金类型下拉：按 fundType 去重，只显示本名
+    fundTypeOptions () {
+      const map = new Map();
+      for (const item of this.settleAccountList || []) {
+        const ft = item.fundType;
+        if (ft === undefined || ft === null || map.has(ft)) continue;
+        map.set(ft, { fundType: ft, fundTypeLabel: item.fundTypeLabel || '' });
+      }
+      return Array.from(map.values());
+    },
+    // 金融机构下拉：当前 fundType 下按 financialOrganizationId 去重
+    financingOrgOptions () {
+      const ft = this.fundForm.fundType;
+      if (ft === undefined || ft === null || ft === '') return [];
+      const map = new Map();
+      for (const item of this.settleAccountList || []) {
+        if (item.fundType !== ft) continue;
+        const orgId = item.financialOrganizationId;
+        if (!orgId || map.has(orgId)) continue;
+        map.set(orgId, {
+          financialOrganizationId: orgId,
+          financialOrganizationName: item.financialOrganizationName || ''
+        });
+      }
+      return Array.from(map.values());
+    },
+    // 金融机构校验：仅 2010/2020/2030 时必填
+    dynamicFundFormRules () {
+      const ftKey = (this.fundForm.fundType || '') + '';
+      const needOrg = ['2010', '2020', '2030'].includes(ftKey);
+      return {
+        fundType: this.fundFormRules.fundType,
+        financialOrganizationId: needOrg ? this.fundFormRules.financialOrganizationId : []
+      };
     }
   },
   methods: {
@@ -349,8 +412,9 @@ export default {
     toggleShow () {
       this.show = !this.show;
     },
-    getFundTypeLabel (item) {
-      return item.fundType === 2010 ? item.fundTypeLabel + '-' + item.financialOrganizationName : item.fundTypeLabel;
+    handleFundTypeChange (val) {
+      // 切换资金类型时清空已选金融机构，避免上个类型残留
+      this.fundForm.financialOrganizationId = '';
     },
     filterTableData () {
       let filteredData = [...this.originalTableData];
@@ -406,7 +470,7 @@ export default {
     },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
-      this.fundForm = { fundType: '' }; // 重置资金类型表单
+      this.fundForm = { fundType: '', financialOrganizationId: '' }; // 重置资金类型表单
       this.tableData = []; // 清空表格数据
     },
     onSubmit () {
@@ -414,7 +478,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.fundForm = { fundType: '' };
+      this.fundForm = { fundType: '', financialOrganizationId: '' };
       this.filterTableData();
     },
     getFormData () {
@@ -502,18 +566,29 @@ export default {
     handleSubmit () {
       this.$refs.fundForm.validate((valid) => {
         if (valid) {
+          // 按 (fundType, financialOrganizationId) 在 settleAccountList 中反查 fundAccountId
+          const ft = this.fundForm.fundType;
+          const orgId = this.fundForm.financialOrganizationId || '';
+          const ftKey = (ft || '') + '';
+          const needOrg = ['2010', '2020', '2030'].includes(ftKey);
+          const matched = (this.settleAccountList || []).find(acc => {
+            if (acc.fundType !== ft) return false;
+            if (needOrg) return acc.financialOrganizationId === orgId;
+            return true;
+          });
+          if (!matched || !matched.id) {
+            this.$message.error('未找到对应的结算账户，请重新选择');
+            return;
+          }
           this.submitLoading = true;
-          let params = {
-            materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => {
-              return {
-                warehouseCode: ele.warehouseCode,
-                materialDesc: ele.materialsDesc,
-                applyQty: ele.applyQty
-              };
-            }),
-            fundAccountId: this.fundForm.fundType
+          const params = {
+            materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => ({
+              warehouseCode: ele.warehouseCode,
+              materialDesc: ele.materialsDesc,
+              applyQty: ele.applyQty
+            })),
+            fundAccountId: matched.id
           };
-          // console.log('params:', params);
           plantWholesaleInStockCreateApply(params).then(res => {
             this.$emit('confirm');
             this.submitLoading = false;
@@ -522,7 +597,7 @@ export default {
             this.submitLoading = false;
           });
         } else {
-          this.$message.error('请选择结算资金类型');
+          this.$message.error('请完成表单填写');
         }
       });
     },

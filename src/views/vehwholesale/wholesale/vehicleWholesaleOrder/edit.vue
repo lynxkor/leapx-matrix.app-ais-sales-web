@@ -571,7 +571,7 @@
                           <span v-if="['2010', '2020', '2030'].includes(row.fundType + '')">
                             <el-button class="link" style="padding: 0;" type="text"
                               @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{
-                                row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
+                                row.financialOrganizationName ? `${row.fundTypeLabel}（${row.financialOrganizationName}）` : row.fundTypeLabel }}</el-button>
                           </span>
                           <span v-else>
                             <el-button class="link" style="padding: 0;" type="text"

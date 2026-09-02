@@ -733,8 +733,8 @@ export default {
               }
               const isFinancing = account.fundType === '2010' || account.fundType === 2010;
               if (isFinancing && account.financialOrganizationName) {
-                // 若是融资，拼接银行名称
-                account.fundTypeDisplay = `${account.fundTypeLabel}-${account.financialOrganizationName}`;
+                // 若是融资，拼接银行名称（全角括号格式）
+                account.fundTypeDisplay = `${account.fundTypeLabel}（${account.financialOrganizationName}）`;
               } else {
                 account.fundTypeDisplay = account.fundTypeLabel;
               }
