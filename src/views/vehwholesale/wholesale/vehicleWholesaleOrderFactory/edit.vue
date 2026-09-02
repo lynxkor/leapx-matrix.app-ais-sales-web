@@ -512,10 +512,10 @@
                   <el-form-item label="批售价：" prop="wholesalePrice">
                     <el-input placeholder="请输入" v-model="form.wholesalePrice" clearable disabled />
                   </el-form-item>
-                  <el-form-item label="金融机构名称：" prop="financialOrganizationId">
-                    <fetch-select :options="financialOrganizationList" v-model="form.financialOrganizationId"
+                  <el-form-item label="金融机构名称：" prop="financialOrganizationId" v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')">
+                    <fetch-select :options="financingOrgOptions" v-model="form.financialOrganizationId"
                       placeholder="请选择" clearable filterable labelKey="name" valueKey="id"
-                      @change="getNewfinancialOrganization" :disabled="form.settleFundType !== 2010" />
+                      @change="getNewfinancialOrganization" />
                   </el-form-item>
                   <el-form-item label="使用现金金额：" prop="usedCashAmount">
                     <el-input placeholder="请输入" v-model="form.usedCashAmount" clearable disabled />
@@ -578,7 +578,7 @@
                   <el-form-item label="批售价：" prop="wholesalePrice">
                     {{ form.wholesalePrice }}
                   </el-form-item>
-                  <el-form-item label="金融机构名称：" prop="financialOrganizationName">
+                  <el-form-item label="金融机构名称：" prop="financialOrganizationName" v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')">
                     <el-link type="primary"
                       :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`"
                       target="_blank">{{ form.financialOrganizationName }}</el-link>
@@ -830,6 +830,11 @@ export default {
     },
     title () {
       return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
+    },
+    financingOrgOptions () {
+      const ft = this.form.settleFundType + '';
+      if (!['2010', '2020', '2030'].includes(ft)) return [];
+      return this.financingOrgListMap.get(ft) || [];
     }
   },
   watch: {
@@ -867,6 +872,7 @@ export default {
       ALLOWED_STATUS: [0, 11],
       settleFundTypeOptions: [],
       financialOrganizationList: [],
+      financingOrgListMap: new Map(),
       orderCategoryOptions: [],
       accountData: [],
       fundTypeList: [],
@@ -1277,6 +1283,7 @@ export default {
         return getDetail(id).then((res) => {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
+          const financingOrgListMap = new Map();
           // 使用 Map 以 fundType 作为去重 key（Set 对对象引用无法去重）
           const uniqueLabelsMap = new Map();
 
@@ -1293,8 +1300,17 @@ export default {
                   });
                 }
               }
-              if (account.fundType === 2010 && account.financialOrganizationId && account.financialOrganizationName) {
-                // 检查是否已存在，避免重复
+              const ftKey = String(account.fundType);
+              if (['2010', '2020', '2030'].includes(ftKey) && account.financialOrganizationId && account.financialOrganizationName) {
+                // 按资金类型分组去重收集金融机构
+                if (!financingOrgListMap.has(ftKey)) {
+                  financingOrgListMap.set(ftKey, new Map());
+                }
+                const orgMap = financingOrgListMap.get(ftKey);
+                if (!orgMap.has(account.financialOrganizationId)) {
+                  orgMap.set(account.financialOrganizationId, account.financialOrganizationName);
+                }
+                // 同步向旧版 financialOrganizationList 收集（保留兼容）
                 const exists = this.financialOrganizationList.some(item => item.id === account.financialOrganizationId);
                 if (!exists) {
                   this.financialOrganizationList.push({
@@ -1316,18 +1332,23 @@ export default {
           }
           // 遍历结束后统一赋值，避免在 map 回调里被反复覆盖
           this.fundTypeList = Array.from(uniqueLabelsMap.values());
+          // 转 Map<fundType, Map<orgId, name>> 为 Map<fundType, Array<{id, name}>>
+          const orgListMap = new Map();
+          financingOrgListMap.forEach((orgMap, ft) => {
+            orgListMap.set(ft, Array.from(orgMap.entries()).map(([id, name]) => ({ id, name })));
+          });
+          this.financingOrgListMap = orgListMap;
           return res;
         }).catch(() => { });
       }
     },
     clearCache (val, row) {
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      this.form.settleFundType = row.fundType;
-      if (row.fundType === 2010 || row.fundType === '2010') {
-        // 如果资金类型是 融资【2010】，需要选择融资机构，开启融资按钮的编辑
-        this.form.settleFundType = 2010;
-      } else {
-        // 其他，清空融资机构
+      const ftKey = row.fundType + '';
+      // 2010/2020/2030 统一以数字形式保存，与后端/下游比较一致
+      this.form.settleFundType = ['2010', '2020', '2030'].includes(ftKey) ? Number(ftKey) : row.fundType;
+      if (!['2010', '2020', '2030'].includes(ftKey)) {
+        // 非融资类资金类型，清空金融机构
         this.form.financialOrganizationId = '';
         this.form.financialOrganizationName = '';
       }
