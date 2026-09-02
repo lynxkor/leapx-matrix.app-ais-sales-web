@@ -231,6 +231,12 @@ export default {
       },
       immediate: true
     },
+    'form.relList': {
+      handler () {
+        this.initRelTableData();
+      },
+      immediate: true
+    },
     isEditing (val) {
       // 编辑状态变化时，重新初始化关联关系列表（用于取消编辑后还原）
       if (!val) {
@@ -322,10 +328,7 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id).then(res => {
-          this.$nextTick(() => this.initRelTableData());
-          return res;
-        });
+        return getDetail(id);
       }
       return Promise.resolve();
     },
