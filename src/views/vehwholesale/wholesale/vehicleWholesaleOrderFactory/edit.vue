@@ -497,8 +497,8 @@
                     <el-input placeholder="请输入" v-model="form.retailPrice" clearable disabled />
                   </el-form-item>
                   <el-form-item label="结算资金类型：" prop="settleFundType">
-                    <fetch-select :options="fundTypeList" v-model="form.settleFundType" placeholder="请选择" clearable
-                      filterable labelKey="fundTypeLabel" valueKey="fundType" @change="clearCache" />
+                    <fetch-select :options="fundTypeList" v-model="settleFundTypeOptionKey" placeholder="请选择" clearable
+                      filterable labelKey="fundTypeLabel" valueKey="fundTypeOrgKey" @change="clearCache" />
                   </el-form-item>
                   <el-form-item label="使用返利金额：" prop="usedRebateAmount">
                     <el-input placeholder="请输入" v-model="form.usedRebateAmount" clearable disabled />
@@ -835,6 +835,16 @@ export default {
       const ft = this.form.settleFundType + '';
       if (!['2010', '2020', '2030'].includes(ft)) return [];
       return this.financingOrgListMap.get(ft) || [];
+    },
+    settleFundTypeOptionKey: {
+      get () {
+        const ft = this.form.settleFundType + '';
+        const orgId = this.form.financialOrganizationId || '';
+        if (!ft || ft === 'undefined') return '';
+        return `${ft}_${orgId || 'none'}`;
+      },
+      // set 由 @change 回调 clearCache 负责写回 form 字段，避免双向绑定循环
+      set () {}
     }
   },
   watch: {
@@ -1284,25 +1294,36 @@ export default {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
           const financingOrgListMap = new Map();
-          // 使用 Map 以 fundType 作为去重 key（Set 对对象引用无法去重）
-          const uniqueLabelsMap = new Map();
+          // 资金类型下拉选项：1010/1050 单项；2010/2020/2030 按 (fundType, orgId) 展开
+          const fundTypeOptions = [];
 
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
               if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
-                // 除【返利】之外 【有效】的其他资金类型，按 fundType 去重
-                const fundTypeKey = String(account.fundType);
-                if (!uniqueLabelsMap.has(fundTypeKey)) {
-                  uniqueLabelsMap.set(fundTypeKey, {
-                    fundType: fundTypeKey,
-                    fundTypeLabel: account.fundTypeLabel,
+                const ftKey = String(account.fundType);
+                const orgId = account.financialOrganizationId || '';
+                const orgName = account.financialOrganizationName || '';
+                const orgKey = orgId || 'none';
+                const fundTypeOrgKey = `${ftKey}_${orgKey}`;
+
+                if (!fundTypeOptions.some(opt => opt.fundTypeOrgKey === fundTypeOrgKey)) {
+                  let label = account.fundTypeLabel;
+                  if (['2010', '2020', '2030'].includes(ftKey) && orgName) {
+                    label = `${account.fundTypeLabel}（${orgName}）`;
+                  }
+                  fundTypeOptions.push({
+                    fundType: ftKey,
+                    financialOrganizationId: orgId,
+                    financialOrganizationName: orgName,
+                    fundTypeOrgKey,
+                    fundTypeLabel: label
                   });
                 }
               }
               const ftKey = String(account.fundType);
               if (['2010', '2020', '2030'].includes(ftKey) && account.financialOrganizationId && account.financialOrganizationName) {
-                // 按资金类型分组去重收集金融机构
+                // 按资金类型分组去重收集金融机构（保留给独立机构下拉使用）
                 if (!financingOrgListMap.has(ftKey)) {
                   financingOrgListMap.set(ftKey, new Map());
                 }
@@ -1330,8 +1351,7 @@ export default {
               };
             });
           }
-          // 遍历结束后统一赋值，避免在 map 回调里被反复覆盖
-          this.fundTypeList = Array.from(uniqueLabelsMap.values());
+          this.fundTypeList = fundTypeOptions;
           // 转 Map<fundType, Map<orgId, name>> 为 Map<fundType, Array<{id, name}>>
           const orgListMap = new Map();
           financingOrgListMap.forEach((orgMap, ft) => {
@@ -1343,15 +1363,19 @@ export default {
       }
     },
     clearCache (val, row) {
-      this.form.settleFundTypeLabel = row.fundTypeLabel;
-      const ftKey = row.fundType + '';
-      // 2010/2020/2030 统一以数字形式保存，与后端/下游比较一致
-      this.form.settleFundType = ['2010', '2020', '2030'].includes(ftKey) ? Number(ftKey) : row.fundType;
-      if (!['2010', '2020', '2030'].includes(ftKey)) {
-        // 非融资类资金类型，清空金融机构
+      if (!row) {
+        this.form.settleFundType = '';
+        this.form.settleFundTypeLabel = '';
         this.form.financialOrganizationId = '';
         this.form.financialOrganizationName = '';
+        return;
       }
+      // 2010/2020/2030 统一以数字形式保存，与后端/下游比较一致
+      const ftKey = row.fundType + '';
+      this.form.settleFundType = ['2010', '2020', '2030'].includes(ftKey) ? Number(ftKey) : row.fundType;
+      this.form.settleFundTypeLabel = row.fundTypeLabel || '';
+      this.form.financialOrganizationId = row.financialOrganizationId || '';
+      this.form.financialOrganizationName = row.financialOrganizationName || '';
     },
     getNewfinancialOrganization (val, row) {
       if (!val) {
