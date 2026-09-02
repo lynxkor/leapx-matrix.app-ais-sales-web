@@ -809,7 +809,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '发票号码：' + this.form.deliveryInvoiceCode;
+      return '开票记录编号：' + this.form.deliveryInvoiceCode;
     },
     canConfirmUpload () {
       return this.form.status === 0 &&
