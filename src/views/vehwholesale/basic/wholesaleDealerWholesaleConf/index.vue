@@ -301,8 +301,8 @@ export default {
             props: 'dealerParentOrgName', label: '母公司', visible: true, width: 280,
             // buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerParentOrgCode}`, '_blank'); },type: 'primary' }]
           },
-          { props: 'modelLineName', label: '系列', visible: true, width: 120 },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
+          { props: 'modelLineName', label: '系列', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
           { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },
           { props: 'spotWholesaleEnabledLabel', label: '允许现车批售', visible: true, width: 120 },
