@@ -20,7 +20,7 @@
           :remote-method="getSeriesIdList"
           value-key="id"
           label-key="name"
-          @change="refreshYearTypeOptions"
+          @change="handleSeriesChange"
         />
       </el-form-item>
       <el-form-item label="车型">
@@ -32,12 +32,12 @@
           collapseTags
           v-model="form.modelIds"
           :remote-method="getModelIdList"
+          :options="modelList"
           value-key="id"
           label-key="name"
-          @change="refreshYearTypeOptions"
         />
       </el-form-item>
-      <el-form-item label="年款">
+      <el-form-item label="年款" v-show="this.visibleCount === 3 || show">
         <fetch-select
           filterable
           clearable
@@ -47,30 +47,20 @@
           label-key="label"
         />
       </el-form-item>
-      <el-form-item label="外观">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.exteriorIds"
-          :remote-method="getExteriorList"
-          value-key="id"
-          label-key="name"
-        />
-      </el-form-item>
-      <el-form-item label="不参与自动批售确认"  v-show="this.visibleCount === 4 || show">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.noJoinAutoConfirm"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="外观">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.exteriorIds"
+            :remote-method="getExteriorList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
         <el-form-item label="选装包">
           <fetch-select
             filterable
@@ -108,6 +98,16 @@
             :remote-method="getWheelHubList"
             value-key="id"
             label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="不参与自动批售确认">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.noJoinAutoConfirm"
+            placeholder="请选择"
+            clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -187,7 +187,7 @@ import {
   tableAddOrUpdate,
   exportTable,
   getEnum,
-  vehicleModelYearTypeRelationDistinctYeayType,
+  listVehicleYearType,
   listVehicleModel,
   vehicleSeriesList,
   vehicleExterior,
@@ -240,6 +240,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      modelList: [],
       yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -351,6 +352,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.getYearTypeList();
   },
   methods: {
     handleImport () {
@@ -543,8 +545,29 @@ export default {
       //   });
       // });
     },
+    // 车型远程搜索：结果同步写入 modelList 驱动下拉选项（供车系联动刷新）
     async getModelIdList (params) {
-      return listVehicleModel({ modelNameLike: params, status: 1 });
+      const res = await listVehicleModel({ modelNameLike: params, seriesIdList: this.form.seriesIds || [], status: 1 });
+      this.modelList = res || [];
+      return res;
+    },
+    /**
+     * 车系联动车型：车系变化时清空已选车型，并按新车系刷新车型下拉选项
+     */
+    handleSeriesChange () {
+      this.form.modelIds = [];
+      this.getModelIdList('');
+    },
+    // 年款固定接口获取，不随车系/车型联动
+    async getYearTypeList () {
+      const res = await listVehicleYearType({ pageSize: 50 });
+      this.yearTypeList = (res || []).map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
     },
     async getSeriesIdList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
@@ -560,34 +583,6 @@ export default {
     },
     async getWheelHubList (params) {
       return vehicleWheelHub({ wheelHubNameLike: params, status: 1 });
-    },
-    /**
-     * 年款联动：优先按车型多选查；车型为空时按车系多选先查车型再查年款；
-     * 两者皆空时短路清空，避免空 modelIdList 触发全量年款
-     */
-    async refreshYearTypeOptions () {
-      this.yearTypeList = [];
-      this.form.vehicleYearTypeId = null;
-      let queryModelIds = this.form.modelIds || [];
-      if (!queryModelIds.length) {
-        const seriesIds = this.form.seriesIds || [];
-        if (!seriesIds.length) {
-          return;
-        }
-        const modelList = await listVehicleModel({ seriesIdList: seriesIds, status: 1, size: 1000 });
-        queryModelIds = (modelList || []).map(item => item.id).filter(Boolean);
-        if (!queryModelIds.length) {
-          return;
-        }
-      }
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: queryModelIds, size: 1000 });
-      this.yearTypeList = (res || []).map(item => {
-        return {
-          ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
-        };
-      });
     },
   }
 };

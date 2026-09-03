@@ -38,13 +38,13 @@
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelId">
                   <fetch-select
-                    ref="modelSelect"
                     filterable
                     clearable
                     remote
                     v-model="form.modelId"
                     :params="form.modelName"
                     :remote-method="getModelIdList"
+                    :options="modelList"
                     value-key="id"
                     label-key="name"
                     @change="handleModelChange"
@@ -182,7 +182,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import {
   getEnum,
   listVehicleModel,
-  vehicleModelYearTypeRelation,
+  listVehicleYearType,
   vehicleSeriesList,
   vehicleExterior,
   vehicleInterior,
@@ -262,6 +262,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      modelList: [],
       yearTypeList: [],
       rules: {
         seriesId: [
@@ -275,6 +276,9 @@ export default {
         ],
       }
     };
+  },
+  created () {
+    this.getYearTypeList();
   },
   methods: {
     openWindow (url) {
@@ -314,54 +318,32 @@ export default {
     async getWheelHubList (params) {
       return vehicleWheelHub({ wheelHubNameLike: params, status: 1 });
     },
+    // 车型远程搜索：结果同步写入 modelList 驱动下拉选项（供车系联动刷新）
     async getModelIdList (params) {
-      // 车型按已选车系过滤
-      return listVehicleModel({ modelNameLike: params, status: 1, seriesId: this.form.seriesId || undefined });
+      const res = await listVehicleModel({ modelNameLike: params, status: 1, seriesId: this.form.seriesId || undefined });
+      this.modelList = res || [];
+      return res;
     },
-    async handleSeriesChange (val, record) {
+    /**
+     * 车系联动车型：车系变化时清空已选车型，并按新车系刷新车型下拉选项
+     */
+    handleSeriesChange (val, record) {
       this.form.seriesName = record?.name || null;
-      // 车系变化：级联清空车型与年款
       this.form.modelId = null;
       this.form.modelName = null;
-      this.clearYearType();
-      // 强制刷新车型下拉，避免残留未按新车系过滤的旧选项（FetchSelect 仅在未加载过时才随 focus 重载）
-      this.$nextTick(() => {
-        this.$refs.modelSelect?.loadRemoteMethod('');
-      });
-      if (!val) {
-        return;
-      }
-      // 无现成"按车系查年款"接口：先查车系下车型，再按车型集合查年款；车系下无车型时短路，避免空 modelIdList 返回全量年款
-      const modelList = await listVehicleModel({ seriesId: val, status: 1, size: 1000 });
-      const modelIds = (modelList || []).map(item => item.id).filter(Boolean);
-      if (!modelIds.length) {
-        this.yearTypeList = [];
-        return;
-      }
-      await this.loadYearTypeList(modelIds);
+      this.getModelIdList('');
     },
-    async handleModelChange (val, record) {
+    handleModelChange (val, record) {
       this.form.modelName = record?.name || null;
-      this.clearYearType();
-      if (val) {
-        await this.loadYearTypeList([val]);
-      } else if (this.form.seriesId) {
-        // 车型清空后回落到按车系查年款
-        await this.handleSeriesChange(this.form.seriesId, { name: this.form.seriesName });
-      }
     },
-    clearYearType () {
-      this.yearTypeList = [];
-      this.form.vehicleYearTypeId = null;
-      this.form.vehicleYearType = null;
-    },
-    async loadYearTypeList (modelIdList) {
-      const res = await vehicleModelYearTypeRelation({ modelIdList, size: 1000 });
+    // 年款固定接口获取，不随车系/车型联动
+    async getYearTypeList () {
+      const res = await listVehicleYearType({ pageSize: 50 });
       this.yearTypeList = (res || []).map(item => {
         return {
           ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
+          label: item.name,
+          value: item.id
         };
       });
     },
