@@ -731,13 +731,11 @@ export default {
                 account.effectiveTime = account.creditSalesLimit.effectiveTime;
                 account.expireTime = account.creditSalesLimit.expireTime;
               }
-              const isFinancing = account.fundType === '2010' || account.fundType === 2010;
-              if (isFinancing && account.financialOrganizationName) {
-                // 若是融资，拼接银行名称（全角括号格式）
-                account.fundTypeDisplay = `${account.fundTypeLabel}（${account.financialOrganizationName}）`;
-              } else {
-                account.fundTypeDisplay = account.fundTypeLabel;
-              }
+              // 资金类型列展示：financialOrganizationName 非空时拼接为 `资金类型（金融机构）`（全角括号）
+              // 非融资类账户（现金、赊销-零跑）不带金融机构，自然只显示 fundTypeLabel
+              account.fundTypeDisplay = account.financialOrganizationName
+                ? `${account.fundTypeLabel}（${account.financialOrganizationName}）`
+                : account.fundTypeLabel;
 
               return account;
             });

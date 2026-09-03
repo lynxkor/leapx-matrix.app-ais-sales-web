@@ -625,19 +625,14 @@
                   <el-table :data="form.dealerFundAccounts" border style="width: 100%">
                     <el-table-column label="资金类型" width="180">
                       <template slot-scope="scope">
-                        <span>
-                          <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
-                          <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                            <el-link type="primary"
-                              :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${scope.row.id}`"
-                              target="_blank">{{ scope.row.financialOrganizationName ? `${scope.row.fundTypeLabel}（${scope.row.financialOrganizationName}）` : scope.row.fundTypeLabel }}</el-link>
-                          </span>
-                          <span v-else>
-                            <el-link type="primary"
-                              :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${scope.row.id}`"
-                              target="_blank">{{ scope.row.fundTypeLabel || '' }}</el-link>
-                          </span>
-                        </span>
+                        <!--
+                          资金类型列展示规则：
+                          当 financialOrganizationName 非空时，拼接为 `资金类型（金融机构）`（全角括号）；
+                          非融资类账户（现金、赊销-零跑）不带金融机构，自然只显示 fundTypeLabel
+                        -->
+                        <el-link type="primary"
+                          :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${scope.row.id}`"
+                          target="_blank">{{ scope.row.financialOrganizationName ? `${scope.row.fundTypeLabel}（${scope.row.financialOrganizationName}）` : (scope.row.fundTypeLabel || '') }}</el-link>
                       </template>
                     </el-table-column>
                     <el-table-column prop="availableBalance" label="可用余额" />
