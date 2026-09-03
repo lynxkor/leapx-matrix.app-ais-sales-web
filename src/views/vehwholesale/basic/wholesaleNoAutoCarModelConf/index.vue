@@ -9,6 +9,20 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="车系">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :remote-method="getSeriesIdList"
+          value-key="id"
+          label-key="name"
+          @change="refreshYearTypeOptions"
+        />
+      </el-form-item>
       <el-form-item label="车型">
         <fetch-select
           filterable
@@ -20,7 +34,7 @@
           :remote-method="getModelIdList"
           value-key="id"
           label-key="name"
-          @change="handleModelChange"
+          @change="refreshYearTypeOptions"
         />
       </el-form-item>
       <el-form-item label="年款">
@@ -33,7 +47,20 @@
           label-key="label"
         />
       </el-form-item>
-      <el-form-item label="不参与自动批售确认"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="外观">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.exteriorIds"
+          :remote-method="getExteriorList"
+          value-key="id"
+          label-key="name"
+        />
+      </el-form-item>
+      <el-form-item label="不参与自动批售确认"  v-show="this.visibleCount === 4 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="BooleanEnum"
@@ -44,6 +71,45 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="选装包">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.optionPackageIds"
+            :remote-method="getOptionPackageList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="内饰">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.interiorIds"
+            :remote-method="getInteriorList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="轮毂">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.wheelHubIds"
+            :remote-method="getWheelHubList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
@@ -105,7 +171,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'DealerAutoConfirmConfImport'"
+      :id="'wholesaleNoAutoCarModelConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -116,7 +182,19 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleNoAutoCarModelConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelYearTypeRelationDistinctYeayType, listVehicleModel } from '@/api/common';
+import {
+  getTableConfig,
+  tableAddOrUpdate,
+  exportTable,
+  getEnum,
+  vehicleModelYearTypeRelationDistinctYeayType,
+  listVehicleModel,
+  vehicleSeriesList,
+  vehicleExterior,
+  vehicleInterior,
+  vehicleWheelHub,
+  vehicleOptionPackage
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -127,8 +205,13 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  seriesIds: [],
   modelIds: [],
   vehicleYearTypeId: '',
+  exteriorIds: [],
+  optionPackageIds: [],
+  interiorIds: [],
+  wheelHubIds: [],
   noJoinAutoConfirm: '',
   status: '',
   updateTime: '',
@@ -149,7 +232,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '不自动批售确认车型',
+      pageTitle: '不自动确认批售配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
@@ -191,6 +274,18 @@ export default {
             }]
           },
           {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 140,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
             props: 'modelName',
             label: '车型',
             visible: true,
@@ -214,6 +309,10 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'exteriorName', label: '外观', visible: true, width: 120 },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 140 },
+          { props: 'interiorName', label: '内饰', visible: true, width: 120 },
+          { props: 'wheelHubName', label: '轮毂', visible: true, width: 120 },
           { props: 'noJoinAutoConfirmLabel', label: '不参与自动批售确认', visible: true, width: 160 },
           { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
@@ -283,7 +382,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '不自动批售确认车型',
+        businessType: '不自动确认批售配置',
         dataFetchPath: '/vw/web/basic/wholesaleNoAutoCarModelConf/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -291,7 +390,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '不自动批售确认车型.xlsx');
+            await downloadExcel(res.excelUrl, '不自动确认批售配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -447,11 +546,42 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async handleModelChange (val, record) {
+    async getSeriesIdList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getExteriorList (params) {
+      return vehicleExterior({ exteriorNameLike: params, status: 1 });
+    },
+    async getOptionPackageList (params) {
+      return vehicleOptionPackage({ optionPackageNameLike: params, status: 1 });
+    },
+    async getInteriorList (params) {
+      return vehicleInterior({ interiorNameLike: params, status: 1 });
+    },
+    async getWheelHubList (params) {
+      return vehicleWheelHub({ wheelHubNameLike: params, status: 1 });
+    },
+    /**
+     * 年款联动：优先按车型多选查；车型为空时按车系多选先查车型再查年款；
+     * 两者皆空时短路清空，避免空 modelIdList 触发全量年款
+     */
+    async refreshYearTypeOptions () {
       this.yearTypeList = [];
       this.form.vehicleYearTypeId = null;
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
-      this.yearTypeList = res.map(item => {
+      let queryModelIds = this.form.modelIds || [];
+      if (!queryModelIds.length) {
+        const seriesIds = this.form.seriesIds || [];
+        if (!seriesIds.length) {
+          return;
+        }
+        const modelList = await listVehicleModel({ seriesIdList: seriesIds, status: 1, size: 1000 });
+        queryModelIds = (modelList || []).map(item => item.id).filter(Boolean);
+        if (!queryModelIds.length) {
+          return;
+        }
+      }
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: queryModelIds, size: 1000 });
+      this.yearTypeList = (res || []).map(item => {
         return {
           ...item,
           label: item.yearTypeName,
