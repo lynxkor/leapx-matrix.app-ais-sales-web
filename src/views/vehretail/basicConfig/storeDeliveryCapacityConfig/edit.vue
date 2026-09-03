@@ -95,7 +95,7 @@
                   {{ form.deliveryConfigCode }}
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付工程师：" prop="deliveryUserName">
                   {{ form.deliveryUserName }}

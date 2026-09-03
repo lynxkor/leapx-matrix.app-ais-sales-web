@@ -12,18 +12,18 @@ export const retailOrderDisplayFields = [
   {
     key: 'saleDealerName',
     label: '订单销售门店',
-    link: '/partner/channelManagement/shopDetail',
+    link: '/service/datacenter/store/store/detail',
     paramKey: 'saleDealerCode',
-    paramName: 'dealerCode'
+    paramName: 'storeCode'
   },
   // { key: 'saleUserName', label: '订单销售顾问', eventName: 'viewUser', paramKey: 'saleUserId' },
   { key: 'saleUserName', label: '订单销售顾问' },
   {
     key: 'deliveryDealerName',
     label: '订单交付门店',
-    link: '/partner/channelManagement/shopDetail',
+    link: '/service/datacenter/store/store/detail',
     paramKey: 'deliveryDealerCode',
-    paramName: 'dealerCode'
+    paramName: 'storeCode'
   },
   // { key: 'deliveryUserName', label: '订单交付顾问', eventName: 'viewUser', paramKey: 'deliveryUserId' },
   { key: 'deliveryUserName', label: '订单交付顾问' },
@@ -260,6 +260,7 @@ export const orderCancellationRecordDisplayFields = [
 export const orderPaymentRecordDisplayFields = [
   { key: 'payCategoryLabel', label: '收款类型', width: '25%' },
   { key: 'paymentTypeLabel', label: '支付方式', width: '25%' },
+  { key: 'rightsItem', label: '权益项名称', width: '25%' },
   { key: 'paymentAmount', label: '付款金额', width: '25%' },
   { key: 'paymentTime', label: '付款时间', width: '25%' }
 ];

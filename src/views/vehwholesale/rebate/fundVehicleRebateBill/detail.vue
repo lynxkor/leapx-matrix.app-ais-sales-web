@@ -20,7 +20,7 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
              <el-form-item label="门店名称：" prop="dealerName">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + info.dealerCode)">{{info.dealerName}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/store/detail?storeCode=' + info.dealerCode)">{{info.dealerName}}</el-button>
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}

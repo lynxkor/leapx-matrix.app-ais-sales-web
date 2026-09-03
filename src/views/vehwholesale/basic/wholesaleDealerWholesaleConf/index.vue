@@ -216,7 +216,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+                window.open(`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -228,7 +228,7 @@ export default {
             width: 250,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+                window.open(`/service/datacenter/store/store/detail?storeCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -238,7 +238,7 @@ export default {
           { props: 'cityName', label: '城市', visible: true, width: 150 },
           {
             props: 'dealerParentOrgName', label: '母公司', visible: true, width: 280,
-            // buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); },type: 'primary' }]
+            // buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.dealerParentOrgCode}`, '_blank'); },type: 'primary' }]
           },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },

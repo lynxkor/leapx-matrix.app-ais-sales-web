@@ -226,7 +226,7 @@
                 <el-form-item label="原销售门店：" prop="originalSaleDealerName">
                   <el-link
                     type="primary"
-                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.originalSaleDealerCode}`"
+                    :href="`/service/datacenter/store/store/detail?storeCode=${form.originalSaleDealerCode}`"
                     target="_blank"
                   >{{ form.originalSaleDealerName }}</el-link>
                 </el-form-item>
@@ -247,7 +247,7 @@
                 <el-form-item label="订单销售门店：" prop="saleDealerName">
                   <el-link
                     type="primary"
-                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.saleDealerCode}`"
+                    :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`"
                     target="_blank"
                   >{{ form.saleDealerName }}</el-link>
                 </el-form-item>

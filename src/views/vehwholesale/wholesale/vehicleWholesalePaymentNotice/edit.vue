@@ -87,10 +87,10 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店名称：" prop="saleDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="所属母公司：" prop="dealerCompanyName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="批售总金额：" prop="totalWholesaleAmount">
@@ -129,7 +129,7 @@
                   <vxe-column field="paymentNoticeCode" title="请款通知单" />
                   <vxe-column field="saleDealerName" title="门店名称">
                     <template #default="{ row }">
-                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
+                      <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="materialsCode" title="物料编码">

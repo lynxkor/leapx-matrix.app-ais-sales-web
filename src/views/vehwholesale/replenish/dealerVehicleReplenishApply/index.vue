@@ -192,6 +192,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -314,7 +315,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 120 },
           { props: 'reviewOpinion', label: '厂端审核意见', visible: true, width: 240 },
           { props: 'regionName', label: '所属大区', visible: true, width: 100 },
@@ -334,9 +335,9 @@ export default {
           { props: 'serials', label: '车系组合', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 140 },
-          { props: 'applyTime', label: '申请时间', visible: true, width: 160 },
+          { props: 'applyTime', label: '申请时间', visible: true, width: 160, sortable: true },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'auditDateTime', label: '审批时间', visible: true, width: 160 },
+          { props: 'auditDateTime', label: '审批时间', visible: true, width: 160, sortable: true },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 140 },
           {
             props: 'financialOrganizationName',
@@ -351,9 +352,9 @@ export default {
             }]
           },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
-          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/store/detail?storeCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -383,7 +384,8 @@ export default {
           }
         ],
         total: 0
-      }
+      },
+      sortColumns: []
     };
   },
   created () {
@@ -424,6 +426,16 @@ export default {
           code: String(item.code)
         };
       });
+    },
+    // 排序
+    handleSortChange (value) {
+      this.sortColumns = (value || []).map(item => {
+        return {
+          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: (item.order || '').toUpperCase()
+        };
+      });
+      this.getData();
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
@@ -579,7 +591,13 @@ export default {
           data.auditDateTimeEnd = this.form.auditDateTime[1];
         }
       }
-      if (this.form.queryTab !== '1' && this.form.queryTab !== '2') {
+      if (this.sortColumns.length > 0) {
+        // 排序字段：优先用户列头排序，有排序但无id列时，追加id列，方向与最后一列一致
+        data.sortColumns = [...this.sortColumns];
+        if (!data.sortColumns.some(col => col.column === 'id')) {
+          data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+        }
+      } else if (this.form.queryTab !== '1' && this.form.queryTab !== '2') {
         data.sortColumns = [
           {
             column: 'audit_date_time',

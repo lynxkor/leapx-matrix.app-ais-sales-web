@@ -234,13 +234,13 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/store/detail?storeCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/store/detail?storeCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWayLabel">
                   {{ form.wholesaleWayLabel }}
@@ -358,10 +358,10 @@
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.id)">{{ row.wholesaleOrderCode }}</el-button>
                   </template>
                   <template #saleDealerName="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/store/detail?storeCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
                   </template>
                   <template #deliveryDealerName="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.deliveryDealerCode)">{{ row.deliveryDealerName }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/service/datacenter/store/store/detail?storeCode=' + row.deliveryDealerCode)">{{ row.deliveryDealerName }}</el-button>
                   </template>
                   <template #modelName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>

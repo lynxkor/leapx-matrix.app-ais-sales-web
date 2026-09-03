@@ -392,7 +392,7 @@ export default {
             width: 280,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+                window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank');
               },
               type: 'primary'
             }]

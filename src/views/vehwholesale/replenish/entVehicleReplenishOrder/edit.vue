@@ -213,7 +213,7 @@
                   {{ form.destinationCountryName }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
                   {{ form.entCustomerName }}
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">

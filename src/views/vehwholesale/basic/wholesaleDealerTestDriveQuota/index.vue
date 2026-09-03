@@ -298,8 +298,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCode', label: '门店编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open('/service/datacenter/store/store/detail?storeCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/service/datacenter/store/store/detail?storeCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
           { props: 'vehicleYearType', label: '年款', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.vehicleYearTypeId, '_blank'); }, type: 'primary' }] },
           { props: 'vehicleModelLine', label: '系列', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleModelLine/edit?id=' + row.vehicleModelLineId, '_blank'); }, type: 'primary' }] },
           { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank'); }, type: 'primary' }] },

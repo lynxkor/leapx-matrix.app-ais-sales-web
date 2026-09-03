@@ -158,7 +158,7 @@
                   {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：">
                   {{ form.cooperationTypeLabel }}
@@ -230,7 +230,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店名称：">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店编码：">
                   {{ form.dealerCode }}
@@ -563,10 +563,10 @@
                   {{ form.allocationMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店：">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
+                  <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
                   {{ form.deliveryVin }}

@@ -170,11 +170,11 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link> -->
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <!-- <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
+                  <!-- <el-link type="primary" :href="`/service/datacenter/store/parentCompany/detail?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link> -->
                   {{ form.entCustomerName }}
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
@@ -233,7 +233,7 @@
                       <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=${row.backOrderDetailCode}`" target="_blank">{{ row.backOrderDetailCode }}</el-link>
                     </template>
                     <template v-else-if="column.property === 'saleDealerName' && row.saleDealerCode">
-                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
+                      <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
                     </template>
                     <template v-else-if="column.property === 'wholesaleOrderCode' && row.wholesaleOrderCode">
                       <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">{{ row.wholesaleOrderCode }}</el-link>
