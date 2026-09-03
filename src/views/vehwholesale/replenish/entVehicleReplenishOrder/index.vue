@@ -296,6 +296,7 @@ export default {
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'destinationCountryName', label: '目的地国家', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

@@ -1361,7 +1361,7 @@ export default {
       this.vehicleAttributeOptions = (response || []).map(item => ({
         ...item,
         value: String(item.code),
-        label: item.name
+        label: item.message
       }));
     },
     getVehicleAttributeLabel (code) {
