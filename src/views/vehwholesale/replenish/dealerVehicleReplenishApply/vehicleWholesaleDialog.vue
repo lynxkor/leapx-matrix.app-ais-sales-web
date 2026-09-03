@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :title="title" width="1200px" height="560px" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :close-on-click-modal="false" :title="title" width="95%" top="3vh" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
@@ -167,9 +167,9 @@
             border="inner"
             size="small"
             height="auto"
-            width="1000px"
+            width="100%"
             min-height="200px"
-            max-height="280px"
+            max-height="420px"
           >
             <vxe-column field="checkbox" title="补货数量" align="center" width="150">
               <template v-slot="{ row }">
