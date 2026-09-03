@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :title="title" width="95%" top="3vh" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :close-on-click-modal="false" :title="title" width="75%" top="3vh" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
@@ -221,6 +221,7 @@
         label-width="120px"
         size="small"
         class="fund-form"
+        :inline="true"
       >
         <el-form-item label="结算资金类型：" prop="fundType" v-if="settleAccountList && settleAccountList.length > 0">
           <el-select
