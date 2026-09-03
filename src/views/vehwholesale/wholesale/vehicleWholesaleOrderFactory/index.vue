@@ -231,6 +231,16 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="退车标识">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.vehicleReturnFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="物流预留备注">
           <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
         </el-form-item>
@@ -697,6 +707,7 @@ const defaultForm = {
   optionPackageIdSet: [],
   roofIdSet: [],
   taxInvoiceFlag: '',
+  vehicleReturnFlag: '',
 };
 
 const pageSize = 20;
@@ -1061,6 +1072,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
