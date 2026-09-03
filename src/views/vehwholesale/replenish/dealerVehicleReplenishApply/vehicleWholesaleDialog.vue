@@ -218,6 +218,7 @@
         ref="fundForm"
         :model="fundForm"
         :rules="dynamicFundFormRules"
+        :inline="true"
         label-width="120px"
         size="small"
         class="fund-form"
@@ -229,6 +230,7 @@
             clearable
             filterable
             class="fund-type-select"
+            style="width: 220px"
             @change="handleFundTypeChange"
           >
             <el-option
@@ -250,6 +252,7 @@
             clearable
             filterable
             class="financing-org-select"
+            style="width: 240px"
           >
             <el-option
               v-for="item in financingOrgOptions"
