@@ -156,36 +156,40 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <div class="settle-fund-row">
-                  <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
-                    <fetch-select
-                      :options="fundTypeList"
-                      v-model="form.settleFundTypeLabel"
-                      placeholder="请选择结算资金类型"
-                      labelKey="fundTypeLabel"
-                      valueKey="fundTypeLabel"
-                      clearable
-                      filterable
-                      @change="handleChangeFundType"
-                    />
-                  </el-form-item>
-                  <el-form-item
-                    label="金融机构："
-                    prop="financialOrganizationId"
-                    :rules="['2010', '2020', '2030'].includes(form.settleFundType + '') ? rules.financialOrganizationId : []"
-                    v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')"
-                  >
-                    <fetch-select
-                      :options="financingOrgOptions"
-                      v-model="form.financialOrganizationId"
-                      clearable
-                      filterable
-                      labelKey="organizationName"
-                      valueKey="id"
-                      placeholder="请选择金融机构"
-                    />
-                  </el-form-item>
-                </div>
+                <el-row :gutter="16">
+                  <el-col :span="12">
+                    <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
+                      <fetch-select
+                        :options="fundTypeList"
+                        v-model="form.settleFundTypeLabel"
+                        placeholder="请选择结算资金类型"
+                        labelKey="fundTypeLabel"
+                        valueKey="fundTypeLabel"
+                        clearable
+                        filterable
+                        @change="handleChangeFundType"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item
+                      label="金融机构："
+                      prop="financialOrganizationId"
+                      :rules="['2010', '2020', '2030'].includes(form.settleFundType + '') ? rules.financialOrganizationId : []"
+                      v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')"
+                    >
+                      <fetch-select
+                        :options="financingOrgOptions"
+                        v-model="form.financialOrganizationId"
+                        clearable
+                        filterable
+                        labelKey="organizationName"
+                        valueKey="id"
+                        placeholder="请选择金融机构"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-form-item label="申请原因：" prop="applyReason">
                   <el-input
                     placeholder="请输入申请原因"
@@ -1091,19 +1095,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.settle-fund-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  // 包裹在 inline 形态的 el-form 里，需要让 el-form-item 自身失去默认的
-  // 100% 宽度（inline 形态是 inline-block，但父级变 flex 后会被拉伸）
-  width: 100%;
-  ::v-deep .el-form-item {
-    flex: 1 1 0;
-    min-width: 0;
-    margin-bottom: 18px;
-  }
-}
-</style>
