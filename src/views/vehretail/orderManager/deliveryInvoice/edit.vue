@@ -29,6 +29,18 @@
             确认上传
           </el-button>
           <el-button
+            @click="openAdjustAttributeDialog"
+            v-if="canUpdateVehicleAttribute"
+            size="small">
+            调整车辆属性
+          </el-button>
+          <el-button
+            @click="openAdjustTimeDialog"
+            v-if="canUpdateInvoiceTime"
+            size="small">
+            调整开票日期
+          </el-button>
+          <el-button
             @click="openDeleteShow"
             v-if="form.status === 0 && canDelete"
             size="small">
@@ -692,6 +704,52 @@
         <el-button @click="handleCancelDialog">取消</el-button>
       </span>
         </el-dialog>
+        <!-- 调整车辆属性弹框 -->
+        <el-dialog
+          title="调整车辆属性"
+          :visible.sync="adjustAttributeDialogVisible"
+          width="40%"
+          append-to-body
+        >
+          <el-form label-width="100px">
+            <el-form-item label="车辆属性：">
+              <el-radio-group v-model="adjustAttributeForm.vehicleAttribute">
+                <el-radio
+                  v-for="item in adjustableAttributeOptions"
+                  :key="item.code"
+                  :label="item.code"
+                  :disabled="item.disabled"
+                >{{ item.message }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitAdjustAttribute">确定</el-button>
+            <el-button @click="adjustAttributeDialogVisible = false">取消</el-button>
+          </span>
+        </el-dialog>
+        <!-- 调整开票日期弹框 -->
+        <el-dialog
+          title="调整开票日期"
+          :visible.sync="adjustTimeDialogVisible"
+          width="40%"
+          append-to-body
+        >
+          <el-form label-width="100px">
+            <el-form-item label="新开票日期：">
+              <el-date-picker
+                type="date"
+                v-model="adjustTimeForm.invoiceTime"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择"
+              />
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitAdjustTime">确定</el-button>
+            <el-button @click="adjustTimeDialogVisible = false">取消</el-button>
+          </span>
+        </el-dialog>
         <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
 <!--        <simple-dialog ref="uploadDialogRef" @confirm="handleUploadConfirm" :id="_id"></simple-dialog>-->
       </edit-base-container>
@@ -710,7 +768,9 @@ import {
   checkUpload,
   confirmUploadNew,
   deleteItem,
-  getDetail
+  getDetail,
+  updateInvoiceTime,
+  updateVehicleAttribute
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -814,6 +874,24 @@ export default {
     canConfirmUpload () {
       return this.form.status === 0 &&
         this.permissions.has(`${this.moduleKey}-confirmUpload`);
+    },
+    canUpdateVehicleAttribute () {
+      return this.form.status === 5 &&
+        this.permissions.has(`${this.moduleKey}-updateVehicleAttribute`);
+    },
+    canUpdateInvoiceTime () {
+      return this.form.status === 5 &&
+        this.permissions.has(`${this.moduleKey}-updateInvoiceTime`);
+    },
+    // 7.2 需求：家用不能改营运。当前是"家用"时只展示"家用"且 disabled
+    adjustableAttributeOptions () {
+      if (this.form.vehicleAttribute === 1) {
+        return [{ code: 1, message: '家用', disabled: true }];
+      }
+      return [
+        { code: 1, message: '家用' },
+        { code: 2, message: '营运' }
+      ];
     }
   },
   watch: {
@@ -831,6 +909,11 @@ export default {
     return {
       dialogVisible: false,
       comparisonData: [],
+      // 7.2 调整车辆属性 / 调整开票日期 弹窗状态
+      adjustAttributeDialogVisible: false,
+      adjustTimeDialogVisible: false,
+      adjustAttributeForm: { vehicleAttribute: null },
+      adjustTimeForm: { invoiceTime: '' },
       pageTitle: '整车开票记录',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
@@ -1060,6 +1143,52 @@ export default {
     },
     handleUploadDialogClose () {
       // 弹框关闭后的回调
+    },
+    // ============== 7.2 调整车辆属性 ==============
+    openAdjustAttributeDialog () {
+      // 默认选中当前车辆属性
+      this.adjustAttributeForm.vehicleAttribute = this.form.vehicleAttribute;
+      this.adjustAttributeDialogVisible = true;
+    },
+    submitAdjustAttribute () {
+      if (!this.adjustAttributeForm.vehicleAttribute) {
+        this.$message.warning('请选择车辆属性');
+        return;
+      }
+      updateVehicleAttribute({
+        id: this.form.id,
+        vehicleAttribute: this.adjustAttributeForm.vehicleAttribute
+      }).then(() => {
+        this.adjustAttributeDialogVisible = false;
+        this.reloadDetail();
+      });
+    },
+    // ============== 7.2 调整开票日期 ==============
+    openAdjustTimeDialog () {
+      this.adjustTimeForm.invoiceTime = '';
+      this.adjustTimeDialogVisible = true;
+    },
+    submitAdjustTime () {
+      if (!this.adjustTimeForm.invoiceTime) {
+        this.$message.warning('请选择新开票日期');
+        return;
+      }
+      // 按天粒度比较：新开票日期 > 交车时间则阻断
+      const newDate = new Date(this.adjustTimeForm.invoiceTime);
+      const deliveryDate = new Date(this.form.deliveryTime);
+      if (newDate > deliveryDate) {
+        this.$message.warning(
+          `开票日期${this.adjustTimeForm.invoiceTime}不能大于交车时间`
+        );
+        return;
+      }
+      updateInvoiceTime({
+        id: this.form.id,
+        invoiceTime: this.adjustTimeForm.invoiceTime
+      }).then(() => {
+        this.adjustTimeDialogVisible = false;
+        this.reloadDetail();
+      });
     },
     openDeleteShow () {
       this.$confirm('确认是否删除该整车开票记录?', '提示', {
