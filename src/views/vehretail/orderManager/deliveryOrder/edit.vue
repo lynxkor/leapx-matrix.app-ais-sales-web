@@ -796,6 +796,7 @@ export default {
         { field: 'paymentTypeLabel', title: '支付方式', width: 120 },
         { field: 'payerName', title: '支付人', width: 120 },
         { field: 'mallOrderCode', title: '商城流水号', width: 200 },
+        { field: 'rightsItem', title: '权益项名称', width: 200 },
         { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
         { field: 'rightsItemCode', title: '权益项编号', width: 150 },
         { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },

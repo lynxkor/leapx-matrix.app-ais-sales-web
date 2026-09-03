@@ -52,11 +52,12 @@
             filterable
             clearable
             remote
-            v-model="form.modelId"
+            v-model="form.modelIdList"
             :remote-method="vehicleModelSearch"
             value-key="id"
             label-key="name"
             placeholder="请选择"
+            multiple
           />
         </el-form-item>
         <el-form-item label="车辆属性">
