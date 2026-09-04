@@ -987,7 +987,8 @@ export default {
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
-        saleCompanyIds: [this.form.saleCompanyId]
+        saleCompanyIds: [this.form.saleCompanyId],
+        status: 1
       };
       accountList(params).then((res) => {
         if (res && res.records) {
