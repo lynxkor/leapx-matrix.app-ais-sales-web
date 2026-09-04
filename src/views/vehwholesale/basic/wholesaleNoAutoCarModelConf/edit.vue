@@ -183,6 +183,7 @@ import {
   getEnum,
   listVehicleModel,
   listVehicleYearType,
+  vehicleModelYearTypeRelationDistinctYeayType,
   vehicleSeriesList,
   vehicleExterior,
   vehicleInterior,
@@ -325,27 +326,41 @@ export default {
       return res;
     },
     /**
-     * 车系联动车型：车系变化时清空已选车型，并按新车系刷新车型下拉选项
+     * 车系联动车型：清空已选车型，按新车系刷新车型下拉，年款随车型清空恢复全量
      */
     handleSeriesChange (val, record) {
       this.form.seriesName = record?.name || null;
       this.form.modelId = null;
       this.form.modelName = null;
       this.getModelIdList('');
+      this.handleModelChange();
     },
+    /**
+     * 车型联动年款：按已选车型查年款选项；车型清空时恢复全量年款
+     */
     handleModelChange (val, record) {
       this.form.modelName = record?.name || null;
+      this.clearYearType();
+      if (val) {
+        this.loadYearTypeByModels([val]);
+      } else {
+        this.getYearTypeList();
+      }
     },
-    // 年款固定接口获取，不随车系/车型联动
+    // 清空已选年款
+    clearYearType () {
+      this.form.vehicleYearTypeId = '';
+      this.form.vehicleYearType = '';
+    },
+    // 按车型集合查关联年款
+    async loadYearTypeByModels (modelIdList) {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList, limitSize: 1000 });
+      this.yearTypeList = (res || []).map(i => ({ ...i, label: i.yearTypeName, value: i.yearTypeId }));
+    },
+    // 年款固定接口获取（全量）
     async getYearTypeList () {
       const res = await listVehicleYearType({ pageSize: 50 });
-      this.yearTypeList = (res || []).map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
+      this.yearTypeList = (res || []).map(i => ({ ...i, label: i.name, value: i.id }));
     },
     getDefautlForm () {
       return {

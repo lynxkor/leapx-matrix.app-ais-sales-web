@@ -35,6 +35,7 @@
           :options="modelList"
           value-key="id"
           label-key="name"
+          @change="handleModelChange"
         />
       </el-form-item>
       <el-form-item label="年款" v-show="this.visibleCount === 3 || show">
@@ -189,6 +190,7 @@ import {
   getEnum,
   listVehicleYearType,
   listVehicleModel,
+  vehicleModelYearTypeRelationDistinctYeayType,
   vehicleSeriesList,
   vehicleExterior,
   vehicleInterior,
@@ -372,6 +374,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.getYearTypeList();
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -552,22 +555,34 @@ export default {
       return res;
     },
     /**
-     * 车系联动车型：车系变化时清空已选车型，并按新车系刷新车型下拉选项
+     * 车系联动车型：清空已选车型，按新车系刷新车型下拉，年款随车型清空恢复全量
      */
     handleSeriesChange () {
       this.form.modelIds = [];
       this.getModelIdList('');
+      this.handleModelChange();
     },
-    // 年款固定接口获取，不随车系/车型联动
+    /**
+     * 车型联动年款：按已选车型查年款选项；车型清空时恢复全量年款
+     */
+    handleModelChange () {
+      this.form.vehicleYearTypeId = '';
+      const modelIds = this.form.modelIds || [];
+      if (modelIds.length) {
+        this.loadYearTypeByModels(modelIds);
+      } else {
+        this.getYearTypeList();
+      }
+    },
+    // 年款固定接口获取（全量）
     async getYearTypeList () {
       const res = await listVehicleYearType({ pageSize: 50 });
-      this.yearTypeList = (res || []).map(item => {
-        return {
-          ...item,
-          label: item.name,
-          value: item.id
-        };
-      });
+      this.yearTypeList = (res || []).map(i => ({ ...i, label: i.name, value: i.id }));
+    },
+    // 按车型集合查关联年款
+    async loadYearTypeByModels (modelIdList) {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList, limitSize: 1000 });
+      this.yearTypeList = (res || []).map(i => ({ ...i, label: i.yearTypeName, value: i.yearTypeId }));
     },
     async getSeriesIdList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
