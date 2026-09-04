@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :dataTransform="dataTransform"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -33,14 +34,55 @@
                     v-model="form.organizationName"
                     clearable
                     maxlength="100"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="金融机构编码：" prop="organizationCode">
                   <el-input
                     placeholder="请输入金融机构编码"
                     v-model="form.organizationCode"
+                    :disabled="!!_id"
                     clearable
                     maxlength="50"
+                  />
+                </el-form-item>
+                <el-form-item label="合格证发运方式：" prop="certificateShippingWay">
+                  <fetch-select
+                    :options="deliveryTypeOptions"
+                    enumCode="vw_deliverytype"
+                    v-model="form.certificateShippingWay"
+                    placeholder="请选择合格证发运方式"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="是否开启银企直连：" prop="enableBankDirectConnection">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
+                    v-model="form.enableBankDirectConnection"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
+                  <el-input
+                    placeholder="请输入开启返利使用额度"
+                    v-model="form.rebateUsageQuota"
+                    clearable
+                    maxlength="18"
+                    @blur="onRebateUsageQuotaBlur"
+                  />
+                </el-form-item>
+                <el-form-item label="是否生成采购记录：" prop="createPurchaseRecord">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
+                    v-model="form.createPurchaseRecord"
+                    placeholder="请选择"
+                    clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="状态：">
@@ -72,6 +114,18 @@
                 <el-form-item label="金融机构编码：" prop="organizationCode">
                   {{ form.organizationCode }}
                 </el-form-item>
+                <el-form-item label="合格证发运方式：" prop="certificateShippingWayLabel">
+                  {{ form.certificateShippingWayLabel }}
+                </el-form-item>
+                <el-form-item label="是否开启银企直连：" prop="enableBankDirectConnectionLabel">
+                  {{ form.enableBankDirectConnectionLabel }}
+                </el-form-item>
+                <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
+                  {{ formatAmount(form.rebateUsageQuota) }}
+                </el-form-item>
+                <el-form-item label="是否生成采购记录：" prop="createPurchaseRecordLabel">
+                  {{ form.createPurchaseRecordLabel }}
+                </el-form-item>
                 <el-form-item label="状态：" prop="statusLabel">
                   {{ form.statusLabel }}
                 </el-form-item>
@@ -87,7 +141,7 @@
 
           <section class="common-section">
             <div class="common-section-header common-section-header-flex">
-              <h2>金融机构-资金结算类型列表</h2>
+              <h2>资金类型</h2>
               <div v-if="isEditing || !_id" class="common-section-actions">
                 <el-button size="small" type="primary" plain @click="addRelRow">
                   <i class="iconfont icon-lxppc-plus"></i> 新增结算资金类型
@@ -180,6 +234,7 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { formatAmount as fmtAmount } from '@/libs/utils';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -191,6 +246,13 @@ import commonMixins from '@/libs/mixins/commonMixins';
 const defaultForm = {
   organizationName: '',
   organizationCode: '',
+  certificateShippingWay: '',
+  certificateShippingWayLabel: '',
+  enableBankDirectConnection: '',
+  enableBankDirectConnectionLabel: '',
+  rebateUsageQuota: '',
+  createPurchaseRecord: '',
+  createPurchaseRecordLabel: '',
   status: '',
   statusLabel: '',
   remark: '',
@@ -253,6 +315,7 @@ export default {
       loading: false,
       submitLoading: false,
       fundTypeOptions: [],
+      deliveryTypeOptions: [],
       isEditing: false,
       isDetail: false,
       isAdd: false,
@@ -273,14 +336,71 @@ export default {
           { required: true, message: '请输入金融机构编码', trigger: 'blur' },
           { max: 50, message: '最多输入50个字符', trigger: 'blur' },
           { pattern: /^[A-Za-z0-9_]+$/, message: '编码只能包含字母、数字和下划线', trigger: 'blur' }
+        ],
+        rebateUsageQuota: [
+          { validator: this.validateRebateUsageQuota, trigger: 'blur' }
         ]
       }
     };
   },
   mounted () {
     this.fetchSettleFundTypeOptions();
+    this.fetchDeliveryTypeOptions();
   },
   methods: {
+    // 是否类字段（是否开启银企直连 / 是否生成采购记录）统一走 BooleanEnum 字典
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
+      }
+      return [];
+    },
+    async fetchDeliveryTypeOptions () {
+      try {
+        const response = await getEnum('vw_deliverytype');
+        const list = (response && response.data) || response || [];
+        // 与结算资金类型保持一致：枚举 code 统一转成字符串，避免回填时类型不匹配
+        this.deliveryTypeOptions = list.map(item => ({ ...item, code: String(item.code) }));
+      } catch (e) {
+        this.deliveryTypeOptions = [];
+      }
+    },
+    /**
+     * 详情接口数据转换：把枚举类字段归一化成下拉选项的 code 类型，保证回显能选中
+     */
+    dataTransform (data) {
+      if (!data) {
+        return data;
+      }
+      return {
+        ...data,
+        certificateShippingWay: data.certificateShippingWay === null || data.certificateShippingWay === undefined
+          ? ''
+          : String(data.certificateShippingWay)
+      };
+    },
+    formatAmount (value) {
+      return fmtAmount(value);
+    },
+    // 去掉粘贴带入的千分位逗号等干扰字符
+    onRebateUsageQuotaBlur () {
+      const val = this.form.rebateUsageQuota;
+      if (val === '' || val === null || val === undefined) {
+        return;
+      }
+      this.form.rebateUsageQuota = String(val).trim().replace(/,/g, '');
+    },
+    validateRebateUsageQuota (rule, value, callback) {
+      if (value === '' || value === null || value === undefined) {
+        callback();
+        return;
+      }
+      if (!/^\d+(\.\d{1,2})?$/.test(String(value))) {
+        callback(new Error('请输入非负数字，最多保留2位小数'));
+        return;
+      }
+      callback();
+    },
     async fetchSettleFundTypeOptions () {
       try {
         const response = await getEnum('vw_fundtype');
@@ -337,6 +457,13 @@ export default {
       delete submitForm.creatorName;
       delete submitForm.createTime;
       delete submitForm.statusLabel;
+      delete submitForm.certificateShippingWayLabel;
+      delete submitForm.enableBankDirectConnectionLabel;
+      delete submitForm.createPurchaseRecordLabel;
+      // 下拉选项 code 为字符串，提交时按后端要求还原成数字
+      submitForm.certificateShippingWay = submitForm.certificateShippingWay === '' || submitForm.certificateShippingWay === null || submitForm.certificateShippingWay === undefined
+        ? null
+        : Number(submitForm.certificateShippingWay);
       // 同步最新的关联关系表格数据
       submitForm.relList = this.relTableData.map(row => ({
         id: row.id || undefined,
