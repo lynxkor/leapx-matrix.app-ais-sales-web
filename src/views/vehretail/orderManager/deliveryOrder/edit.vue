@@ -97,8 +97,6 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="交付衍生工程师：" prop="deliveryDerivativeUserId">
-                  <div>form.deliveryDerivativeUserId{{ form.deliveryDerivativeUserId }}</div>
-                  <div>form.deliveryDerivativeUserName{{ form.deliveryDerivativeUserName }}</div>
                   <el-select
                     filterable
                     clearable
