@@ -323,6 +323,16 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="退车标识">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.vehicleReturnFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
             :options="settleFundTypeOptions"
@@ -637,6 +647,7 @@ const defaultForm = {
   wheelHubIdSet: [],
   optionPackageIdSet: [],
   roofIdSet: [],
+  vehicleReturnFlag: '',
 };
 
 const pageSize = 20;
@@ -975,6 +986,7 @@ export default {
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
+          { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {

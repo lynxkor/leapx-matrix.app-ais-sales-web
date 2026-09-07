@@ -796,6 +796,7 @@ export default {
         { field: 'paymentTypeLabel', title: '支付方式', width: 120 },
         { field: 'payerName', title: '支付人', width: 120 },
         { field: 'mallOrderCode', title: '商城流水号', width: 200 },
+        { field: 'rightsItem', title: '权益项名称', width: 200 },
         { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
         { field: 'rightsItemCode', title: '权益项编号', width: 150 },
         { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
@@ -863,34 +864,35 @@ export default {
       this.canRetailOrderPayRecordDelete = has('AISVR-retailOrderPayRecord-delete');
     },
     handleSaleUserChange (val, name) {
+      // 与 handleRemoteSearch 中的 configMap 同构
+      // formKey = v-model Id 字段去掉末尾 Id 后的前缀（如 saleUserId -> saleUser）
+      // name 字段 = formKey + 'Name'（即 v-model Id 字段去掉 Id 换成 Name）
+      const configMap = {
+        saleUser: { optionsKey: 'saleUserOptions', formKey: 'saleUser' },
+        deliveryUser: { optionsKey: 'deliveryUserOptions', formKey: 'deliveryUser' },
+        deliveryDerive: { optionsKey: 'deliveryDeriveOptions', formKey: 'deliveryDerivativeUser' },
+        onSiteDeliveryUser: { optionsKey: 'onSiteDeliveryUserOptions', formKey: 'onSiteDeliveryUser' }
+      };
+      const config = configMap[name];
+      if (!config) return;
+      const nameField = config.formKey + 'Name';
+
       if (!val) {
-        // 清空时从当前 options 中找出被清空的值，重新塞入（不可选）
-        const optionsMap = {
-          saleUser: this.saleUserOptions,
-          deliveryUser: this.deliveryUserOptions,
-          deliveryDerivativeUser: this.deliveryDeriveOptions,
-          onSiteDeliveryUser: this.onSiteDeliveryUserOptions
-        };
-        const oldOptions = optionsMap[name] || [];
-        // 从 options 中找到不可选的那条（之前被禁用的）
+        // 清空：同步清空 name 字段
+        this.form[nameField] = '';
+        // 从当前 options 中找出被禁用的那条，重新塞回（保证仍可在下拉中看到）
+        const oldOptions = this[config.optionsKey] || [];
         const disabledItem = oldOptions.find(item => item.disabled);
         if (disabledItem) {
-          // 重新查询，但结果中不包含这条数据，需要手动补入
           this.handleRemoteSearch('', name, disabledItem);
         }
         return;
       }
-      // 找到选中的选项，更新对应的 Name
-      const optionsMap = {
-        saleUser: this.saleUserOptions,
-        deliveryUser: this.deliveryUserOptions,
-        deliveryDerivativeUser: this.deliveryDeriveOptions,
-        onSiteDeliveryUser: this.onSiteDeliveryUserOptions
-      };
-      const options = optionsMap[name] || [];
+      // 选中：根据 options 找到 username 写入 name 字段
+      const options = this[config.optionsKey] || [];
       const selected = options.find(item => String(item.userId) === String(val));
       if (selected) {
-        this.form[name + 'Name'] = selected.username;
+        this.form[nameField] = selected.username;
       }
     },
     // 获取焦点时：如果下拉没数据则查询一次
