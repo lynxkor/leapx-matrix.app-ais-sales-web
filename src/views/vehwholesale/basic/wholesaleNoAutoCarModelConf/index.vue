@@ -172,7 +172,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'wholesaleNoAutoCarModelConfImport'"
+      :id="'DealerAutoConfirmConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>

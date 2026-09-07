@@ -45,6 +45,7 @@
                     :params="form.modelName"
                     :remote-method="getModelIdList"
                     :options="modelList"
+                    :fallback-label="form.modelName"
                     value-key="id"
                     label-key="name"
                     @change="handleModelChange"
