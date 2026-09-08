@@ -66,6 +66,17 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="合作类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_cooperation_type"
+            v-model="form.cooperateTypes"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="专项活动">
           <fetch-select
             :remote-method="prodScheduleActivitySearch"
@@ -307,6 +318,16 @@
             :request="fetchOptions"
             enumCode="BooleanEnum"
             v-model="form.taxInvoiceFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="退车标识">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.vehicleReturnFlag"
             placeholder="请选择"
             clearable
             filterable
@@ -620,11 +641,13 @@ const defaultForm = {
   wholesaleOrderId: '',
   orderStatuses: [],
   confirmStatuses: [],
+  cooperateTypes: [],
   exteriorIdSet: [],
   interiorIdSet: [],
   wheelHubIdSet: [],
   optionPackageIdSet: [],
   roofIdSet: [],
+  vehicleReturnFlag: '',
 };
 
 const pageSize = 20;
@@ -786,6 +809,10 @@ export default {
           { props: 'settleTime', label: '结算时间', visible: true, width: 200, sortable: true },
           { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'vin', label: '配车VIN码', visible: true, width: 180 }, // , buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }]
+          { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 180 },
+          { props: 'certNumber', label: '合格证号', visible: true, width: 180 },
+          { props: 'enginenNumber', label: '发动机号', visible: true, width: 180 },
+          { props: 'batterySerialNumber', label: '电池序列号', visible: true, width: 180 },
           { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
@@ -959,6 +986,7 @@ export default {
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
+          { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {

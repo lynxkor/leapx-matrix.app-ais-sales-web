@@ -80,6 +80,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperateType">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cooperateTypeLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                    <el-input
                     placeholder="请输入"
@@ -96,6 +104,7 @@
                         placeholder="请选择"
                         clearable
                         filterable
+                        disabled
                       />
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
@@ -238,6 +247,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="目的地国家：" prop="destinationCountryName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.destinationCountryName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="VIN年份：" prop="vinYear">
                   <el-input
                     placeholder="请输入"
@@ -285,6 +302,9 @@
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   <el-link type="primary" :href="`/service/datacenter/store/store/detail?storeCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperateTypeLabel">
+                  {{ form.cooperateTypeLabel }}
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -339,6 +359,9 @@
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarketLabel">
                   {{ form.salesMarketLabel }}
+                </el-form-item>
+                <el-form-item label="目的地国家：" prop="destinationCountryName">
+                  {{ form.destinationCountryName }}
                 </el-form-item>
                 <el-form-item label="VIN年份：" prop="vinYear">
                   {{ form.vinYear }}
@@ -959,6 +982,8 @@ const defaultForm = {
   salesMarket: '',
   creditSaleFlag: '',
   vehicleAttribute: '',
+  destinationCountry: '',
+  destinationCountryName: '',
   orderTime: '',
   allocateTime: '',
   outboundTime: '',

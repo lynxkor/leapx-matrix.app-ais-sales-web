@@ -72,13 +72,13 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="开票记录编号">
+        <!-- <el-form-item label="开票记录编号">
           <el-input
             placeholder="请输入"
             v-model="form.deliveryInvoiceCode"
             clearable
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="交车单">
           <tag-input
             placeholder="请输入"

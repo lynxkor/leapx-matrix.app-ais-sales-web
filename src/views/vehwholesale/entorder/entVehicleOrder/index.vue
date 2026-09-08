@@ -201,6 +201,17 @@
             multiple
           />
         </el-form-item>
+        <el-form-item label="合作类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_cooperation_type"
+            v-model="form.cooperateTypes"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
          <el-form-item label="金融机构">
            <fetch-select
           :remote-method="repairItemSearch"
@@ -436,6 +447,7 @@ const defaultForm = {
   wheelHubIdSet: [],
   optionPackageIdSet: [],
   roofIdSet: [],
+  cooperateTypes: [],
 };
 
 const pageSize = 20;
@@ -529,6 +541,7 @@ export default {
           // { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/parentCompany/detail?companyCode=${row.entCustomerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
+          { props: 'vehicleAttributeLabel', label: '车辆属性', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'needAsyncSapLabel', label: '是否需要同步SAP', visible: true, width: 200 },
           {
@@ -567,8 +580,10 @@ export default {
           },
           { props: 'acceptanceMethodLabel', label: '验收方式', visible: true, width: 200 },
           { props: 'salesMarketLabel', label: '销售市场', visible: true, width: 200 },
+          { props: 'destinationCountryName', label: '目的地国家', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/service/datacenter/store/store/detail?storeCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'districtName', label: '区/县', visible: true, width: 200 },
@@ -717,10 +732,14 @@ export default {
         total: 0
       },
       sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
+        {
+          column: 'order_time',
+          sort: 'DESC'
+        },
+        {
+          column: 'id',
+          sort: 'DESC'
+        }
       ]
     };
   },
@@ -1322,9 +1341,12 @@ export default {
       if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
         data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
       }
-      // 无排序时，默认按id倒序
+      // 无排序时，默认按更新时间倒序，再按id倒序
       if (data.sortColumns.length === 0) {
-        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+        data.sortColumns = [
+          { column: 'update_time', sort: 'DESC' },
+          { column: 'id', sort: 'DESC' }
+        ];
       }
       return data;
     },

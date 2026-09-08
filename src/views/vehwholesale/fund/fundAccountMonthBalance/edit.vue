@@ -50,6 +50,9 @@
                 <el-form-item label="金融机构：" prop="financeOrganizationName">
                    <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financeOrganizationId}`" target="_blank">{{ form.financeOrganizationName }}</el-link>
                 </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationType">
+                  {{ form.cooperationTypeLabel }}
+                </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
@@ -97,7 +100,8 @@ const defaultForm = {
   accountType: '',
   financeOrganizationId: '',
   financeOrganizationCode: '',
-  financeOrganizationName: ''
+  financeOrganizationName: '',
+  cooperationType: ''
 };
 
 export default {
