@@ -151,7 +151,11 @@ export default {
       // 调用保存方法并处理结果
       return new Promise((resolve, reject) => {
         this.$refs.expandTable.saveAll().then(data => {
-          resolve(data);
+          // vxe 的 dragSort 只重排其内部 tableData，不会回写到绑定的 :data，
+          // 因此直接读取 vxe 当前“视觉顺序”作为最终提交顺序，确保拖拽生效
+          const vxeTable = this.$refs.expandTable && this.$refs.expandTable.$refs.editTable;
+          const ordered = (vxeTable && vxeTable.getTableData && vxeTable.getTableData().tableData) || data || [];
+          resolve(ordered);
         }).catch(error => {
           reject(error);
         });
@@ -209,6 +213,27 @@ export default {
     handleCompanyChange () {
       this.filterTableData();
     },
+    // 拖拽结束后，将 vxe 内部顺序同步回本地 tableData，
+    // 保证后续“上移/下移”按钮与保存顺序口径一致（vxe 不会自动回写 :data）
+    onRowDragEnd (params) {
+      const idx = (params && params._index) || {};
+      const oldIndex = idx.oldIndex;
+      const newIndex = idx.newIndex;
+      if (oldIndex === null || oldIndex === undefined || newIndex === null || newIndex === undefined || oldIndex === newIndex) return;
+      const arr = [...this.tableData];
+      if (oldIndex < 0 || oldIndex >= arr.length || newIndex < 0 || newIndex >= arr.length) return;
+      const [moved] = arr.splice(oldIndex, 1);
+      arr.splice(newIndex, 0, moved);
+      this.tableData = arr;
+    },
+    // 给内部 vxe-table 绑定拖拽结束事件（事件名为 row-dragend，由 vxe 内部 $emit）
+    bindDragEvent () {
+      const et = this.$refs.expandTable && this.$refs.expandTable.$refs.editTable;
+      if (et && et.$on) {
+        et.$off('row-dragend', this.onRowDragEnd);
+        et.$on('row-dragend', this.onRowDragEnd);
+      }
+    },
     // 需要防抖场景时使用
     async dialogshow () {
       this.dialogVisible = true;
@@ -228,6 +253,8 @@ export default {
         this.tableData = [];
       } finally {
         this.loading = false;
+        // 弹窗挂载后给内部 vxe-table 绑定拖拽结束事件，保证拖动顺序可回写
+        this.$nextTick(this.bindDragEvent);
       }
     },
     async confirm (formName, rest = false) {
