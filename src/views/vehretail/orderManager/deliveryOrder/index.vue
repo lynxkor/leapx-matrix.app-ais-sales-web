@@ -422,7 +422,7 @@ export default {
           { props: 'financialSchemeLabel', label: '金融方案', visible: false, width: 120 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
-          { props: 'materialsCode', label: '整车物料编码', visible: true, width: 240 },
+          { props: 'vehicleMaterialCode', label: '整车物料编码', visible: true, width: 240 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
