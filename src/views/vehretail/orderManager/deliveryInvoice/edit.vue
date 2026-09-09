@@ -883,15 +883,20 @@ export default {
       return this.form.status === 5 &&
         this.permissions.has(`${this.moduleKey}-updateInvoiceTime`);
     },
-    // 7.2 需求：家用不能改营运。当前是"家用"时只展示"家用"且 disabled
+    // 7.2 需求：家用不能改营运。当前是"家用"时仍展示其余选项，但禁用其他（非当前）选项；非家用场景可任意来回选中
     adjustableAttributeOptions () {
-      if (this.form.vehicleAttribute === 1) {
-        return [{ code: 1, message: '家用', disabled: true }];
-      }
-      return [
+      const options = [
         { code: 1, message: '家用' },
         { code: 2, message: '营运' }
       ];
+      // 家用场景：禁用非当前选项（即禁用 code !== 当前值 的选项）
+      if (this.form.vehicleAttribute === 1) {
+        return options.map(item => ({
+          ...item,
+          disabled: item.code !== this.form.vehicleAttribute
+        }));
+      }
+      return options;
     }
   },
   watch: {
