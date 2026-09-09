@@ -41,13 +41,47 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="车系">
+          <fetch-select
+            v-model="form.seriesIdList"
+            :remote-method="remoteMethods.series"
+            v-bind="selectOptions"
+          />
+        </el-form-item>
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            :remote-method="remoteMethods.model"
+            v-bind="selectOptions"
+          />
+        </el-form-item>
+        <el-form-item label="年款">
+          <fetch-select
+            v-model="form.yearTypeIdList"
+            :remote-method="remoteMethods.year"
+            v-bind="selectOptions"
+          />
+        </el-form-item>
+        <el-form-item label="省市" class="item--area">
+          <el-cascader
+            v-model="form.areaCodes"
+            :options="areaOptions"
+            :props="areaProps"
+            collapse-tags
+            clearable
+            filterable
+            @change="handleAreaChange"
+          />
+        </el-form-item>
         <el-form-item label="销售门店">
           <fetch-select
             filterable
             clearable
             remote
-            v-model="form.saleDealerCode"
-            :remote-method="saleDealerSearch"
+            multiple
+            collapseTags
+            v-model="form.saleDealerCodeList"
+            :remote-method="remoteMethods.getSaleDealer"
             value-key="storeCode"
             label-key="storeName"
             placeholder="请选择"
@@ -58,8 +92,10 @@
             filterable
             clearable
             remote
-            v-model="form.deliveryDealerCode"
-            :remote-method="saleDealerSearch"
+            multiple
+            collapseTags
+            v-model="form.deliveryDealerCodeList"
+            :remote-method="remoteMethods.getSaleDealer"
             value-key="storeCode"
             label-key="storeName"
             placeholder="请选择"
@@ -162,7 +198,17 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchCancel, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate } from '@/api/common';
+import {
+  exportTable,
+  getEnum,
+  getTableConfig,
+  listOrgStoreInfo,
+  listVehicleModel,
+  listVehicleYearType,
+  tableAddOrUpdate,
+  vehicleSeriesList
+} from '@/api/common';
+import { getAreaTree } from '@/utils';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -180,6 +226,15 @@ const defaultForm = {
   deliveryOrderCode: '',
   retailOrderCode: '',
   createTime: '',
+  // 7.13 新增查询条件
+  saleDealerCodeList: [],
+  deliveryDealerCodeList: [],
+  areaCodes: [],
+  provinceCodeList: [],
+  cityCodeList: [],
+  seriesIdList: [],
+  modelIdList: [],
+  yearTypeIdList: []
 };
 
 const pageSize = 20;
@@ -211,6 +266,52 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
+      areaOptions: (() => {
+        // 仅保留省/市两级,移除城市下的区/县子节点
+        return (getAreaTree() || []).map(province => ({
+          ...province,
+          child: (province.child || []).map(city => {
+            const { child, ...rest } = city;
+            return rest;
+          })
+        }));
+      })(),
+      // el-cascader 多选配置
+      areaProps: {
+        multiple: true,
+        checkStrictly: true,
+        emitPath: false,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
+      // fetch-select 公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        filterable: true,
+        remote: true,
+        multiple: true,
+        collapseTags: true
+      },
+      // 远程搜索方法(与 deliveryOrder 对齐,放在 data 内)
+      remoteMethods: {
+        // 初始方法
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, size: 100 });
+        },
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query, size: 100 });
+        },
+        year: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query, size: 100 });
+        },
+        getSaleDealer: async (query) => {
+          return await listOrgStoreInfo({ keyword: query, pageSize: 5000 });
+        }
+      },
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
@@ -244,6 +345,11 @@ export default {
           { props: 'invoiceTime', label: '开票日期', visible: true, width: 200, sortable: true },
           { props: 'invoiceName', label: '开票名称', visible: true, width: 200 },
           { props: 'vehicleAttributeLabel', label: '车辆属性', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'modelName', label: '车型', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          { props: 'provinceName', label: '省份', visible: true, width: 200 },
+          { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'orderCarBuyerPhone', label: '购车人手机号码', visible: true, width: 200 },
           { props: 'carIdCardTypeLabel', label: '车主证件类型', visible: true, width: 200 },
           { props: 'carIdCardNo', label: '车主证件号码', visible: true, width: 200 },
@@ -441,13 +547,6 @@ export default {
       }
       return [];
     },
-    async saleDealerSearch (val) {
-      const params = {
-        keyword: val,
-        pageSize: 5000
-      };
-      return await listOrgStoreInfo(params);
-    },
     // 批量作废
     handleBatchCancel () {
       const ids = this.selectionList.map(item => item.id) || [];
@@ -485,6 +584,27 @@ export default {
         refreshFunc: this.getData
       });
     },
+    // el-cascader 多选变更时,遍历省/市树把每个选中的 code 按层级拆分到对应数组
+    handleAreaChange (selectedCodes) {
+      const codes = Array.isArray(selectedCodes) ? selectedCodes : [];
+      const areaTree = this.areaOptions || [];
+      const provinces = new Set();
+      const cities = new Set();
+
+      areaTree.forEach(province => {
+        if (codes.includes(province.code)) {
+          provinces.add(province.code);
+        }
+        (province.child || []).forEach(city => {
+          if (codes.includes(city.code)) {
+            cities.add(city.code);
+          }
+        });
+      });
+
+      this.form.provinceCodeList = [...provinces];
+      this.form.cityCodeList = [...cities];
+    },
     handleCreateTimeChange (createTime) {
       if (createTime && createTime.length > 1) {
         this.form.createTimeStart = createTime[0];
@@ -500,5 +620,8 @@ export default {
 
 <style lang="scss" scoped>
 .m-delivery-invoice-list {
+  ::v-deep .el-cascader__search-input {
+    margin: 2px 0 2px 5px;
+  }
 }
 </style>

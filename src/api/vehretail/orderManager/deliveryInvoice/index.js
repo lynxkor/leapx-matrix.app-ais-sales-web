@@ -90,3 +90,19 @@ export function batchCancel (data) {
 export function checkUpload (data) {
   return api.jsonPost(prefix + 'checkUpload', data);
 }
+
+/**
+ * 调整车辆属性（7.2 需求）
+ * @param {Object} data { id, vehicleAttribute }
+ */
+export function updateVehicleAttribute (data) {
+  return api.jsonPost(prefix + 'updateVehicleAttribute', data);
+}
+
+/**
+ * 调整开票日期（7.2 需求）
+ * @param {Object} data { id, invoiceTime }
+ */
+export function updateInvoiceTime (data) {
+  return api.jsonPost(prefix + 'updateInvoiceTime', data);
+}
