@@ -65,6 +65,7 @@
                     @blur="onCreditAmountBlur"
                     placeholder="请输入授信额度"
                     clearable
+                    :maxlength="20"
                   />
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
