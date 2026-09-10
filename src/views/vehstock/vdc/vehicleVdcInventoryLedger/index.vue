@@ -137,6 +137,10 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
+        <el-form-item label="状态">
+          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable
+            filterable />
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -223,6 +227,7 @@ const defaultForm = {
   reservedType: '',
   allowWholesale: '',
   returnLabel: '',
+  status: '1',
   allowLockRetail: '',
   vehicleRegisteredModelIdList: [],
   materialsCodeLike: '',
@@ -365,6 +370,7 @@ export default {
           { props: 'sapSyncTime', label: '同步SAP时间', visible: true, width: 200 },
           { props: 'sapSyncStatus', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
@@ -584,6 +590,7 @@ export default {
       this.form.vehicleDeliveryStatusList = [];
       this.form.carAllocated = '';
       this.form.logisticsReserved = '';
+      this.form.status = '';
     }
     this.refreshTableData();
   },
@@ -649,6 +656,7 @@ export default {
         this.sapSyncStatusFilterMode = '';
         this.form.vehicleDeliveryStatusList = [];
         this.form.lowBatteryCar = null;
+        this.form.status = '';
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'homePage') {
@@ -657,11 +665,13 @@ export default {
         this.erpInvoiceFilterMode = 'include';
         this.sapSyncStatusFilterMode = 'include';
         this.form.vehicleDeliveryStatusList = ['3'];
+        this.form.status = '1';
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
         this.form = { ...defaultFormFull };
         this.form.lowBatteryCar = 1;
+        this.form.status = '';
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
@@ -964,6 +974,7 @@ export default {
         this.form.carAllocated = null;
         this.form.logisticsReserved = null;
         this.form.lowBatteryCar = null;
+        this.form.status = null;
         this.erpInvoiceFilterMode = '';
         this.sapSyncStatusFilterMode = '';
         this.form.vehicleDeliveryStatusList = [];
@@ -977,11 +988,14 @@ export default {
         this.form.carAllocated = '0';
         this.form.logisticsReserved = '0';
         this.form.vehicleDeliveryStatusList = ['3'];
+        this.form.status = 1;
       }
       if (item.name === 'lowBattery') {
         this.form.carAllocated = '';
         this.form.logisticsReserved = '';
         this.form.lowBatteryCar = 1;
+        this.form.vehicleDeliveryStatusList = [];
+        this.form.status = null;
       }
       this.$nextTick(() => {
         this.getData();
