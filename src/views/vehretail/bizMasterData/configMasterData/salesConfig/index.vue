@@ -214,6 +214,29 @@
                     </el-select>
                   </el-tooltip>
                 </el-form-item>
+                <el-form-item label="交车单签署校验：" prop="goToSignStatus">
+                  <el-tooltip
+                    content="开启后，当交车单签署时会校验签署人是否为本人"
+                    placement="top"
+                    effect="light"
+                  >
+                    <el-select
+                      v-model="formData.goToSignStatus"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      :disabled="!showEditBtn"
+                      @change="(val) => handleChange(val, 'goToSign')"
+                    >
+                      <el-option
+                        v-for="item in yes_no_enum"
+                        :key="item.code"
+                        :label="item.message"
+                        :value="item.code"
+                      />
+                    </el-select>
+                  </el-tooltip>
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -393,6 +416,9 @@ export default {
         realNameAuth: [
           { required: true, message: '请选择交车实名认证校验', trigger: 'change' }
         ],
+        goToSignStatus: [
+          { required: true, message: '请选择交车单签署校验', trigger: 'change' }
+        ],
         saleDealerAuthName: [
           { required: true, message: '请选择销售门店配置', trigger: 'change' }
         ],
@@ -495,6 +521,13 @@ export default {
             },
             {
               salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'goToSign',
+              salesConfigName: '交车单签署校验',
+              salesConfigType: 'single',
+              saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
+            },
+            {
+              salesConfigGroup: 'deliveryConfig',
               salesConfigKey: 'deliveryAssignment',
               salesConfigName: '交车单分派通知',
               salesConfigType: 'multiple',
@@ -544,6 +577,7 @@ export default {
         financeStatus: this.getConfigValue('finance'),
         phoneRegisterStatus: this.getConfigValue('phoneRegister'),
         realNameAuth: this.getConfigValue('realNameAuth'),
+        goToSignStatus: this.getConfigValue('goToSign'),
         deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment'),
         saleDealerAuthName: this.getConfigValue('saleDealerAuth'),
         deliveryDealerAuthName: this.getConfigValue('deliveryDealerAuth')
