@@ -445,6 +445,7 @@ export default {
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
+          // { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
