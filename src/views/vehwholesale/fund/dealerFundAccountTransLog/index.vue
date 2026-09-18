@@ -259,7 +259,20 @@ export default {
           { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 100 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 140, align: 'right' },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
-          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
+          {
+            props: 'mallOrderCode',
+            label: '商城订单号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              // 历史流水未回填零售订单ID时置灰，避免打开 id=undefined 的死链
+              disabled: row => !row.retailOrderId,
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${row.retailOrderId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
           { props: 'lineNo', label: '行项目号', visible: true, width: 140, align: 'right' },
           { props: 'remark', label: '备注', visible: true, width: 200 },
