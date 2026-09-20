@@ -71,13 +71,7 @@
                   <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="备选单号：">
-                  <el-link
-                    v-if="form.vehiclePurposeChangeApplyId"
-                    type="primary"
-                    :href="`/sales/vehretail/orderManager/specialVehicleSalesReport/edit?id=${form.vehiclePurposeChangeApplyId}`"
-                    target="_blank"
-                  >{{ form.vehiclePurposeChangeApplyNo }}</el-link>
-                  <span v-else>{{ form.vehiclePurposeChangeApplyNo }}</span>
+                  <span>{{ form.vehiclePurposeChangeApplyNo }}</span>
                 </el-form-item>
                 <el-form-item label="预算科目：">
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${form.budgetItemId}`" target="_blank">{{ form.budgetItemName }}</el-link>
