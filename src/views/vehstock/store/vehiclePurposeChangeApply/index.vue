@@ -21,6 +21,11 @@
           collapse-tags /> -->
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="是否涉及返利">
+          <el-select v-model="form.rebateFlag" placeholder="请选择" clearable>
+            <el-option v-for="item in rebateFlagOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="用途变更类型">
           <fetch-select :request="fetchOptions" enumCode="vehstock_change_type" v-model="form.changeType"
             placeholder="请选择" clearable filterable />
@@ -101,7 +106,14 @@ const defaultForm = {
   vinList: [],
   modelId: '',
   changeType: '',
+  rebateFlag: '',
 };
+
+// 是否涉及返利：1-是,0-否
+const rebateFlagOptions = [
+  { label: '是', value: 1 },
+  { label: '否', value: 0 }
+];
 
 const pageSize = 20;
 const mockConfig = {
@@ -132,6 +144,7 @@ export default {
       selectionList: [],
       applyStoreCodeList: (this.$store.state.user.userInfo.orgPostUserList || []).filter(item => item.orgType === '1060'),
       yes_no_enum: YES_NO_ENUM,
+      rebateFlagOptions,
       show: false,
       loading: false,
       exportLoading: false,
@@ -175,6 +188,9 @@ export default {
           { props: 'vin', label: '门店库存台账', visible: true, width: 180 },
           { props: 'modelName', label: '车型', visible: true, width: 120 },
           { props: 'changeTypeLabel', label: '用途变更类型', visible: true, width: 140 },
+          { props: 'rebateFlagLabel', label: '是否涉及返利', visible: true, width: 130 },
+          { props: 'rebateAmount', label: '返利返还差额', visible: true, width: 140 },
+          { props: 'rebateRemark', label: '返利返还备注', visible: true, width: 200 },
           { props: 'originalOrderTypeLabel', label: '原批售订单分类', visible: true, width: 150 },
           { props: 'originalReservedLabel', label: '原是否预留', visible: true, width: 130 },
           { props: 'originalReservedType', label: '原预留类型', visible: true, width: 160 },
