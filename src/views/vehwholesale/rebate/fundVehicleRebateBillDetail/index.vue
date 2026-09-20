@@ -55,7 +55,7 @@
       <el-form-item label="是否入账">
         <fetch-select
           :request="fetchOptions"
-          enumCode="vw_rebate_bills_detail_posted"
+          enumCode="BooleanEnum"
           v-model="form.posted"
           placeholder="请选择"
           clearable
