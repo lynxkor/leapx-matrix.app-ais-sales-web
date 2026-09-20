@@ -41,7 +41,7 @@
     <el-form-item label="门店名称">
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
     </el-form-item>
-    <el-form-item label="单据状态" prop="billStatuses">
+      <el-form-item label="单据状态" prop="billStatuses">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_rebate_bills_detail_status"
@@ -49,6 +49,16 @@
           placeholder="请选择"
           clearable
           multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="是否入账">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_rebate_bills_detail_posted"
+          v-model="form.posted"
+          placeholder="请选择"
+          clearable
           filterable
         />
       </el-form-item>
@@ -269,6 +279,7 @@ const defaultForm = {
   reviewName: '', // 复审人
   reviewTime: [], // 复审时间(区间)
   remark: '', // 备注
+  posted: '', // 是否入账（1是0否）
 };
 
 const pageSize = 20;
