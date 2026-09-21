@@ -9,6 +9,20 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="车系">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :remote-method="getSeriesIdList"
+          value-key="id"
+          label-key="name"
+          @change="handleSeriesChange"
+        />
+      </el-form-item>
       <el-form-item label="车型">
         <fetch-select
           filterable
@@ -18,12 +32,13 @@
           collapseTags
           v-model="form.modelIds"
           :remote-method="getModelIdList"
+          :options="modelList"
           value-key="id"
           label-key="name"
           @change="handleModelChange"
         />
       </el-form-item>
-      <el-form-item label="年款">
+      <el-form-item label="年款" v-show="this.visibleCount === 3 || show">
         <fetch-select
           filterable
           clearable
@@ -33,17 +48,69 @@
           label-key="label"
         />
       </el-form-item>
-      <el-form-item label="不参与自动批售确认"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.noJoinAutoConfirm"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="外观">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.exteriorIds"
+            :remote-method="getExteriorList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="选装包">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.optionPackageIds"
+            :remote-method="getOptionPackageList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="内饰">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.interiorIds"
+            :remote-method="getInteriorList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="轮毂">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.wheelHubIds"
+            :remote-method="getWheelHubList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="不参与自动批售确认">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.noJoinAutoConfirm"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
@@ -116,7 +183,20 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleNoAutoCarModelConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelYearTypeRelationDistinctYeayType, listVehicleModel } from '@/api/common';
+import {
+  getTableConfig,
+  tableAddOrUpdate,
+  exportTable,
+  getEnum,
+  listVehicleYearType,
+  listVehicleModel,
+  vehicleModelYearTypeRelationDistinctYeayType,
+  vehicleSeriesList,
+  vehicleExterior,
+  vehicleInterior,
+  vehicleWheelHub,
+  vehicleOptionPackage
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -127,8 +207,13 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  seriesIds: [],
   modelIds: [],
   vehicleYearTypeId: '',
+  exteriorIds: [],
+  optionPackageIds: [],
+  interiorIds: [],
+  wheelHubIds: [],
   noJoinAutoConfirm: '',
   status: '',
   updateTime: '',
@@ -149,7 +234,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '不自动批售确认车型',
+      pageTitle: '不自动确认批售配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
@@ -157,6 +242,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      modelList: [],
       yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -191,6 +277,18 @@ export default {
             }]
           },
           {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 140,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
             props: 'modelName',
             label: '车型',
             visible: true,
@@ -214,6 +312,10 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'exteriorName', label: '外观', visible: true, width: 120 },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 140 },
+          { props: 'interiorName', label: '内饰', visible: true, width: 120 },
+          { props: 'wheelHubName', label: '轮毂', visible: true, width: 120 },
           { props: 'noJoinAutoConfirmLabel', label: '不参与自动批售确认', visible: true, width: 160 },
           { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
@@ -252,6 +354,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.getYearTypeList();
   },
   methods: {
     handleImport () {
@@ -271,6 +374,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.getYearTypeList();
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -283,7 +387,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '不自动批售确认车型',
+        businessType: '不自动确认批售配置',
         dataFetchPath: '/vw/web/basic/wholesaleNoAutoCarModelConf/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -291,7 +395,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '不自动批售确认车型.xlsx');
+            await downloadExcel(res.excelUrl, '不自动确认批售配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -444,20 +548,56 @@ export default {
       //   });
       // });
     },
+    // 车型远程搜索：结果同步写入 modelList 驱动下拉选项（供车系联动刷新）
     async getModelIdList (params) {
-      return listVehicleModel({ modelNameLike: params, status: 1 });
+      const res = await listVehicleModel({ modelNameLike: params, seriesIdList: this.form.seriesIds || [], status: 1 });
+      this.modelList = res || [];
+      return res;
     },
-    async handleModelChange (val, record) {
-      this.yearTypeList = [];
-      this.form.vehicleYearTypeId = null;
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
-      this.yearTypeList = res.map(item => {
-        return {
-          ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
-        };
-      });
+    /**
+     * 车系联动车型：清空已选车型，按新车系刷新车型下拉，年款随车型清空恢复全量
+     */
+    handleSeriesChange () {
+      this.form.modelIds = [];
+      this.getModelIdList('');
+      this.handleModelChange();
+    },
+    /**
+     * 车型联动年款：按已选车型查年款选项；车型清空时恢复全量年款
+     */
+    handleModelChange () {
+      this.form.vehicleYearTypeId = '';
+      const modelIds = this.form.modelIds || [];
+      if (modelIds.length) {
+        this.loadYearTypeByModels(modelIds);
+      } else {
+        this.getYearTypeList();
+      }
+    },
+    // 年款固定接口获取（全量）
+    async getYearTypeList () {
+      const res = await listVehicleYearType({ pageSize: 50 });
+      this.yearTypeList = (res || []).map(i => ({ ...i, label: i.name, value: i.id }));
+    },
+    // 按车型集合查关联年款
+    async loadYearTypeByModels (modelIdList) {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList, limitSize: 1000 });
+      this.yearTypeList = (res || []).map(i => ({ ...i, label: i.yearTypeName, value: i.yearTypeId }));
+    },
+    async getSeriesIdList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getExteriorList (params) {
+      return vehicleExterior({ exteriorNameLike: params, status: 1 });
+    },
+    async getOptionPackageList (params) {
+      return vehicleOptionPackage({ optionPackageNameLike: params, status: 1 });
+    },
+    async getInteriorList (params) {
+      return vehicleInterior({ interiorNameLike: params, status: 1 });
+    },
+    async getWheelHubList (params) {
+      return vehicleWheelHub({ wheelHubNameLike: params, status: 1 });
     },
   }
 };
