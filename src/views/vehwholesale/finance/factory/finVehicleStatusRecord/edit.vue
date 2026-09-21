@@ -80,6 +80,9 @@
                 <el-form-item label="融资数据来源：" prop="financingDataSource">
                   {{ form.financingDataSourceLabel }}
                 </el-form-item>
+                <el-form-item label="融资类型：" prop="financingType">
+                  {{ form.financingTypeLabel }}
+                </el-form-item>
                 <el-form-item label="融资金额：" prop="financingAmount">
                   {{ formatAmount(form.financingAmount) }}
                 </el-form-item>
@@ -144,6 +147,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   code: '',
   financingDataSource: '',
+  financingType: '',
   orderCode: '',
   vehiclestatus: '1',
   vin: '',
