@@ -260,6 +260,7 @@ export const orderCancellationRecordDisplayFields = [
 export const orderPaymentRecordDisplayFields = [
   { key: 'payCategoryLabel', label: '收款类型', width: '25%' },
   { key: 'paymentTypeLabel', label: '支付方式', width: '25%' },
+  { key: 'rightsItem', label: '权益项名称', width: '25%' },
   { key: 'paymentAmount', label: '付款金额', width: '25%' },
   { key: 'paymentTime', label: '付款时间', width: '25%' }
 ];

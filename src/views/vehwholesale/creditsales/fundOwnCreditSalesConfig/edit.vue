@@ -59,13 +59,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="授信额度：" prop="creditAmount">
-                  <el-input-number
+                  <el-input
+                    :value="creditAmountDisplay"
+                    @input="onCreditAmountInput"
+                    @blur="onCreditAmountBlur"
                     placeholder="请输入授信额度"
-                    v-model="form.creditAmount"
-                    :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
+                    clearable
+                    :maxlength="20"
                   />
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
@@ -289,6 +289,14 @@ export default {
         }
       },
       immediate: true
+    },
+    // 外部更新 form.creditAmount 时同步本地显示字符串
+    // （如 dataTransform 加载详情、getDealerCompanyCode 调用 gdclItem 接口）
+    'form.creditAmount': {
+      handler (val) {
+        this.creditAmountDisplay = fmtAmount(val);
+      },
+      immediate: true
     }
   },
   data () {
@@ -328,6 +336,7 @@ export default {
       originalForm: { ...form },
       perSubmit: false,
       preReview: false,
+      creditAmountDisplay: '',
       rules: {
         dealerCompanyName: [
           { required: true, message: '请选择母公司名称', trigger: 'change' }
@@ -429,7 +438,21 @@ export default {
       readOnlyFields.forEach(field => {
         delete submitForm[field];
       });
+      // 千分位字段：onCreditAmountInput 已转回数字，此处 Number() 兜底
+      const numCreditAmount = Number(submitForm.creditAmount);
+      submitForm.creditAmount = isNaN(numCreditAmount) ? 0 : numCreditAmount;
       return addOrUpdate(submitForm);
+    },
+    onCreditAmountInput (val) {
+      // 输入时不格式化，原样保存到本地显示字符串 → Vue 发现值未变不动 DOM，保留光标位置
+      this.creditAmountDisplay = val;
+    },
+    onCreditAmountBlur () {
+      // 失焦时：解析数字同步到 form.creditAmount，并格式化显示字符串
+      const num = parseFloat(String(this.creditAmountDisplay).replace(/,/g, ''));
+      const value = isNaN(num) ? '' : num;
+      this.form.creditAmount = value;
+      this.creditAmountDisplay = fmtAmount(value);
     },
     handleSubmit () {
       const params = {

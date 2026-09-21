@@ -66,6 +66,17 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="合作类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_cooperation_type"
+            v-model="form.cooperationTypes"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <dateranges
             v-model="form.createTime"
@@ -148,6 +159,7 @@ const defaultForm = {
   month: '',
   accountType: '',
   financeOrganizationCode: '',
+  cooperationTypes: [],
   createTime: '',
 };
 
@@ -229,6 +241,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',

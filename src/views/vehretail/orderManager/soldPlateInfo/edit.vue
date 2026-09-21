@@ -321,6 +321,7 @@
                     type="date"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="开票金额：" prop="invoiceAmount">
