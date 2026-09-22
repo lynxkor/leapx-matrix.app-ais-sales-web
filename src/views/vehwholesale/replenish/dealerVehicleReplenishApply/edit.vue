@@ -106,6 +106,34 @@
                     placeholder="请选择专项活动"
                     clearable
                     filterable
+                    @change="handleChangeActivity"
+                  />
+                </el-form-item>
+                <el-form-item label="是否二网：" prop="secondDealerFlag">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
+                    v-model="form.secondDealerFlag"
+                    placeholder="请选择是否二网"
+                    :disabled="!!form.prodScheduleActivityId"
+                    clearable
+                    filterable
+                    @change="handleChangeSecondDealerFlag"
+                  />
+                </el-form-item>
+                <el-form-item label="二网门店：" prop="secondDealerCode">
+                  <fetch-select
+                    :remote-method="secondDealerSearch"
+                    remote
+                    reserve-keyword
+                    labelKey="secondStoreName"
+                    valueKey="secondStoreCode"
+                    v-model="form.secondDealerCode"
+                    placeholder="请输入二网名称/编码搜索"
+                    :disabled="form.secondDealerFlag !== 1"
+                    clearable
+                    filterable
+                    @change="handleChangeSecondDealer"
                   />
                 </el-form-item>
                 <el-form-item
@@ -413,6 +441,7 @@ import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo, listOrgWarehouseStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getList as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
+import { getSecondDealerPage } from '@/api/vehwholesale/replenish/secondDealer/index';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -430,6 +459,9 @@ const defaultForm = {
   wholesaleWay: '10',
   prodScheduleActivityId: '',
   prodScheduleActivityName: '',
+  secondDealerFlag: 0,
+  secondDealerCode: '',
+  secondDealerName: '',
   serials: '',
   orderCategory: '',
   applyTotalQty: '',
@@ -914,6 +946,10 @@ export default {
       this.form.regionName = record?.region || '';
       this.form.prodScheduleActivityId = '';
       this.form.prodScheduleActivityName = '';
+      // 二网依赖当前销售门店，换门店必须重置
+      this.form.secondDealerFlag = 0;
+      this.form.secondDealerCode = '';
+      this.form.secondDealerName = '';
       // 清空门店仓库相关字段，使组件的下拉值被清空
       this.form.dealerWarehouseCode = '';
       this.form.dealerWarehouseAddress = '';
@@ -945,6 +981,10 @@ export default {
     handleChangeOrderCategory (val) {
       if (val + '' === '2') {
         this.form.prodScheduleActivityId = '';
+        // 活动被清空，二网解锁并重置
+        this.form.secondDealerFlag = 0;
+        this.form.secondDealerCode = '';
+        this.form.secondDealerName = '';
       } else if (val + '' === '0' || val + '' === '20') {
         this.form.applyCategory = '';
       }
@@ -991,6 +1031,51 @@ export default {
       });
 
       return Array.from(uniqueMap.values());
+    },
+    /**
+     * 二网门店远程搜索
+     * 网发接口：按当前销售门店查询其下二级经销商门店，支持名称/编码关键词
+     */
+    async secondDealerSearch (query) {
+      if (!this.form.saleDealerCode) {
+        this.$message.warning('请先选择销售门店');
+        return [];
+      }
+      const searchQuery = typeof query === 'string' ? query : '';
+      const result = await getSecondDealerPage({
+        storeCode: this.form.saleDealerCode,
+        keyword: searchQuery,
+        page: 1,
+        size: 100
+      });
+      return result?.data?.records || [];
+    },
+    /**
+     * 选择二网门店：编码与名称一起回填（下游同步零小跑需要编码，不能只存名称）
+     */
+    handleChangeSecondDealer (val, record) {
+      this.form.secondDealerCode = record?.secondStoreCode || '';
+      this.form.secondDealerName = record?.secondStoreName || '';
+    },
+    /**
+     * 切换「是否二网」：选「否」时清空二网门店，避免脏数据
+     */
+    handleChangeSecondDealerFlag (val) {
+      if (Number(val) !== 1) {
+        this.form.secondDealerCode = '';
+        this.form.secondDealerName = '';
+      }
+    },
+    /**
+     * 选择排产专项活动：按活动主表的「是否二网」锁定本单的是否二网
+     */
+    handleChangeActivity (val, record) {
+      const flag = Number(record?.secondDealerFlag ?? 0) || 0;
+      this.form.secondDealerFlag = flag;
+      if (flag !== 1) {
+        this.form.secondDealerCode = '';
+        this.form.secondDealerName = '';
+      }
     },
     handleAuditValidForDealer () {
       dealerAuditValid([this._id]).then(() => {
