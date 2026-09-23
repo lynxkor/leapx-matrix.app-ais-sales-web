@@ -106,10 +106,7 @@
                   <el-form-item label="是否二网：" prop="secondDealerFlag">
                     <el-input placeholder="请输入" :value="secondDealerFlagLabel" clearable disabled />
                   </el-form-item>
-                  <el-form-item label="二网门店编码：" prop="secondDealerCode">
-                    <el-input placeholder="请输入" v-model="form.secondDealerCode" clearable disabled />
-                  </el-form-item>
-                  <el-form-item label="二网门店名称：" prop="secondDealerName">
+                  <el-form-item label="二网门店：" prop="secondDealerName">
                     <el-input placeholder="请输入" v-model="form.secondDealerName" clearable disabled />
                   </el-form-item>
                   <el-form-item label="充电桩编码：" prop="chargingPortCode">
@@ -202,6 +199,12 @@
                     <el-button class="link" style="padding: 0;" type="text"
                       @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailId)">{{
                         form.replenishApplyDetailCode }}</el-button>
+                  </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    {{ secondDealerFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="二网门店：" prop="secondDealerName">
+                    {{ form.secondDealerName }}
                   </el-form-item>
                   <el-form-item label="充电桩编码：" prop="chargingPortCode">
                     {{ form.chargingPortCode }}
@@ -707,7 +710,6 @@ const defaultForm = {
   replenishApplyDetailCode: '',
   chargingPortCode: '',
   secondDealerFlag: 0,
-  secondDealerCode: '',
   secondDealerName: '',
   id: '',
   creator: '',

@@ -276,6 +276,12 @@
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName" v-show="form.orderCategory + '' !== '2'">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)"> {{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
+                <el-form-item label="是否二网：" prop="secondDealerFlag">
+                  {{ Number(form.secondDealerFlag) === 1 ? '是' : '否' }}
+                </el-form-item>
+                <el-form-item label="二网门店：" prop="secondDealerCode">
+                  {{ form.secondDealerName || '-' }}
+                </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategoryLabel" v-show="form.orderCategory + '' === '2'">
                   {{ form.applyCategoryLabel }}
                 </el-form-item>
@@ -665,6 +671,20 @@ export default {
         ],
         dealerWarehouseName: [
           { required: true, message: '请选择门店仓库', trigger: 'change' }
+        ],
+        // 二网开关 = 是 时必填二网门店：rules 是 data() 中的一次性声明，但 validator 是箭头函数，
+        // 闭包里读到的 this.form.secondDealerFlag 始终是最新响应式值，所以保存时容器会触发该 rule 并报错。
+        secondDealerCode: [
+          {
+            required: false,
+            trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (Number(this.form.secondDealerFlag) === 1 && !value) {
+                return callback(new Error('请选择二网门店'));
+              }
+              callback();
+            }
+          }
         ]
       }
     };
@@ -1050,7 +1070,10 @@ export default {
         page: 1,
         size: 100
       });
-      return result?.data?.records || [];
+      // 注意：api.jsonPost 已经在拦截器 + 外层 .then(res => res.data) 二次解掉了外层 JSON，
+      // 所以返回的就是接口 data 本身（分页对象 {current, records, totals, ...}），
+      // 这里不能再读 .data，否则 result.data 为 undefined → 下拉为空。
+      return result?.records || [];
     },
     /**
      * 选择二网门店：编码与名称一起回填（下游同步零小跑需要编码，不能只存名称）
