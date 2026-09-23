@@ -201,6 +201,7 @@
         <el-button v-permission="moduleKey+'-outbound'" size="small" @click="batchreseRvation('car')" :disabled="selectionList.length === 0">运损车出库</el-button>
         <el-button v-permission="moduleKey+'-move'" size="small" @click="handleBatchMove" :disabled="selectionList.length === 0">同门店移库</el-button>
         <el-button v-permission="moduleKey+'-batchConvertType'" size="small" @click="handleBatchConvertType" :disabled="selectionList.length === 0">批量车辆类型转换</el-button>
+      <el-button v-permission="moduleKey+'-updateSecondDealer'" size="small" @click="handleBatchUpdateSecondDealer" :disabled="selectionList.length === 0">二网信息编辑</el-button>
         <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
@@ -243,6 +244,48 @@
       @close="closeConvertTypeDialog"
       @submit="submitBatchConvertType"
     />
+    <!-- LP261730: 批量二网信息编辑（参照批量预留按钮） -->
+    <el-dialog
+      title="二网信息编辑"
+      :visible.sync="secondDealerDialog"
+      width="500px"
+      :close-on-click-modal="false"
+      @close="resetSecondDealerDialog"
+    >
+      <el-form :model="secondDealerForm" label-width="100px" size="small">
+        <el-form-item label="是否二网：" required>
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="secondDealerForm.secondDealerFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+            @change="handleSecondDealerFlagChange"
+          />
+        </el-form-item>
+        <el-form-item label="二网门店：" :required="Number(secondDealerForm.secondDealerFlag) === 1">
+          <fetch-select
+            :remote-method="secondDealerSearch"
+            remote
+            reserve-keyword
+            labelKey="secondStoreName"
+            valueKey="secondStoreCode"
+            v-model="secondDealerForm.secondDealerCode"
+            :params="secondDealerForm.secondDealerName"
+            :disabled="Number(secondDealerForm.secondDealerFlag) !== 1"
+            placeholder="请输入二网名称/编码搜索"
+            clearable
+            filterable
+            @change="handleSecondDealerStoreChange"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button size="small" @click="secondDealerDialog = false">取消</el-button>
+        <el-button size="small" type="primary" :loading="secondDealerSubmitting" @click="submitBatchUpdateSecondDealer">确定</el-button>
+      </div>
+    </el-dialog>
     <WarehouseDialog
       :visible="warehouseDialog"
       @close="warehouseDialog = false"
@@ -254,7 +297,8 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryLedger/index';
+import { getList, deleteItem, enableItem, updateSecondDealer } from '@/api/vehstock/store/storeInventoryLedger/index';
+import { getSecondDealerPage } from '@/api/vehwholesale/replenish/secondDealer/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, listOrgStoreInfo, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -345,6 +389,15 @@ export default {
       convertTypeDialog: false, // 批量车辆类型转换弹窗
       warehouseDialog: false, // 调整默认仓库弹窗
       deliveryDealerCode: '', // 交付门店编码
+      // LP261730: 批量二网编辑
+      secondDealerDialog: false,
+      secondDealerSubmitting: false,
+      batchSecondDealerSaleCode: '', // 二网门店远程下拉的 storeCode 参数
+      secondDealerForm: {
+        secondDealerFlag: null, // 1=是, 0=否
+        secondDealerCode: '',
+        secondDealerName: ''
+      },
       activeName: 'homePage',
       clickItemId: '',
       areaOptions: (() => {
@@ -888,6 +941,85 @@ export default {
     submitBatchConvertType () {
       this.convertTypeDialog = false;
       this.getData();
+    },
+    // ============ LP261730: 批量二网信息编辑 ============
+    // 前置校验：车辆状态必须全部=已入门店库(12)；销售门店必须全部相同
+    handleBatchUpdateSecondDealer () {
+      const wrongStatus = this.selectionList.filter(item => Number(item.vechicleStatus) !== 12);
+      if (wrongStatus.length > 0) {
+        return this.$message({
+          type: 'warning',
+          message: `选中的${wrongStatus.map(i => i.vin).join('、')}车辆不是【已入门店库】，不可编辑二网`
+        });
+      }
+      const firstCode = this.selectionList[0].saleDealerCode;
+      if (!this.selectionList.every(item => item.saleDealerCode === firstCode)) {
+        return this.$message.warning('只能选择相同销售门店的车辆进行批量二网编辑');
+      }
+      // 通过校验 → 打开 dialog，并准备好远程下拉的 storeCode
+      this.selectionListIds = this.selectionList.map(item => item.id);
+      this.batchSecondDealerSaleCode = firstCode;
+      this.secondDealerForm = { secondDealerFlag: null, secondDealerCode: '', secondDealerName: '' };
+      this.secondDealerDialog = true;
+    },
+    // 切【是否二网】= 否时联动清空二网门店
+    handleSecondDealerFlagChange (val) {
+      if (Number(val) !== 1) {
+        this.secondDealerForm.secondDealerCode = '';
+        this.secondDealerForm.secondDealerName = '';
+      }
+    },
+    // 选二网门店：code + name 一起回填（与 dealerVehicleReplenishApply 一致风格）
+    handleSecondDealerStoreChange (val, record) {
+      this.secondDealerForm.secondDealerCode = record?.secondStoreCode || '';
+      this.secondDealerForm.secondDealerName = record?.secondStoreName || '';
+    },
+    // 二网门店远程搜索（与 dealerVehicleReplenishApply 同款修正：result.data.records → result.records）
+    async secondDealerSearch (query) {
+      if (!this.batchSecondDealerSaleCode) {
+        this.$message.warning('请先选择销售门店');
+        return [];
+      }
+      const searchQuery = typeof query === 'string' ? query : '';
+      const result = await getSecondDealerPage({
+        storeCode: this.batchSecondDealerSaleCode,
+        keyword: searchQuery,
+        status: '3',
+        page: 1,
+        size: 100
+      });
+      // 与 LP261730 修复一致：api.jsonPost 二次解外层 .data，故此处取 records 即可
+      return result?.records || [];
+    },
+    // 提交：flag=1 时强制要求 code/name 非空；flag=0 时清空 code/name
+    submitBatchUpdateSecondDealer () {
+      const form = this.secondDealerForm;
+      if (form.secondDealerFlag == null) {
+        return this.$message.warning('请选择是否二网');
+      }
+      if (Number(form.secondDealerFlag) === 1 && (!form.secondDealerCode || !form.secondDealerName)) {
+        return this.$message.warning('是否二网为【是】时，二网门店不能为空');
+      }
+      const payload = {
+        ids: this.selectionListIds,
+        secondDealerFlag: form.secondDealerFlag,
+        secondDealerCode: Number(form.secondDealerFlag) === 1 ? form.secondDealerCode : '',
+        secondDealerName: Number(form.secondDealerFlag) === 1 ? form.secondDealerName : ''
+      };
+      this.secondDealerSubmitting = true;
+      updateSecondDealer(payload).then(() => {
+        this.$message.success('二网信息保存成功');
+        this.secondDealerDialog = false;
+        this.getData();
+      }).catch(err => {
+        this.$message.error(err?.message || '二网信息保存失败');
+      }).finally(() => {
+        this.secondDealerSubmitting = false;
+      });
+    },
+    resetSecondDealerDialog () {
+      this.secondDealerForm = { secondDealerFlag: null, secondDealerCode: '', secondDealerName: '' };
+      this.batchSecondDealerSaleCode = '';
     },
     // el-cascader 多选变更时，遍历省/市树把每个选中的 code 按层级拆分到对应数组
     handleAreaChange (selectedCodes) {
