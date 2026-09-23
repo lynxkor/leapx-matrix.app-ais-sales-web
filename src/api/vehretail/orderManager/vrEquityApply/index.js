@@ -117,3 +117,19 @@ export function getDecryptField (id, field) {
     decryptField: field
   });
 }
+
+/**
+ * 批量初审
+ * @param {Object} data { idList: string[], isAudit: boolean, auditOpinion: string }
+ */
+export function batchFirstApprove (data) {
+  return api.jsonPost(prefix + 'batchFirstApprove', data);
+}
+
+/**
+ * 批量终审
+ * @param {Object} data { idList: string[], isAudit: boolean, auditOpinion: string }
+ */
+export function batchApprove (data) {
+  return api.jsonPost(prefix + 'batchApprove', data);
+}
