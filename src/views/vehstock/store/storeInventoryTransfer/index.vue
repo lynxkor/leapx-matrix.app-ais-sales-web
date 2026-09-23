@@ -14,11 +14,11 @@
           placeholder="请输入门店编码或名称" labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable multiple
           collapseTags filterable />
       </el-form-item>
+      <template v-if="show">
       <el-form-item label="单据状态">
         <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_audit_status" v-model="form.auditStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
-      <template v-if="show">
         <el-form-item label="创建时间">
           <el-date-picker v-model="form.createTime" type="daterange" :picker-options="pickerOptions"
             unlink-panels value-format="yyyy-MM-dd HH:mm:ss"
