@@ -441,6 +441,7 @@ import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo, listOrgWarehouseStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getList as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
+import { getDetail as getActivityDetail } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 import { getSecondDealerPage } from '@/api/vehwholesale/replenish/secondDealer/index';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -1045,6 +1046,7 @@ export default {
       const result = await getSecondDealerPage({
         storeCode: this.form.saleDealerCode,
         keyword: searchQuery,
+        status: '3',   // 仅运营中的二网（"3"=运营；"5"=已退网），网发接口原生支持精确过滤
         page: 1,
         size: 100
       });
@@ -1069,12 +1071,31 @@ export default {
     /**
      * 选择排产专项活动：按活动主表的「是否二网」锁定本单的是否二网
      */
-    handleChangeActivity (val, record) {
-      const flag = Number(record?.secondDealerFlag ?? 0) || 0;
-      this.form.secondDealerFlag = flag;
-      if (flag !== 1) {
+    async handleChangeActivity (val, record) {
+      // 活动明细接口不返回二网字段（明细契约不冗余该字段），改为拿活动ID回查活动主表取「是否二网」
+      const activityId = record?.scheduleActivityId || val;
+      const resetSecondDealer = () => {
+        this.form.secondDealerFlag = 0;
         this.form.secondDealerCode = '';
         this.form.secondDealerName = '';
+      };
+      if (!activityId) {
+        resetSecondDealer();
+        return;
+      }
+      try {
+        const res = await getActivityDetail(activityId);
+        // 存量活动 second_dealer_flag 为 NULL，按「否」处理
+        const flag = Number(res?.secondDealerFlag ?? 0) || 0;
+        this.form.secondDealerFlag = flag;
+        if (flag !== 1) {
+          this.form.secondDealerCode = '';
+          this.form.secondDealerName = '';
+        }
+      } catch (e) {
+        // 取不到活动二网信息时按「否」兜底并提示，避免静默沿用上一次的脏值
+        resetSecondDealer();
+        this.$message.warning('未获取到所选活动的二网信息，已按「否」处理');
       }
     },
     handleAuditValidForDealer () {

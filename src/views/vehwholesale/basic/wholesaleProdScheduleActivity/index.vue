@@ -229,6 +229,7 @@ export default {
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
           { props: 'allowLockNodeLabel', label: '允许锁零售单节点', visible: true, width: 140 },
+          { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 110 },
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 100, align: 'right' },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 100, align: 'right' },
           { props: 'startTime', label: '开始日期', visible: true, width: 160 },

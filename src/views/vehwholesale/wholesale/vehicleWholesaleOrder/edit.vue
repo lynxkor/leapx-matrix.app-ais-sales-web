@@ -103,6 +103,15 @@
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
                   </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    <el-input placeholder="请输入" :value="secondDealerFlagLabel" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店编码：" prop="secondDealerCode">
+                    <el-input placeholder="请输入" v-model="form.secondDealerCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店名称：" prop="secondDealerName">
+                    <el-input placeholder="请输入" v-model="form.secondDealerName" clearable disabled />
+                  </el-form-item>
                   <el-form-item label="充电桩编码：" prop="chargingPortCode">
                     <el-input placeholder="请输入" v-model="form.chargingPortCode" clearable disabled />
                   </el-form-item>
@@ -697,6 +706,9 @@ const defaultForm = {
   saleTargetTrackingId: '',
   replenishApplyDetailCode: '',
   chargingPortCode: '',
+  secondDealerFlag: 0,
+  secondDealerCode: '',
+  secondDealerName: '',
   id: '',
   creator: '',
   creatorName: '',
@@ -768,6 +780,11 @@ export default {
     },
     title () {
       return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
+    },
+    // 0/1 → 是/否，null → 「否」（存量数据兜底）
+    secondDealerFlagLabel () {
+      const match = this.yes_no_enum.find(item => item.code === String(this.form.secondDealerFlag ?? 0));
+      return match ? match.message : '';
     },
     financingOrgOptions () {
       const ft = this.form.settleFundType + '';

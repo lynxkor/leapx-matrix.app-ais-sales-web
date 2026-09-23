@@ -107,3 +107,11 @@ export function listWarehouse (storeCode) {
 export function setDefaultWarehouse (storeCode, warehouseCode) {
   return api.post(prefix + 'setDefaultWarehouse', { storeCode, warehouseCode });
 }
+
+/**
+ * 门店库存台账 - 二网信息编辑（LP261730）
+ * @param {Object} data { id, secondDealerFlag, secondDealerCode, secondDealerName }
+ */
+export function updateSecondDealer (data) {
+  return api.jsonPost(prefix + 'updateSecondDealer', data);
+}

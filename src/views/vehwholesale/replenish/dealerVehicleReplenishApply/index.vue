@@ -332,6 +332,9 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 110 },
+          { props: 'secondDealerCode', label: '二网门店编码', visible: false, width: 160 },
+          { props: 'secondDealerName', label: '二网门店名称', visible: true, width: 200 },
           { props: 'serials', label: '车系组合', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 140 },
