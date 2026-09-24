@@ -184,6 +184,19 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.inboundTimeLy" placeholder="请选择"
             clearable filterable />
         </el-form-item>
+        <!-- LP261730: 二网搜索（多选下拉） -->
+        <el-form-item label="是否二网">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.secondDealerFlags"
+            placeholder="请选择" clearable filterable multiple collapseTags />
+        </el-form-item>
+        <el-form-item label="二网门店">
+          <fetch-select
+            :remote-method="secondDealerSearchForQuery" remote reserve-keyword
+            labelKey="secondStoreName" valueKey="secondStoreName"
+            v-model="form.secondDealerNames"
+            placeholder="请输入名称/编码关键词搜索"
+            clearable filterable multiple collapseTags />
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -328,6 +341,9 @@ const defaultForm = {
   vehdeLiveried: '',
   saleDealerCode: '',
   deliveryDealerCode: '',
+  // LP261730: 二网搜索字段（数组）
+  secondDealerFlags: [],
+  secondDealerNames: [],
   poentryOn: '',
   inboundTimeLy: '',
   materialsCodeList: [],
@@ -475,9 +491,8 @@ export default {
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'secondNetStoreCode', label: '零售订单二网编码', visible: true, width: 160 },
           { props: 'secondNetStoreName', label: '零售订单二网名称', visible: true, width: 200 },
-          { props: 'secondDealerFlagLabel', label: '是否二网（批售）', visible: true, width: 140 },
-          { props: 'secondDealerCode', label: '二网门店编码（批售）', visible: false, width: 180 },
-          { props: 'secondDealerName', label: '二网门店名称（批售）', visible: true, width: 200 },
+          { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 100 },
+          { props: 'secondDealerName', label: '二网门店', visible: true, width: 200 },
           { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200 },
           { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200, sortable: true },
           { props: 'inboundTimeLyLabel', label: '入库是否及时', visible: true, width: 140 },
@@ -989,6 +1004,17 @@ export default {
         size: 100
       });
       // 与 LP261730 修复一致：api.jsonPost 二次解外层 .data，故此处取 records 即可
+      return result?.records || [];
+    },
+    // LP261730: 列表搜索区专用——不带 storeCode，按 keyword 全局拉（status='3' 仅运营）
+    async secondDealerSearchForQuery (query) {
+      const searchQuery = typeof query === 'string' ? query : '';
+      const result = await getSecondDealerPage({
+        keyword: searchQuery,
+        status: '3',
+        page: 1,
+        size: 100
+      });
       return result?.records || [];
     },
     // 提交：flag=1 时强制要求 code/name 非空；flag=0 时清空 code/name
