@@ -17,22 +17,34 @@ export function getSecondDealerPage (data) {
 
 /**
  * LP261730: 统一查询二网门店（编辑/列表搜索两个场景共用）
- * @param {String|undefined} keyword    关键词
- * @param {String}           [storeCode] 销售门店编码（可空；编辑场景锁门店，列表搜索场景全局）
- * @returns {Promise<Array>}            records 数组（直接喂给 fetch-select）
+ * @param {Object} [params={}]  网发接口请求参数对象，调用方按需传：
+ *                            - keyword  关键词（空时自动 undefined 让 axios JSON.stringify 跳过该字段）
+ *                            - storeCode 销售门店编码（编辑场景必填，列表场景可省）
+ *                            - 其它任意字段（page/size 等）也可以传
+ * @returns {Promise<Array>}  records 数组（直接喂给 fetch-select）
  *
- * 固定传 status='3' 仅返回【运营】状态（"3"=运营；"5"=已退网）的二网门店，
- * 避免下拉出现已退网废数据。
+ * 固定传 status='3' 仅返回【运营】状态（"3"=运营；"5"=已退网），避免下拉出现已退网废数据。
+ *
+ * 【坑1】axios 的 paramsFilter 会过滤空字符串字段，导致首次 focus 下拉时（用户未输入）
+ * 网发接口收不到 keyword 字段 → 网发按默认权限返回极少门店。
+ *
+ * 【坑2】如果传 `keyword=null`，部分后端框架（如 Spring）会按"显式 null"处理，可能拒绝请求。
+ * 改用 `keyword=undefined` —— axios 的 JSON.stringify 会自动跳过 undefined 字段，
+ * 请求 body 中根本不会出现 keyword 键。
  */
-export async function searchSecondDealer (keyword, storeCode) {
-  const params = {
-    keyword: keyword || '',
-    status: '3',   // 仅运营中的二网（"3"=运营；"5"=已退网），网发接口原生支持精确过滤
+export async function searchSecondDealer (params = {}) {
+  const { keyword, ...rest } = params;
+  const finalParams = {
+    status: '3',  // 仅运营中的二网（"3"=运营；"5"=已退网）
     page: 1,
-    size: 100
+    size: 100,
+    ...rest,
+    // 显式处理 keyword：空字符串/空数组 → undefined（让 axios JSON.stringify 跳过该字段）
+    keyword: keyword && keyword.length > 0 ? keyword : undefined
   };
-  if (storeCode) params.storeCode = storeCode;
-  const result = await getSecondDealerPage(params);
+  // 直接调用 getSecondDealerPage 走 axios 的 jsonPost（JSON body 序列化），
+  // 走 paramsFilter 不会过滤 null/undefined，所以这条链路上 keyword=undefined 会被 JSON 跳过
+  const result = await getSecondDealerPage(finalParams);
   // 与 LP261730 同款修法——api.jsonPost 二次解外层 .data，此处取 records 即可
   return result?.records || [];
 }

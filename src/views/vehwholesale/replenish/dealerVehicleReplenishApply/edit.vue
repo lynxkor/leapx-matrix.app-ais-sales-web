@@ -1062,7 +1062,7 @@ export default {
         return [];
       }
       const searchQuery = typeof query === 'string' ? query : '';
-      return await searchSecondDealer(searchQuery, this.form.saleDealerCode);
+      return await searchSecondDealer({ keyword: searchQuery, storeCode: this.form.saleDealerCode });
     },
     /**
      * 选择二网门店：编码与名称一起回填（下游同步零小跑需要编码，不能只存名称）

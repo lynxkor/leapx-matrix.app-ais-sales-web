@@ -192,8 +192,8 @@
         <el-form-item label="二网门店">
           <fetch-select
             :remote-method="secondDealerSearchForQuery" remote reserve-keyword
-            labelKey="secondStoreName" valueKey="secondStoreName"
-            v-model="form.secondDealerNames"
+            labelKey="secondStoreName" valueKey="secondStoreCode"
+            v-model="form.secondDealerCodes"
             placeholder="请输入名称/编码关键词搜索"
             clearable filterable multiple collapseTags />
         </el-form-item>
@@ -343,7 +343,7 @@ const defaultForm = {
   deliveryDealerCode: '',
   // LP261730: 二网搜索字段（数组）
   secondDealerFlags: [],
-  secondDealerNames: [],
+  secondDealerCodes: [],
   poentryOn: '',
   inboundTimeLy: '',
   materialsCodeList: [],
@@ -996,12 +996,12 @@ export default {
         return [];
       }
       const searchQuery = typeof query === 'string' ? query : '';
-      return await searchSecondDealer(searchQuery, this.batchSecondDealerSaleCode);
+      return await searchSecondDealer({ keyword: searchQuery, storeCode: this.batchSecondDealerSaleCode });
     },
     // LP261730: 列表搜索区专用——不带 storeCode，按 keyword 全局拉
     async secondDealerSearchForQuery (query) {
       const searchQuery = typeof query === 'string' ? query : '';
-      return await searchSecondDealer(searchQuery);
+      return await searchSecondDealer({ keyword: searchQuery });
     },
     // 提交：flag=1 时强制要求 code/name 非空；flag=0 时清空 code/name
     submitBatchUpdateSecondDealer () {
