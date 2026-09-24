@@ -244,6 +244,19 @@
         <el-form-item label="销售门店">
           <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="是否二网">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.secondDealerFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="二网门店">
+          <tag-input v-model="form.secondDealerNames" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="所属母公司">
           <fetch-select
             :remote-method="getParentCompany"
@@ -648,6 +661,8 @@ const defaultForm = {
   optionPackageIdSet: [],
   roofIdSet: [],
   vehicleReturnFlag: '',
+  secondDealerFlag: '',
+  secondDealerNames: [],
 };
 
 const pageSize = 20;
