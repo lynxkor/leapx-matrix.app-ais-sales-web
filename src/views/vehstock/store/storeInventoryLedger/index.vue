@@ -311,7 +311,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, updateSecondDealer } from '@/api/vehstock/store/storeInventoryLedger/index';
-import { getSecondDealerPage } from '@/api/vehwholesale/replenish/secondDealer/index';
+import { searchSecondDealer } from '@/api/vehwholesale/replenish/secondDealer/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, listOrgStoreInfo, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -989,33 +989,19 @@ export default {
       this.secondDealerForm.secondDealerCode = record?.secondStoreCode || '';
       this.secondDealerForm.secondDealerName = record?.secondStoreName || '';
     },
-    // 二网门店远程搜索（与 dealerVehicleReplenishApply 同款修正：result.data.records → result.records）
+    // 二网门店远程搜索（LP261730 统一封装版：仅校验 + 调 searchSecondDealer）
     async secondDealerSearch (query) {
       if (!this.batchSecondDealerSaleCode) {
         this.$message.warning('请先选择销售门店');
         return [];
       }
       const searchQuery = typeof query === 'string' ? query : '';
-      const result = await getSecondDealerPage({
-        storeCode: this.batchSecondDealerSaleCode,
-        keyword: searchQuery,
-        status: '3',
-        page: 1,
-        size: 100
-      });
-      // 与 LP261730 修复一致：api.jsonPost 二次解外层 .data，故此处取 records 即可
-      return result?.records || [];
+      return await searchSecondDealer(searchQuery, this.batchSecondDealerSaleCode);
     },
-    // LP261730: 列表搜索区专用——不带 storeCode，按 keyword 全局拉（status='3' 仅运营）
+    // LP261730: 列表搜索区专用——不带 storeCode，按 keyword 全局拉
     async secondDealerSearchForQuery (query) {
       const searchQuery = typeof query === 'string' ? query : '';
-      const result = await getSecondDealerPage({
-        keyword: searchQuery,
-        status: '3',
-        page: 1,
-        size: 100
-      });
-      return result?.records || [];
+      return await searchSecondDealer(searchQuery);
     },
     // 提交：flag=1 时强制要求 code/name 非空；flag=0 时清空 code/name
     submitBatchUpdateSecondDealer () {

@@ -448,7 +448,7 @@ import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo, listOrgWar
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getList as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import { getDetail as getActivityDetail } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
-import { getSecondDealerPage } from '@/api/vehwholesale/replenish/secondDealer/index';
+import { searchSecondDealer } from '@/api/vehwholesale/replenish/secondDealer/index';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -1054,8 +1054,7 @@ export default {
       return Array.from(uniqueMap.values());
     },
     /**
-     * 二网门店远程搜索
-     * 网发接口：按当前销售门店查询其下二级经销商门店，支持名称/编码关键词
+     * 二网门店远程搜索（LP261730 统一封装版：仅校验 + 调 searchSecondDealer）
      */
     async secondDealerSearch (query) {
       if (!this.form.saleDealerCode) {
@@ -1063,17 +1062,7 @@ export default {
         return [];
       }
       const searchQuery = typeof query === 'string' ? query : '';
-      const result = await getSecondDealerPage({
-        storeCode: this.form.saleDealerCode,
-        keyword: searchQuery,
-        status: '3',   // 仅运营中的二网（"3"=运营；"5"=已退网），网发接口原生支持精确过滤
-        page: 1,
-        size: 100
-      });
-      // 注意：api.jsonPost 已经在拦截器 + 外层 .then(res => res.data) 二次解掉了外层 JSON，
-      // 所以返回的就是接口 data 本身（分页对象 {current, records, totals, ...}），
-      // 这里不能再读 .data，否则 result.data 为 undefined → 下拉为空。
-      return result?.records || [];
+      return await searchSecondDealer(searchQuery, this.form.saleDealerCode);
     },
     /**
      * 选择二网门店：编码与名称一起回填（下游同步零小跑需要编码，不能只存名称）
