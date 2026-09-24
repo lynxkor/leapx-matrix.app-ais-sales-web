@@ -130,7 +130,7 @@
                     valueKey="secondStoreCode"
                     v-model="form.secondDealerCode"
                     placeholder="请输入二网名称/编码搜索"
-                    :disabled="form.secondDealerFlag !== 1"
+                    :disabled="Number(form.secondDealerFlag) !== 1"
                     clearable
                     filterable
                     @change="handleChangeSecondDealer"
