@@ -397,8 +397,8 @@ export default {
       gdclItem({ dealerCompanyCode: obj.companyCode }).then((res) => {
         if (res) {
           this.form.creditAccountStatus = res.creditAccountStatus;
-          this.form.creditAmount = res.creditAmount;
-          this.form.downPaymentRatio = res.downPaymentRatio;
+          this.form.creditAmount = (res.creditAmount !== undefined && res.creditAmount !== null) ? Number(res.creditAmount) : '';
+          this.form.downPaymentRatio = (res.downPaymentRatio !== undefined && res.downPaymentRatio !== null) ? Number(res.downPaymentRatio) : '';
           this.form.effectiveTime = res.effectiveTime;
           this.form.expireTime = res.expireTime;
         } else {
