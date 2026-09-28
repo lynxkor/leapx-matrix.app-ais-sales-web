@@ -96,6 +96,10 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.deliveryWays"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
+         <el-form-item label="是否二网">
+                                  <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.secondDealerFlag"
+                                    placeholder="请选择" clearable  filterable />
+         </el-form-item>
       </template>
         <!-- v-if="canList" -->
       <page-search-action
