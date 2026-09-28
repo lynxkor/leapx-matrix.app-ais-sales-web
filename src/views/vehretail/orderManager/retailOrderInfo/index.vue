@@ -898,8 +898,6 @@ export default {
             { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
           );
         }
-      }).catch(() => {
-        this.$message.error('导出失败，请稍后重试');
       }).finally(() => {
         this.exportLoading = false;
       });
