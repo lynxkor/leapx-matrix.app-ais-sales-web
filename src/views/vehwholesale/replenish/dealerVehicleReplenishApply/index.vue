@@ -134,6 +134,19 @@
             deftTime="最近三个月"
           />
         </el-form-item>
+         <el-form-item label="是否二网">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
+                    v-model="form.secondDealerFlag"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="二网门店">
+                  <tag-input v-model="form.secondDealerNames" placeholder="请输入" />
+                </el-form-item>
       </template>
       <page-search-action
         v-if="canList"

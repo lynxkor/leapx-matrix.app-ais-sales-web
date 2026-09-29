@@ -35,19 +35,6 @@
       <el-form-item label="销售门店编码">
         <tag-input v-model="form.saleDealerCodes" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="是否二网">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.secondDealerFlag"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
-      <el-form-item label="二网门店">
-        <tag-input v-model="form.secondDealerNames" placeholder="请输入" />
-      </el-form-item>
       <el-form-item label="订单分类">
         <fetch-select
           :remote-method="getWholesaleEorderTyprList"
@@ -515,6 +502,19 @@
             clearable
           />
         </el-form-item>
+         <el-form-item label="是否二网">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
+                  v-model="form.secondDealerFlag"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                />
+              </el-form-item>
+              <el-form-item label="二网门店">
+                <tag-input v-model="form.secondDealerNames" placeholder="请输入" />
+              </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
