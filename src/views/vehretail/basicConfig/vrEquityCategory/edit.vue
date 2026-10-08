@@ -23,6 +23,14 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="权益编码：" prop="code">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.code"
+                    clearable
+                    maxlength="50"
+                  />
+                </el-form-item>
                 <el-form-item label="权益名称：" prop="equityCategoryName">
                   <el-input
                     placeholder="请输入"
@@ -53,6 +61,9 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="权益编码：">
+                  {{ form.code }}
+                </el-form-item>
                 <el-form-item label="权益名称：">
                   {{ form.equityCategoryName }}
                 </el-form-item>
@@ -73,7 +84,8 @@
         <div style="padding: 20px;">
           <h3>权益概况</h3>
           <div style="margin-top: 10px; padding: 15px; background: #f5f7fa; border-radius: 4px;">
-            <div><strong>权益名称:</strong> {{ form.equityCategoryName || '-' }}</div>
+            <div><strong>权益编码:</strong> {{ form.code || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>权益名称:</strong> {{ form.equityCategoryName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>申请条件:</strong> {{ form.applicationConditions || '-' }}</div>
             <div style="margin-top: 8px;"><strong>状态:</strong> {{ yes_no_enum_map[form.status] || '-' }}</div>
             <div style="margin-top: 8px;"><strong>创建时间:</strong> {{ form.createTime || '-' }}</div>
@@ -158,6 +170,9 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       rules: {
+        code: [
+          { required: true, message: '请输入权益编码', trigger: 'blur' }
+        ],
         equityCategoryName: [
           { required: true, message: '请输入权益名称', trigger: 'change' }
         ],
