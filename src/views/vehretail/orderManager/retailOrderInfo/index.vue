@@ -155,6 +155,9 @@
         <el-form-item label="是否预售订单">
           <fetch-select :options="yes_no_enum" v-model="form.preSaleOrder" placeholder="请选择" clearable />
         </el-form-item>
+        <el-form-item label="是否员工购车">
+          <fetch-select :options="yes_no_enum" v-model="form.isEmployeePurchase" placeholder="请选择" clearable />
+        </el-form-item>
         <el-form-item label="是否绑定批售">
           <fetch-select :options="yes_no_enum" v-model="form.wholesaleBindStatus" placeholder="请选择" clearable />
         </el-form-item>
@@ -383,6 +386,7 @@ const defaultForm = {
   lockStatusLabel: '',
   lockTime: '',
   wholesaleBindStatus: '',
+  isEmployeePurchase: '',
   priceAfterSubsidy: '',
   depositAmount: '',
   agentName: '',
