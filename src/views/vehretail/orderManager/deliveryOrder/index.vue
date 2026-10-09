@@ -41,7 +41,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="门店整车订单订单类型">
+      <el-form-item label="门店整车订单类型">
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_type"
@@ -430,7 +430,7 @@ export default {
           { props: 'statusLabel', label: '交车状态', visible: true, width: 200 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 140 },
           { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
-          { props: 'orderTypeLabel', label: '门店整车订单订单类型', visible: true, width: 150 },
+          { props: 'orderTypeLabel', label: '门店整车订单类型', visible: true, width: 150 },
           { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200, sortable: true },
           { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'seriesName', label: '车系名称', visible: true, width: 120 },
