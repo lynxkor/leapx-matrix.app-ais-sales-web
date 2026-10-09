@@ -552,14 +552,7 @@ export default {
       const invalid = this.selectionList.filter(
         item => String(item.auditStatus) !== expected
       );
-      if (invalid.length === 0) return true;
-
-      const firstCode = invalid[0].code || '';
-      const tabLabel = this.currentTab.label; // '已提交' / '已初审'
-      this.$message.error(
-        `订单权益申请批量审核失败  订单权益申请: ${firstCode} 等共 ${invalid.length} 条状态不为${tabLabel}，请确认`
-      );
-      return false;
+      return invalid.length === 0;
     },
     handleBatchAuditSubmit (auditForm) {
       // 二次防御校验
