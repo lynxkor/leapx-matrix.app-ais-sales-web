@@ -611,6 +611,7 @@ export default {
             mask: true,
             getValue: (row) => getDetailDecryptField(row.id, 'orderUserPhone')
           },
+          { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'idCardTypeLabel', label: '证件类型', visible: true, width: 200 },
           {
