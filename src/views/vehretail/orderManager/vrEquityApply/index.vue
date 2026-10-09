@@ -572,8 +572,8 @@ export default {
         this.selectionList = [];
         this.optionObj.form.page = 1;
         this.getData();
-      }).catch(err => {
-        this.$message.error(`批量审核失败：${err?.msg || err?.message || '请稍后重试'}`);
+      }).catch(() => {
+        // 错误已由 axios 全局拦截器统一提示，此处不再重复弹
       });
     },
     handleSortChange (value) {
