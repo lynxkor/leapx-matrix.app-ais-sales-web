@@ -214,7 +214,7 @@
                     placeholder="请输入"
                     v-model="form.isEmployeePurchaseLabel"
                     clearable
-                    :disabled="!canEditField('isEmployeePurchaseLabel')"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="订单备注：">
