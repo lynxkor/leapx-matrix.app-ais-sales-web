@@ -23,6 +23,35 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="合作类型">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="ws_cooperation_type"
+          v-model="form.cooperationType"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="是否员工购车">
+        <fetch-select
+          :options="yes_no_enum"
+          v-model="form.isEmployeePurchase"
+          placeholder="请选择"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="门店整车订单订单类型">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vr_order_type"
+          v-model="form.orderTypes"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
       <el-form-item label="交车单编号" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.deliveryOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
@@ -268,6 +297,9 @@ const defaultForm = {
   cityCodeList: [],
   dealerCompanyCodeList: [],
   dealerCompanyNameList: [],
+  cooperationType: '',
+  isEmployeePurchase: '',
+  orderTypes: [],
   // seriesIdList: [],
 };
 
@@ -396,6 +428,9 @@ export default {
             }]
           },
           { props: 'statusLabel', label: '交车状态', visible: true, width: 200 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 140 },
+          { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
+          { props: 'orderTypeLabel', label: '门店整车订单订单类型', visible: true, width: 150 },
           { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200, sortable: true },
           { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'seriesName', label: '车系名称', visible: true, width: 120 },

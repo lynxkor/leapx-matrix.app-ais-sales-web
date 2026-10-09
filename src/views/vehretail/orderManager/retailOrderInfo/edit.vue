@@ -217,6 +217,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationTypeLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cooperationTypeLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="订单备注：">
                   <el-input
                     placeholder="请输入"
