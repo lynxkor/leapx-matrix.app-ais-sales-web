@@ -56,6 +56,15 @@
                     :disabled="!form.permissions.draft && isEditing"
                   />
                 </el-form-item>
+                <el-form-item v-if="!!_id" label="OA流程编号：" prop="oaProcessNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.oaProcessNo"
+                    clearable
+                    maxlength="50"
+                    :disabled="!!_id"
+                  />
+                </el-form-item>
                 <el-form-item label="整车订单编号：" prop="vehicleOrderNo">
                   <el-input
                     placeholder="请输入"
@@ -153,6 +162,9 @@
                 </el-form-item>
                 <el-form-item label="商城订单号：">
                   {{ form.mallOrderNo }}
+                </el-form-item>
+                <el-form-item v-if="!!_id" label="OA流程编号：">
+                  {{ form.oaProcessNo || '-' }}
                 </el-form-item>
                 <el-form-item label="整车订单编号：">
                   {{ form.vehicleOrderNo }}

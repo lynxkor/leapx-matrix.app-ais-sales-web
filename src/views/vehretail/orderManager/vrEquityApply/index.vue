@@ -43,6 +43,13 @@
           clearable
         />
       </el-form-item>
+      <el-form-item label="OA流程编号">
+        <el-input
+          placeholder="请输入"
+          v-model="form.oaProcessNo"
+          clearable
+        />
+      </el-form-item>
       <template v-if="show">
         <el-form-item label="购车人手机号">
           <el-input
@@ -273,6 +280,7 @@ const defaultForm = {
   orderUserId: '',
   agentContact: '',
   buyerName: '',
+  oaProcessNo: '',
   buyerPhone: '',
   saleDealerCode: '', // 改为使用门店编码
   originalModelId: '',
@@ -442,6 +450,7 @@ export default {
           },
           { props: 'originalOwnerName', label: '原车车主', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerName') },
           { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerPhone') },
+          { props: 'oaProcessNo', label: 'OA流程编号', visible: true, width: 200 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
