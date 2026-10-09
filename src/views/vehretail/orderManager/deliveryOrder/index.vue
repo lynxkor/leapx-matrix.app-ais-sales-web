@@ -23,35 +23,6 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="合作类型">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="ws_cooperation_type"
-          v-model="form.cooperationType"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
-      <el-form-item label="是否员工购车">
-        <fetch-select
-          :options="yes_no_enum"
-          v-model="form.isEmployeePurchase"
-          placeholder="请选择"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="门店整车订单类型">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="vr_order_type"
-          v-model="form.orderTypes"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
       <el-form-item label="交车单编号" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.deliveryOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
@@ -199,6 +170,35 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+         <el-form-item label="合作类型">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="ws_cooperation_type"
+                  v-model="form.cooperationType"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                />
+              </el-form-item>
+              <el-form-item label="是否员工购车">
+                <fetch-select
+                  :options="yes_no_enum"
+                  v-model="form.isEmployeePurchase"
+                  placeholder="请选择"
+                  clearable
+                />
+              </el-form-item>
+              <el-form-item label="门店整车订单类型">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="vr_order_type"
+                  v-model="form.orderTypes"
+                  placeholder="请选择"
+                  clearable
+                  multiple
+                  filterable
+                />
+              </el-form-item>
         <el-form-item label="创建时间">
           <dateranges
             v-model="form.createTime"
