@@ -16,6 +16,16 @@
             <el-form-item label="名称：" prop="wholesaleNoAutoCarModelConfName">
               {{ info.wholesaleNoAutoCarModelConfName  }}
             </el-form-item>
+            <el-form-item label="车系：" prop="seriesName">
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: info.seriesId,
+                      },
+                    })"
+                   type="text">{{info.seriesName}}</el-button>
+            </el-form-item>
             <el-form-item label="车型：" prop="modelName">
               <el-button class="link" style="padding: 0;"
                    @click="navigateToRoute({
@@ -35,6 +45,18 @@
                       },
                     })"
                    type="text">{{info.vehicleYearType}}</el-button>
+            </el-form-item>
+            <el-form-item label="外观：" prop="exteriorName">
+              {{ info.exteriorName  }}
+            </el-form-item>
+            <el-form-item label="选装包：" prop="optionPackageName">
+              {{ info.optionPackageName  }}
+            </el-form-item>
+            <el-form-item label="内饰：" prop="interiorName">
+              {{ info.interiorName  }}
+            </el-form-item>
+            <el-form-item label="轮毂：" prop="wheelHubName">
+              {{ info.wheelHubName  }}
             </el-form-item>
             <el-form-item label="不参与自动批售确认：" prop="noJoinAutoConfirm">
               {{ info.noJoinAutoConfirmLabel  }}
@@ -101,7 +123,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '不自动批售确认车型',
+      pageTitle: '不自动确认批售配置',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
@@ -111,7 +133,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['不自动批售确认车型', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['不自动确认批售配置', '详情']);
     this.getData();
   },
   methods: {

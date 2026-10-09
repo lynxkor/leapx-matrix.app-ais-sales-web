@@ -171,11 +171,11 @@
                 <el-form-item
                   label="金融机构："
                   prop="financialOrganizationId"
-                  :rules="form.settleFundType + '' === '2010' ? rules.financialOrganizationId: []"
-                  v-show="form.settleFundType === '2010' || form.settleFundType === 2010"
+                  :rules="['2010', '2020', '2030'].includes(form.settleFundType + '') ? rules.financialOrganizationId : []"
+                  v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')"
                 >
                   <fetch-select
-                    :options="financingOrgIdList"
+                    :options="financingOrgOptions"
                     v-model="form.financialOrganizationId"
                     clearable
                     filterable
@@ -263,7 +263,7 @@
                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="form.settleFundType==2010">
+                <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="['2010', '2020', '2030'].includes(form.settleFundType + '')">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
@@ -503,6 +503,11 @@ export default {
     },
     title () {
       return '整车补货单号：';
+    },
+    financingOrgOptions () {
+      const ft = this.form.settleFundType + '';
+      if (!['2010', '2020', '2030'].includes(ft)) return [];
+      return this.financingOrgListMap.get(ft) || [];
     }
   },
   watch: {
@@ -533,7 +538,7 @@ export default {
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
       financialOrganizationList: [],
-      financingOrgIdList: [],
+      financingOrgListMap: new Map(),
       fundTypeList: [],
       dealerCompanyCodes: '', // 门店母公司
       loading: false,
@@ -726,13 +731,11 @@ export default {
                 account.effectiveTime = account.creditSalesLimit.effectiveTime;
                 account.expireTime = account.creditSalesLimit.expireTime;
               }
-              const isFinancing = account.fundType === '2010' || account.fundType === 2010;
-              if (isFinancing && account.financialOrganizationName) {
-                // 若是融资，拼接银行名称
-                account.fundTypeDisplay = `${account.fundTypeLabel}-${account.financialOrganizationName}`;
-              } else {
-                account.fundTypeDisplay = account.fundTypeLabel;
-              }
+              // 资金类型列展示：financialOrganizationName 非空时拼接为 `资金类型（金融机构）`（全角括号）
+              // 非融资类账户（现金、赊销-零跑）不带金融机构，自然只显示 fundTypeLabel
+              account.fundTypeDisplay = account.financialOrganizationName
+                ? `${account.fundTypeLabel}（${account.financialOrganizationName}）`
+                : account.fundTypeLabel;
 
               return account;
             });
@@ -847,7 +850,8 @@ export default {
 
         if (res.records && Array.isArray(res.records)) {
           const fundTypeMap = new Map();
-          const financingOrgMap = new Map();
+          // 资金类型 → 该类型下可用的金融机构 (orgId → name)
+          const fundTypeOrgMap = new Map();
 
           res.records.forEach(account => {
             if (account.fundType && account.validIfCreditSaleAccount) {
@@ -856,10 +860,15 @@ export default {
               }
             }
 
-            if (account.fundType === '2010' || account.fundType === 2010) {
-              if (account.financialOrganizationId && account.validIfCreditSaleAccount) {
-                if (!financingOrgMap.has(account.financialOrganizationId)) {
-                  financingOrgMap.set(account.financialOrganizationId, account.financialOrganizationName);
+            const ft = account.fundType + '';
+            if (['2010', '2020', '2030'].includes(ft) && account.validIfCreditSaleAccount) {
+              if (!fundTypeOrgMap.has(ft)) {
+                fundTypeOrgMap.set(ft, new Map());
+              }
+              if (account.financialOrganizationId) {
+                const orgMap = fundTypeOrgMap.get(ft);
+                if (!orgMap.has(account.financialOrganizationId)) {
+                  orgMap.set(account.financialOrganizationId, account.financialOrganizationName);
                 }
               }
             }
@@ -868,10 +877,14 @@ export default {
             fundType: type,
             fundTypeLabel: label
           }));
-          this.financingOrgIdList = Array.from(financingOrgMap.entries()).map(([id, name]) => ({
-            id: id,
-            organizationName: name
-          }));
+          const orgListMap = new Map();
+          fundTypeOrgMap.forEach((orgMap, ft) => {
+            orgListMap.set(ft, Array.from(orgMap.entries()).map(([id, name]) => ({
+              id,
+              organizationName: name
+            })));
+          });
+          this.financingOrgListMap = orgListMap;
         }
       } catch (error) {
         console.error('获取资金账户失败:', error);
