@@ -29,6 +29,7 @@
                     v-model="form.code"
                     clearable
                     maxlength="50"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="权益名称：" prop="equityCategoryName">
