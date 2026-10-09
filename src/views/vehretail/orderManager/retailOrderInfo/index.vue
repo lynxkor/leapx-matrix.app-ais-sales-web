@@ -562,6 +562,7 @@ export default {
           { props: 'agentName', label: '代办联系人', visible: true, width: 140 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 240 },
+          { props: 'saleDealerCode', label: '订单销售门店编码', visible: true, width: 160 },
           { props: 'provinceName', label: '销售门店-省', visible: true, width: 160 },
           { props: 'cityName', label: '销售门店-市', visible: true, width: 160 },
           { props: 'regionName', label: '所属区域或部门', visible: true, width: 160 },
