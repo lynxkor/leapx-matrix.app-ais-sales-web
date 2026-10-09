@@ -747,6 +747,9 @@ export default {
         { key: 'deliveryDealerName', label: '交付门店', link: '/service/datacenter/store/store/detail', paramKey: 'deliveryDealerCode', paramName: 'storeCode' },
         { key: 'deliveryVin', label: '交车VIN码' },
         { key: 'deliveryTime', label: '交车时间' },
+        { key: 'orderTypeLabel', label: '门店整车订单类型' },
+        { key: 'isEmployeePurchaseLabel', label: '是否员工购车' },
+        { key: 'cooperationTypeLabel', label: '合作类型' },
       ],
       realNameAuthFields: [
         { key: 'realNameAuthSourceLabel', label: '实名认证来源' },

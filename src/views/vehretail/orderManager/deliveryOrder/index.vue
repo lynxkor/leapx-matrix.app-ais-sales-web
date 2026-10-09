@@ -428,9 +428,6 @@ export default {
             }]
           },
           { props: 'statusLabel', label: '交车状态', visible: true, width: 200 },
-          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 140 },
-          { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
-          { props: 'orderTypeLabel', label: '门店整车订单类型', visible: true, width: 150 },
           { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200, sortable: true },
           { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'seriesName', label: '车系名称', visible: true, width: 120 },
@@ -461,6 +458,9 @@ export default {
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
           { props: 'vehicleMaterialCode', label: '整车物料编码', visible: true, width: 240 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 140 },
+          { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
+          { props: 'orderTypeLabel', label: '门店整车订单类型', visible: true, width: 150 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
