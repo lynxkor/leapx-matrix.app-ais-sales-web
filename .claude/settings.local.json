@@ -15,7 +15,8 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(node extract-extra-buttons.js)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(find /d/dms_code/front/app-ais-sales-front/src/libs/components -iname *edit*base* -type f)"
     ],
     "additionalDirectories": [
       "d:\\ais\\app-ais-sales-front\\src\\api\\maintain\\basic\\dealerStation"
