@@ -52,7 +52,7 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="未结算释放">
+      <el-form-item label="未结算释放资源">
         <fetch-select
           :request="fetchBooleanOptions"
           enumCode="BooleanEnum"
@@ -104,6 +104,8 @@
         is-page
         checkboxFixed
         :option-obj="optionObj"
+        :get-config="getConfig"
+        :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
       />
@@ -121,10 +123,11 @@
 
 <script>
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
+import debounce from 'lodash.debounce';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import Upload from '@/libs/components/UploadDialog';
 import { pageList, enableOrDisable } from '@/api/vehwholesale/basic/wholesaleSpotConfig/index';
-import { getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
+import { getEnum, vehicleSeriesList, listVehicleYearType, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import { exportTable } from '@/libs/api/common';
 import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -145,6 +148,10 @@ const defaultForm = {
 };
 
 const pageSize = 20;
+// 表格个性化配置接口异常时的兜底值，保证表格仍能正常渲染
+const mockConfig = {
+  data: null
+};
 
 export default {
   name: 'wholesaleSpotConfigList',
@@ -170,15 +177,38 @@ export default {
         dataList: [],
         form: { page: 1, size: pageSize },
         dataProp: [
-          { props: 'seriesName', label: '车系', visible: true, width: 140 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 100 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 140,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          // 开关/状态文案由后端 @DictEnumType 生成 xxxLabel
           { props: 'fundCheckFlagLabel', label: '资金校验', visible: true, width: 100 },
           { props: 'unallocatedCancelFlagLabel', label: '未配车作废', visible: true, width: 110 },
-          { props: 'unsettledReleaseFlagLabel', label: '未结算释放', visible: true, width: 110 },
+          { props: 'unsettledReleaseFlagLabel', label: '未结算释放资源', visible: true, width: 130 },
           { props: 'seqAllocateFlagLabel', label: '按序配车', visible: true, width: 100 },
           { props: 'statusLabel', label: '状态', visible: true, width: 80 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 120 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 120 },
           {
             props: 'operate',
             label: '操作',
@@ -188,6 +218,10 @@ export default {
             buttons: [{
               name: '编辑',
               click: (rowIndex, row) => this.handleEdit(row),
+              type: 'info'
+            }, {
+              name: '审核日志',
+              click: (rowIndex, row) => this.$auditLog.show({ id: row.id }),
               type: 'info'
             }, {
               name: '启用',
@@ -215,7 +249,8 @@ export default {
       this.$router.push({ path: '/vehwholesale/basic/wholesaleSpotConfig/edit' });
     },
     handleEdit (row) {
-      this.$router.push({ path: '/vehwholesale/basic/wholesaleSpotConfig/edit', query: { id: row.id } });
+      // isEditing=true：进入编辑页直接是编辑态（commonMixins 依据 query.isEditing 初始化 isEditing）
+      this.$router.push({ path: '/vehwholesale/basic/wholesaleSpotConfig/edit', query: { id: row.id, isEditing: 'true' } });
     },
     onSubmit () {
       this.optionObj.form.page = 1;
@@ -239,17 +274,37 @@ export default {
         if (params[k] === '' || params[k] === null || params[k] === undefined) delete params[k];
       });
       pageList(params).then(res => {
-        this.optionObj.dataList = (res.records || []).map(item => ({ ...item, deleteLoading: false }));
-        this.optionObj.total = res.total || 0;
+        // 说明：axios 封装已在 fetch 里解包 AjaxResult，此处 res 即 PageResult 本体
+        const page = res || {};
+        this.optionObj.dataList = (page.records || []).map(item => ({ ...item, deleteLoading: false }));
+        this.optionObj.total = page.total || 0;
       }).finally(() => { this.loading = false; });
     },
+    // 翻页/改页大小防抖，避免连点产生竞态（参考 wholesaleNoAutoCarModelConf）
+    debouncedGetData: debounce(function () {
+      this.getData();
+    }, 300),
     paginationChange (type, num) {
       if (type === 'page') this.optionObj.form.page = num;
       else this.optionObj.form.size = num;
-      this.getData();
+      this.debouncedGetData();
     },
     handleSelectionChange (selection) {
       this.selectionList = selection;
+    },
+    // 表格个性化配置：接口挂了也要兜底，不能影响表格渲染（LPVxeTable 的 v-if 依赖 optionLoading）
+    getConfig () {
+      return new Promise((resolve, reject) => {
+        getTableConfig(this.optionObj.id).then(data => {
+          resolve({ data });
+        }).catch(err => {
+          console.error(err);
+          resolve(mockConfig);
+        });
+      });
+    },
+    saveOrUpdate (data) {
+      return tableAddOrUpdate(data);
     },
     async fetchOptions (code) {
       if (code) return getEnum(code);
