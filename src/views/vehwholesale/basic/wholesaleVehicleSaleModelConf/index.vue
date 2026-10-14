@@ -55,10 +55,11 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_order_category"
-          v-model="form.orderCategory"
+          v-model="form.orderCategorys"
           placeholder="请选择"
           clearable
           filterable
+          multiple
         />
       </el-form-item>
       <template v-if="show">
@@ -66,10 +67,11 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="ws_audit_status"
-            v-model="form.auditStatus"
+            v-model="form.auditStatuses"
             placeholder="请选择"
             clearable
             filterable
+            multiple
           />
         </el-form-item>
         <el-form-item label="母公司">
@@ -77,10 +79,11 @@
             filterable
             clearable
             remote
-            v-model="form.dealerParentOrgCode"
+            v-model="form.dealerParentOrgCodes"
             :remote-method="getDealerParentOrgList"
             value-key="companyCode"
             label-key="companyName"
+            multiple
           />
         </el-form-item>
         <el-form-item label="修改时间">
@@ -175,9 +178,9 @@ const defaultForm = {
   seriesIds: [],
   modelIds: [],
   vehicleYearTypeIds: [],
-  orderCategory: '',
-  auditStatus: '',
-  dealerParentOrgCode: '',
+  orderCategorys: '',
+  auditStatuses: '',
+  dealerParentOrgCodes: [],
   updateTime: '',
   isNoSort: true
 };
