@@ -566,41 +566,85 @@ export default {
     },
     handleSubmit () {
       this.$refs.fundForm.validate((valid) => {
-        if (valid) {
-          // 按 (fundType, financialOrganizationId) 在 settleAccountList 中反查 fundAccountId
-          const ft = this.fundForm.fundType;
-          const orgId = this.fundForm.financialOrganizationId || '';
-          const ftKey = (ft || '') + '';
-          const needOrg = ['2010', '2020', '2030'].includes(ftKey);
-          const matched = (this.settleAccountList || []).find(acc => {
-            if (acc.fundType !== ft) return false;
-            if (needOrg) return acc.financialOrganizationId === orgId;
-            return true;
-          });
-          if (!matched || !matched.id) {
-            this.$message.error('未找到对应的结算账户，请重新选择');
-            return;
-          }
-          this.submitLoading = true;
-          const params = {
-            materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => ({
-              warehouseCode: ele.warehouseCode,
-              materialDesc: ele.materialsDesc,
-              applyQty: ele.applyQty
-            })),
-            fundAccountId: matched.id
-          };
-          plantWholesaleInStockCreateApply(params).then(res => {
-            this.$emit('confirm');
-            this.submitLoading = false;
-            this.dialogVisible = false;
-          }).catch(() => {
-            this.submitLoading = false;
-          });
-        } else {
+        if (!valid) {
           this.$message.error('请完成表单填写');
+          return;
         }
+
+        // 按 (fundType, financialOrganizationId) 在 settleAccountList 中反查 fundAccountId
+        const ft = this.fundForm.fundType;
+        const orgId = this.fundForm.financialOrganizationId || '';
+        const ftKey = (ft || '') + '';
+        const needOrg = ['2010', '2020', '2030'].includes(ftKey);
+        const matched = (this.settleAccountList || []).find(acc => {
+          if (acc.fundType !== ft) return false;
+          if (needOrg) return acc.financialOrganizationId === orgId;
+          return true;
+        });
+        if (!matched || !matched.id) {
+          this.$message.error('未找到对应的结算账户，请重新选择');
+          return;
+        }
+
+        // 首次提交参数：默认不校验其他账户
+        const baseParams = {
+          materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => ({
+            warehouseCode: ele.warehouseCode,
+            materialDesc: ele.materialsDesc,
+            applyQty: ele.applyQty
+          })),
+          fundAccountId: matched.id
+        };
+
+        // 异步提交（fire-and-forget，内部用 submitRequest 控制 loading/状态）
+        this.submitRequest(baseParams, false);
       });
+    },
+
+    /**
+     * 提交厂端现车批售补货申请
+     * @param {Object} params 请求参数
+     * @param {boolean} isRetry 是否为二次重试（带 checkOtherAccountBalance=true）
+     */
+    async submitRequest (params, isRetry) {
+      this.submitLoading = true;
+      try {
+        const ajaxRes = await plantWholesaleInStockCreateApply(params);
+        // 兼容写法参考同文件 getData：jsonPost 已双层解包，ajaxRes 通常就是业务 Resp；为兼容旧 ajaxRes 形态保留 .data 优先
+        const resp = (ajaxRes && ajaxRes.data) || ajaxRes || {};
+
+        // 1) 业务成功：关闭弹框 + 通知父组件刷新
+        if (resp.success === true) {
+          this.$emit('confirm');
+          this.dialogVisible = false;
+          return;
+        }
+
+        // 2) 已重试过仍失败：弹错误 toast 后关闭弹框（用户已二次决策，不再追问）
+        if (isRetry) {
+          this.$message.error(resp.message || '提交失败');
+          this.dialogVisible = false;
+          return;
+        }
+
+        // 3) 首次失败：弹 是/否 让用户决定是否校验其他账户
+        try {
+          await this.$confirm(resp.message || '校验失败，是否继续校验其他账户？', '提示', {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning'
+          });
+          // 选「是」：仅重试 1 次，参数追加 checkOtherAccountBalance=true
+          await this.submitRequest({ ...params, checkOtherAccountBalance: true }, true);
+        } catch (_) {
+          // 选「否」或点 X 关闭：不做事，弹框保留让用户调整结算资金类型
+        }
+      } catch (err) {
+        // axios 拦截器对非 20xx 已弹过 toast，这里只记录
+        console.error('提交补货申请失败:', err);
+      } finally {
+        this.submitLoading = false;
+      }
     },
 
     // 根据库存状态获取对应的文本
