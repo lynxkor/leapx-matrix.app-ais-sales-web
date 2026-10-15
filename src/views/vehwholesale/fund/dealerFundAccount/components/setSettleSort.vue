@@ -1,37 +1,54 @@
 <template>
   <el-dialog :title="title" width="75%" :visible.sync="dialogVisible">
-      <h3 class="header-title">母公司名称:{{ dealerCompanyName }}</h3>
-      <section class="common-section">
-        <div class="common-section-body">
-          <div class="common-section-table">
-            <expand-table
-              ref="expandTable"
-              :columns="columns"
-              :data="tableData"
-              :auth="{
-                add: false,
-                edit: false,
-                delete: false,
-              }"
-              :dragSort=" true"
-              :dynamicButtons="dynamicButtons"
-              :show-toolbar="false"
-            />
-          </div>
+    <el-form :inline="true" size="small" class="company-filter">
+      <el-form-item label="母公司">
+        <el-select
+          v-model="selectedCompanyCode"
+          placeholder="请选择母公司"
+          filterable
+          :disabled="parentCompanyList.length === 0"
+          @change="handleCompanyChange"
+        >
+          <el-option
+            v-for="item in parentCompanyList"
+            :key="item.dealerCompanyCode"
+            :label="item.dealerCompanyName"
+            :value="item.dealerCompanyCode"
+          />
+        </el-select>
+      </el-form-item>
+      <span v-if="parentCompanyList.length === 0" class="company-empty-tip">未查询到挂靠母公司</span>
+    </el-form>
+    <section class="common-section">
+      <div class="common-section-body">
+        <div class="common-section-table">
+          <expand-table
+            ref="expandTable"
+            :columns="columns"
+            :data="tableData"
+            :auth="{
+              add: false,
+              edit: false,
+              delete: false,
+            }"
+            :dragSort=" true"
+            :dynamicButtons="dynamicButtons"
+            :show-toolbar="false"
+          />
         </div>
-      </section>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取消</el-button>
-        <el-button size="small" type="primary" @click="confirm" :loading="submitLoading">确定</el-button>
       </div>
+    </section>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" @click="dialogVisible = false">取消</el-button>
+      <el-button size="small" type="primary" @click="confirm" :loading="submitLoading">确定</el-button>
+    </div>
   </el-dialog>
 </template>
 
 <script>
 
-import debounce from 'lodash.debounce';
 import expandTable from '@/libs/components/expandTable';
-import { getList, setEntOrderSettleFlag, setSettleSort } from '@/api/vehwholesale/fund/account/index';
+import { getList, setSettleSort } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 
 const defaultForm = {
@@ -83,6 +100,12 @@ export default {
       show: false,
       dialogVisible: false,
       innerVisible: false,
+      // 母公司下拉筛选项：key=dealerCompanyCode, value=dealerCompanyName
+      parentCompanyList: [],
+      // 当前选中的母公司编码
+      selectedCompanyCode: '',
+      // 当前用户全部资金账户（用于按母公司筛选）
+      allRecords: [],
       form: {
         ...defaultForm
       },
@@ -128,7 +151,11 @@ export default {
       // 调用保存方法并处理结果
       return new Promise((resolve, reject) => {
         this.$refs.expandTable.saveAll().then(data => {
-          resolve(data);
+          // vxe 的 dragSort 只重排其内部 tableData，不会回写到绑定的 :data，
+          // 因此直接读取 vxe 当前“视觉顺序”作为最终提交顺序，确保拖拽生效
+          const vxeTable = this.$refs.expandTable && this.$refs.expandTable.$refs.editTable;
+          const ordered = (vxeTable && vxeTable.getTableData && vxeTable.getTableData().tableData) || data || [];
+          resolve(ordered);
         }).catch(error => {
           reject(error);
         });
@@ -146,55 +173,89 @@ export default {
 
       this.tableData = data; // 更新表格数据
     },
-    setEntOrderSettleFlag (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setEntOrderSettleFlag(params).then(res => {
-        this.$message.success('批量关闭成功');
-        this.getData();
-      }).catch(() => {});
+    // 分页拉取当前用户的全部资金账户（避免单页截断导致母公司去重不全）
+    async fetchAllRecords () {
+      const all = [];
+      let pageNum = 1;
+      const size = 200;
+      const fundTypes = [1010, 1050, 2010, 2020, 2030];
+      while (true) {
+        const res = await getList({ pageNum, pageSize: size, fundTypes: fundTypes, status: 1 });
+        const records = (res && res.records) || [];
+        all.push(...records);
+        const total = (res && res.total) || 0;
+        if (records.length === 0 || all.length >= total) break;
+        if (pageNum > 20) break; // 安全上限，防止异常死循环
+        pageNum++;
+      }
+      return all;
     },
-    getFormData () {
-      const data = { ...this.form };
-      Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
-          delete data[key];
+    // 根据全部记录去重得到母公司下拉，并默认选中第一个
+    buildParentCompanyOptions (records) {
+      const map = new Map();
+      (records || []).forEach(item => {
+        const code = item.dealerCompanyCode;
+        if (code !== null && code !== undefined && code !== '' && !map.has(code)) {
+          map.set(code, item.dealerCompanyName);
         }
       });
-      return data;
+      return Array.from(map, ([dealerCompanyCode, dealerCompanyName]) => ({ dealerCompanyCode, dealerCompanyName }));
     },
-    getData () {
-      this.loading = true;
-      this.selectionList = [];
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
-        .then(res => {
-          // 检查 records 是否为空
-          if (!res.records || res.records.length === 0) {
-            this.tableData = [];
-            this.total = 0;
-            return;
-          }
-          // 对 records 进行排序
-          this.tableData = res.records.sort((a, b) => {
-            const settleSortA = a.settleSort !== null && a.settleSort !== '' ? Number(a.settleSort) : Infinity;
-            const settleSortB = b.settleSort !== null && b.settleSort !== '' ? Number(b.settleSort) : Infinity;
-            return settleSortA - settleSortB;
-          });
-          this.total = res.total;
-        }).finally(() => {
-          this.loading = false;
-        });
+    // 按当前选中的母公司筛选并排序展示
+    filterTableData () {
+      const list = (this.allRecords || []).filter(item => item.dealerCompanyCode === this.selectedCompanyCode);
+      this.tableData = list.sort((a, b) => {
+        const settleSortA = a.settleSort !== null && a.settleSort !== undefined && a.settleSort !== '' ? Number(a.settleSort) : Infinity;
+        const settleSortB = b.settleSort !== null && b.settleSort !== undefined && b.settleSort !== '' ? Number(b.settleSort) : Infinity;
+        return settleSortA - settleSortB;
+      });
+    },
+    handleCompanyChange () {
+      this.filterTableData();
+    },
+    // 拖拽结束后，将 vxe 内部顺序同步回本地 tableData，
+    // 保证后续“上移/下移”按钮与保存顺序口径一致（vxe 不会自动回写 :data）
+    onRowDragEnd (params) {
+      const idx = (params && params._index) || {};
+      const oldIndex = idx.oldIndex;
+      const newIndex = idx.newIndex;
+      if (oldIndex === null || oldIndex === undefined || newIndex === null || newIndex === undefined || oldIndex === newIndex) return;
+      const arr = [...this.tableData];
+      if (oldIndex < 0 || oldIndex >= arr.length || newIndex < 0 || newIndex >= arr.length) return;
+      const [moved] = arr.splice(oldIndex, 1);
+      arr.splice(newIndex, 0, moved);
+      this.tableData = arr;
+    },
+    // 给内部 vxe-table 绑定拖拽结束事件（事件名为 row-dragend，由 vxe 内部 $emit）
+    bindDragEvent () {
+      const et = this.$refs.expandTable && this.$refs.expandTable.$refs.editTable;
+      if (et && et.$on) {
+        et.$off('row-dragend', this.onRowDragEnd);
+        et.$on('row-dragend', this.onRowDragEnd);
+      }
     },
     // 需要防抖场景时使用
-    debouncedGetData: debounce(function () {
-      this.getData();
-    }, 300),
-
-    dialogshow () {
+    async dialogshow () {
       this.dialogVisible = true;
-      this.getData();
+      this.loading = true;
+      try {
+        const records = await this.fetchAllRecords();
+        this.allRecords = records;
+        this.parentCompanyList = this.buildParentCompanyOptions(records);
+        // 默认选中第一个；若只有一个母公司则即为该母公司
+        this.selectedCompanyCode = this.parentCompanyList.length ? this.parentCompanyList[0].dealerCompanyCode : '';
+        this.filterTableData();
+      } catch (err) {
+        console.error('查询资金账户列表失败:', err);
+        this.allRecords = [];
+        this.parentCompanyList = [];
+        this.selectedCompanyCode = '';
+        this.tableData = [];
+      } finally {
+        this.loading = false;
+        // 弹窗挂载后给内部 vxe-table 绑定拖拽结束事件，保证拖动顺序可回写
+        this.$nextTick(this.bindDragEvent);
+      }
     },
     async confirm (formName, rest = false) {
       try {
@@ -220,7 +281,7 @@ export default {
             message: '保存成功',
             type: 'success'
           });
-          this.dialogVisible = true;
+          this.dialogVisible = false;
           this.$refs.expandTable.clearSelection();
           this.$emit('confirm', this.form);
         }).finally(() => {
@@ -272,6 +333,14 @@ export default {
     color: #ccc; // 禁用状态下的文字颜色
     pointer-events: none; // 禁止点击事件
   }
+}
+.company-filter {
+  margin-bottom: 8px;
+}
+.company-empty-tip {
+  color: #999;
+  font-size: 13px;
+  margin-left: 8px;
 }
 .header-title {
   font-size: 14px;

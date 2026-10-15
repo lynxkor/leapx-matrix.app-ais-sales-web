@@ -603,6 +603,7 @@ export default {
           { props: 'usedCashAmount', label: '使用现金金额', visible: true, width: 200 },
           { props: 'creditSalesAmount', label: '融资金额/赊销金额', visible: true, width: 200 },
           { props: 'clearedFlagLabel', label: '是否还款', visible: true, width: 200 },
+          { props: 'cbuOrderCode', label: '第七大区CBU订单号', visible: true, width: 200 },
           {
             props: 'orderMaterialsCode',
             label: '订单物料编码',
@@ -616,6 +617,18 @@ export default {
             }]
           },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           {
             props: 'modelName',
             label: '车型',
@@ -795,7 +808,7 @@ export default {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
         const codeStr = String(item.code);
-        return ['1050', '1010', '2010'].includes(codeStr + '');
+        return ['1050', '1010', '2010', '2020', '2030'].includes(codeStr + '');
       }).map(item => {
         return {
           ...item,

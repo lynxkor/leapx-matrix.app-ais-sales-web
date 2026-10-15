@@ -14,11 +14,16 @@
           placeholder="请输入门店编码或名称" labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable multiple
           collapseTags filterable />
       </el-form-item>
+      <template v-if="show">
       <el-form-item label="单据状态">
         <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_audit_status" v-model="form.auditStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
-      <template v-if="show">
+        <el-form-item label="创建时间">
+          <el-date-picker v-model="form.createTime" type="daterange" :picker-options="pickerOptions"
+            unlink-panels value-format="yyyy-MM-dd HH:mm:ss"
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -65,7 +70,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import ApprovalDialog from './ApprovalDialog.vue';
@@ -80,6 +85,7 @@ const defaultForm = {
   vinList: [],
   targetDealerCode: '',
   auditStatus: '',
+  createTime: [],
 };
 
 // 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
@@ -348,10 +354,16 @@ export default {
           transferNo: '整车调拨单号',
           vin: 'VIN',
           transferPrice: '调拨价格',
+          sourceDealerCode: '源门店编码',
           sourceDealerName: '源门店名称',
           sourceDealerAddress: '源门店地址',
+          sourceParentCompanyCode: '源门店母公司编码',
+          sourceParentCompanyName: '源门店母公司名称',
+          targetDealerCode: '目标门店编码',
           targetDealerName: '目标门店名称',
           targetDealerAddress: '目标门店地址',
+          targetParentCompanyCode: '目标门店母公司编码',
+          targetParentCompanyName: '目标门店母公司名称',
           moveoutTime: '移出时间',
           moveinTime: '移入时间',
           applyTime: '申请时间',
@@ -464,7 +476,7 @@ export default {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+          data.createTimeEnd = getEndOfDayString(this.form.createTime[1]);
         }
       }
       // 排序字段

@@ -70,6 +70,9 @@
                 <el-form-item label="交车单号：">
                   <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
+                <el-form-item label="备选单号：">
+                  <span>{{ form.vehiclePurposeChangeApplyNo }}</span>
+                </el-form-item>
                 <el-form-item label="预算科目：">
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${form.budgetItemId}`" target="_blank">{{ form.budgetItemName }}</el-link>
                 </el-form-item>
@@ -156,6 +159,8 @@ const defaultForm = {
   modelId: '',
   modelName: '',
   deliveryOrderCode: '',
+  vehiclePurposeChangeApplyNo: '',
+  vehiclePurposeChangeApplyId: '',
   budgetItemName: '',
   budgetItemId: '',
   feeSupportTypeName: '',

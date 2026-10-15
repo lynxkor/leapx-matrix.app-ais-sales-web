@@ -18,6 +18,16 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="融资类型">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_financing_type"
+          v-model="form.financingType"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
       <el-form-item label="订单号">
         <tag-input
           placeholder="请输入"
@@ -210,6 +220,7 @@ import dateranges from '@/libs/components/dateranges';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   financingDataSource: '',
+  financingType: '',
   orderCodes: [],
   vehicleStatus: '',
   vins: [],
@@ -287,6 +298,7 @@ export default {
             }]
           },
           { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 120 },
+          { props: 'financingTypeLabel', label: '融资类型', visible: true, width: 120 },
           {
             props: 'orderCode',
             label: '订单号',

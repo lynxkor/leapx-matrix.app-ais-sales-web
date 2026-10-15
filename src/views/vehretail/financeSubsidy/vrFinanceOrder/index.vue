@@ -225,6 +225,7 @@
         checkboxFixed
         :option-obj="optionObj"
         :get-config="getConfig"
+        :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
         @listSelect="handleListSelect"
         @sortChange="handleSortChange"

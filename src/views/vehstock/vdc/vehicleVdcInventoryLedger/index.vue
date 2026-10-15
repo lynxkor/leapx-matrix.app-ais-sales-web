@@ -590,7 +590,6 @@ export default {
       this.form.vehicleDeliveryStatusList = [];
       this.form.carAllocated = '';
       this.form.logisticsReserved = '';
-      this.form.status = '';
     }
     this.refreshTableData();
   },
@@ -656,7 +655,7 @@ export default {
         this.sapSyncStatusFilterMode = '';
         this.form.vehicleDeliveryStatusList = [];
         this.form.lowBatteryCar = null;
-        this.form.status = '';
+        this.form.status = '1';
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'homePage') {
@@ -671,7 +670,7 @@ export default {
       } else if (this.activeName === 'lowBattery') {
         this.form = { ...defaultFormFull };
         this.form.lowBatteryCar = 1;
-        this.form.status = '';
+        this.form.status = '1';
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
@@ -974,7 +973,7 @@ export default {
         this.form.carAllocated = null;
         this.form.logisticsReserved = null;
         this.form.lowBatteryCar = null;
-        this.form.status = null;
+        this.form.status = 1;
         this.erpInvoiceFilterMode = '';
         this.sapSyncStatusFilterMode = '';
         this.form.vehicleDeliveryStatusList = [];
@@ -995,7 +994,7 @@ export default {
         this.form.logisticsReserved = '';
         this.form.lowBatteryCar = 1;
         this.form.vehicleDeliveryStatusList = [];
-        this.form.status = null;
+        this.form.status = 1;
       }
       this.$nextTick(() => {
         this.getData();
