@@ -189,7 +189,7 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.secondDealerFlags"
             placeholder="请选择" clearable filterable multiple collapseTags />
         </el-form-item>
-        <el-form-item label="二网门店">
+        <el-form-item label="二网门店名称">
           <fetch-select
             :remote-method="secondDealerSearchForQuery" remote reserve-keyword
             labelKey="secondStoreName" valueKey="secondStoreCode"
@@ -277,7 +277,7 @@
             @change="handleSecondDealerFlagChange"
           />
         </el-form-item>
-        <el-form-item label="二网门店：" :required="Number(secondDealerForm.secondDealerFlag) === 1">
+        <el-form-item label="二网门店名称：" :required="Number(secondDealerForm.secondDealerFlag) === 1">
           <fetch-select
             :remote-method="secondDealerSearch"
             remote
@@ -492,7 +492,7 @@ export default {
           { props: 'secondNetStoreCode', label: '零售订单二网编码', visible: true, width: 160 },
           { props: 'secondNetStoreName', label: '零售订单二网名称', visible: true, width: 200 },
           { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 100 },
-          { props: 'secondDealerName', label: '二网门店', visible: true, width: 200 },
+          { props: 'secondDealerName', label: '二网门店名称', visible: true, width: 200 },
           { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200 },
           { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200, sortable: true },
           { props: 'inboundTimeLyLabel', label: '入库是否及时', visible: true, width: 140 },
@@ -1006,7 +1006,7 @@ export default {
     // 提交：flag=1 时强制要求 code/name 非空；flag=0 时清空 code/name
     submitBatchUpdateSecondDealer () {
       const form = this.secondDealerForm;
-      if (form.secondDealerFlag == null) {
+      if (form.secondDealerFlag === null) {
         return this.$message.warning('请选择是否二网');
       }
       if (Number(form.secondDealerFlag) === 1 && (!form.secondDealerCode || !form.secondDealerName)) {

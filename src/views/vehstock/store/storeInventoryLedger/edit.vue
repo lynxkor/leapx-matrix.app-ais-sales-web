@@ -51,7 +51,7 @@
                 <el-form-item label="二网门店编码：" prop="secondDealerCode">
                   {{ form.secondDealerCode }}
                 </el-form-item>
-                <el-form-item label="二网门店：" prop="secondDealerName">
+                <el-form-item label="二网门店名称：" prop="secondDealerName">
                   {{ form.secondDealerName }}
                 </el-form-item>
                 <el-form-item label="仓库编码：" prop="dealerWarehouseCode">
