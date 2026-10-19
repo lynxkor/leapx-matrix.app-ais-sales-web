@@ -49,6 +49,7 @@
                 </el-form-item>
                 <el-form-item label="系列：">
                   <fetch-select
+                    :key="modelLineKey"
                     :remote-method="modelLineSearch"
                     :params="form.modelLineName"
                     value-key="id"
@@ -62,6 +63,7 @@
                 </el-form-item>
                 <el-form-item label="车系：">
                   <fetch-select
+                    :key="seriesKey"
                     :remote-method="seriesSearch"
                     :params="form.seriesName"
                     value-key="id"
@@ -75,6 +77,7 @@
                 </el-form-item>
                 <el-form-item label="年款：">
                   <fetch-select
+                    :key="yearTypeKey"
                     :remote-method="yearTypeSearch"
                     :params="form.yearTypeName"
                     value-key="id"
@@ -522,6 +525,10 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      // 物料变更后强制 fetch-select 重挂载，触发首次 loadRemoteMethod 按当前 form.xxxName 搜索反显 Name
+      modelLineKey: 0,
+      seriesKey: 0,
+      yearTypeKey: 0,
       defaultNewRow: {
         name: '',
       },
@@ -681,6 +688,10 @@ export default {
         this.form.modelLineId = '';
         this.form.modelLineName = '';
       }
+      // 系列变更后清空物料：物料依赖系列，避免遗留不匹配物料
+      this.form.materialsId = '';
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
     },
     handleSeriesChange (val, opt) {
       if (val && opt) {
@@ -690,6 +701,12 @@ export default {
         this.form.seriesId = '';
         this.form.seriesName = '';
       }
+      // 车系变更后清空系列（系列包含车系）与物料，避免遗留不匹配数据
+      this.form.modelLineId = '';
+      this.form.modelLineName = '';
+      this.form.materialsId = '';
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
     },
     handleYearTypeChange (val, opt) {
       if (val && opt) {
@@ -699,6 +716,10 @@ export default {
         this.form.yearTypeId = '';
         this.form.yearTypeName = '';
       }
+      // 年款变更后清空物料：物料依赖年款，避免遗留不匹配物料
+      this.form.materialsId = '';
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
     },
     async handleMaterialsChange (val, opt) {
       if (val && opt) {
@@ -742,6 +763,11 @@ export default {
       if (materials.materialsDesc) {
         this.form.materialsDesc = materials.materialsDesc;
       }
+      // 强制 fetch-select 重新挂载：复用新实例首次 watch 加载的 loadRemoteMethod，
+      // 按当前 form.xxxName 远程搜索，命中即在 input 框展示 Name（不依赖 FetchSelect 公共组件的内部行为变更）
+      this.modelLineKey++;
+      this.seriesKey++;
+      this.yearTypeKey++;
     },
     // 门店/系列/车系/年款/物料远程搜索（fetch-select 远程模式）
     dealerSearch (params) {
