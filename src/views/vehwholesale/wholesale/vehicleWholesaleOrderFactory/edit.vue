@@ -137,6 +137,22 @@
                       placeholder="请选择" clearable filterable
                       :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)" />
                   </el-form-item>
+                  <el-form-item label="资金校验开关：" prop="fundCheckFlag">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.fundCheckFlag"
+                      placeholder="请选择" clearable filterable disabled />
+                  </el-form-item>
+                  <el-form-item label="未配车作废开关：" prop="unallocatedCancelFlag">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.unallocatedCancelFlag"
+                      placeholder="请选择" clearable filterable disabled />
+                  </el-form-item>
+                  <el-form-item label="未结算释放资源开关：" prop="unsettledReleaseFlag">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.unsettledReleaseFlag"
+                      placeholder="请选择" clearable filterable disabled />
+                  </el-form-item>
+                  <el-form-item label="按序配车开关：" prop="seqAllocateFlag">
+                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.seqAllocateFlag"
+                      placeholder="请选择" clearable filterable disabled />
+                  </el-form-item>
                   <!-- <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
                     <el-input placeholder="请输入" v-model="form.dealerWarehouseCode" clearable disabled />
                   </el-form-item> -->

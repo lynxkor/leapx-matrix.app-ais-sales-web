@@ -1,4 +1,5 @@
 <template>
+  <div>
   <el-dialog :close-on-click-modal="false" :title="title" width="75%" top="3vh" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
@@ -265,11 +266,16 @@
         </div>
       </el-form>
     </div>
-    <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="handleCancel">取消</el-button>
-      <el-button size="small" type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
+    <div slot="footer" class="dialog-footer" style="display: flex; justify-content: space-between; align-items: center;">
+      <el-button size="small" @click="fundAccountDialogVisible = true">整车资金账户信息</el-button>
+      <div>
+        <el-button size="small" @click="handleCancel">取消</el-button>
+        <el-button size="small" type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
+      </div>
     </div>
   </el-dialog>
+  <fund-account-info-dialog :visible.sync="fundAccountDialogVisible" />
+  </div>
 </template>
 
 <script>
@@ -278,6 +284,7 @@ import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import permissions from '@/libs/mixins/permissions';
+import FundAccountInfoDialog from './FundAccountInfoDialog.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   seriesId: '', // 车系ID
@@ -296,6 +303,7 @@ export default {
   },
   mixins: [permissions],
   components: {
+    FundAccountInfoDialog
     // TagInput,
     // FetchSelect,
     // PageSearchAction
@@ -338,7 +346,9 @@ export default {
         optionPackageList: []
       },
       settleAccountList: [],
-      stockStatusList: []
+      stockStatusList: [],
+      // 二级弹框：整车资金账户信息
+      fundAccountDialogVisible: false
     };
   },
   computed: {
