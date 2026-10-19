@@ -94,17 +94,7 @@
         />
       </el-form-item>
       <el-form-item label="所属母公司">
-        <fetch-select
-          :remote-method="getParentCompany"
-          remote
-          v-model="form.dealerCompanyCodes"
-          placeholder="请选择"
-          labelKey="companyName"
-          valueKey="companyCode"
-          multiple
-          clearable
-          filterable
-        />
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="批售方式">
         <fetch-select
@@ -670,6 +660,7 @@ const defaultForm = {
   syncSapMsg: '',
   createTime: '',
   dealerCompanyCode: '',
+  dealerCompanyNames: [],
   applyReason: '',
   applyReasonLike: '',
   dealerCompanyName: '',
