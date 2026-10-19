@@ -219,6 +219,7 @@
               <div class="ais-actions">
                  <el-form>
                   <el-form-item label="">
+                    <el-button v-if='canImport' size="small" @click="handleAddDetail" style="margin-left: 15px;">新增</el-button>
                     <el-button v-if ='canImport' size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
                     <el-button v-if ='perupdateQuotaQty' size="small" :disabled="selectionList.length === 0" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
                   </el-form-item>
@@ -789,6 +790,15 @@ export default {
     // 详情表格相关数据
     handleAddRow () {
       this.uploadDialogVisible = true;
+    },
+    // 新增活动明细：跳转到明细编辑页，携带活动ID
+    handleAddDetail () {
+      if (!this._id) {
+        this.$message.warning('请先保存当前排产活动');
+        return;
+      }
+      const url = `/sales/vehwholesale/basic/wholesaleProdScheduleActivityDetail/edit?scheduleActivityId=${this._id}`;
+      window.open(url, '_blank');
     },
     handleSaveTable (data) {
       // 调用保存方法并处理结果
