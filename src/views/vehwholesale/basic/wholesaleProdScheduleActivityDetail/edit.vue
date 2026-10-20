@@ -602,7 +602,8 @@ export default {
           { required: true, message: '请输入适用订单分类', trigger: 'change' }
         ],
         totalQuotaQty: [
-          { required: true, message: '请输入额度数量', trigger: 'change' }
+          { required: true, message: '请输入额度数量', trigger: 'change' },
+          { type: 'number', min: 1, max: 9999, message: '额度数量需为1~9999', trigger: 'change' }
         ],
         usedQuotaQty: [
           { required: true, message: '请输入已提报数量', trigger: 'change' }
@@ -626,7 +627,8 @@ export default {
           { required: true, message: '请选择适用订单分类', trigger: 'change' }
         ],
         totalQuotaQty: [
-          { required: true, message: '请输入额度数量', trigger: 'change' }
+          { required: true, message: '请输入额度数量', trigger: 'change' },
+          { type: 'number', min: 1, max: 9999, message: '额度数量需为1~9999', trigger: 'change' }
         ],
       }
     };
