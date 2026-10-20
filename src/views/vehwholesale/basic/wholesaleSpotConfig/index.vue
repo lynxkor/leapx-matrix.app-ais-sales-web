@@ -111,10 +111,10 @@
       />
     </div>
     <!-- 导入弹窗：id 与后端 @ResourcePermission 模板业务码对应 -->
-    <!-- TODO: 部署时需 DBA 在 app_portal 库 commonDataProcessExcelModelMap 表注册 code='WholesaleSpotConfigImport' 的导入模板 -->
+    <!-- TODO: 部署时需 DBA 在 app_portal 库 commonDataProcessExcelModelMap 表注册 code='wholesaleSpotConfigImport' 的导入模板 -->
     <Upload
       :visible="uploadDialogVisible"
-      id="WholesaleSpotConfigImport"
+      id="wholesaleSpotConfigImport"
       @close="handleUploadDialogClose"
       @getData="getData"
     />
