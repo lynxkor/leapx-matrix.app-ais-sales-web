@@ -132,7 +132,7 @@
                 <el-form-item label="证件类型：" prop="idCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.idCardType"
                     placeholder="请选择"
                     clearable
@@ -362,7 +362,7 @@
                 <el-form-item label="发票证件类型：" prop="ocrIdCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.ocrIdCardType"
                     placeholder="请选择"
                     clearable
