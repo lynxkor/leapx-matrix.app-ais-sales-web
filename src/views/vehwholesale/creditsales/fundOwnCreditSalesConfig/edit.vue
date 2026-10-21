@@ -397,8 +397,11 @@ export default {
       gdclItem({ dealerCompanyCode: obj.companyCode }).then((res) => {
         if (res) {
           this.form.creditAccountStatus = res.creditAccountStatus;
-          this.form.creditAmount = (res.creditAmount !== undefined && res.creditAmount !== null) ? Number(res.creditAmount) : '';
-          this.form.downPaymentRatio = (res.downPaymentRatio !== undefined && res.downPaymentRatio !== null) ? Number(res.downPaymentRatio) : '';
+          // 与详情 dataTransform 保持一致：Number 转换，满足 rules 中 type: 'number' 校验
+          this.form.creditAmount = res.creditAmount !== undefined && res.creditAmount !== null
+            ? Number(res.creditAmount) : '';
+          this.form.downPaymentRatio = res.downPaymentRatio !== undefined && res.downPaymentRatio !== null
+            ? Number(res.downPaymentRatio) : '';
           this.form.effectiveTime = res.effectiveTime;
           this.form.expireTime = res.expireTime;
         } else {

@@ -62,6 +62,16 @@
             <el-form-item label="交车单号：" prop="deliveryOrderCode">
               {{ info.deliveryOrderCode  }}
             </el-form-item>
+            <el-form-item label="备选单号：" prop="vehiclePurposeChangeApplyNo">
+              <el-button
+                v-if="info.vehiclePurposeChangeApplyId"
+                class="link"
+                style="padding: 0;"
+                type="text"
+                @click="openWindow('/sales/vehretail/orderManager/specialVehicleSalesReport/edit?id=' + info.vehiclePurposeChangeApplyId)"
+              >{{ info.vehiclePurposeChangeApplyNo }}</el-button>
+              <span v-else>{{ info.vehiclePurposeChangeApplyNo }}</span>
+            </el-form-item>
              <el-form-item label="预算科目：" prop="budgetItemName">
               <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + info.budgetItemId)">{{info.budgetItemName}}</el-button>
             </el-form-item>
