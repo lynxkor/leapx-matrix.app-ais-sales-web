@@ -218,7 +218,7 @@
                 <el-form-item label="原车主证件类型：" prop="originalOwnerIdType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.originalOwnerIdType"
                     placeholder="请选择"
                     clearable
@@ -351,7 +351,7 @@
                 <el-form-item label="购车人证件类型：" prop="buyerIdType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.buyerIdType"
                     placeholder="请选择"
                     clearable
