@@ -142,7 +142,7 @@
             filterable />
         </el-form-item>
       </template>
-      <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+      <page-search-action v-if="canList" v-model="show" is-expandable :view-scope="activeName" :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
     <div class="ais-active">
@@ -675,9 +675,7 @@ export default {
         this.optionDdl.form.pageSize = pageSize;
       }
       this.sortColumns = [{ column: 'inbound_date_time', sort: 'DESC' }];
-      this.$nextTick(() => {
-        this.getData();
-      });
+      this.debouncedGetData();
     },
     exportExcel () {
       this.exportLoading = true;
@@ -792,7 +790,7 @@ export default {
     // 刷新表格数据
     refreshTableData () {
       this.updateFormByActiveTab();
-      this.getData();
+      this.debouncedGetData();
     },
 
     // 根据活动标签页更新表单字段
@@ -997,7 +995,7 @@ export default {
         this.form.status = 1;
       }
       this.$nextTick(() => {
-        this.getData();
+        this.debouncedGetData();
       });
       // this.onReset();
     },
