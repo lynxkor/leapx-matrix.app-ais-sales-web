@@ -617,6 +617,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import customViewMixin from '@/libs/mixins/customView';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import ButtonGroup from '@/libs/components/ButtonGroup';
@@ -719,7 +720,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -1829,6 +1830,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.sortColumns = [];
       this.optionObj.form.page = 1;
@@ -1897,6 +1899,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
 

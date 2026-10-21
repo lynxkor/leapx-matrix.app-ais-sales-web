@@ -205,6 +205,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import customViewMixin from '@/libs/mixins/customView';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import TagInput from '@/libs/components/TagInput';
@@ -263,7 +264,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -649,6 +650,7 @@ export default {
       this.refreshTableData();
     },
     onReset () {
+      this.resetCustomView();
       if (this.activeName === 'full') {
         this.form = { ...defaultFormFull };
         this.erpInvoiceFilterMode = '';
@@ -713,6 +715,9 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
+
       const config = this.getActiveTabConfig();
 
       if (!config) {
@@ -738,6 +743,22 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配 ----
+    // 本页有 3 个页签(full/homePage/lowBattery)对应 2 个表格对象:
+    // full、homePage 共用 optionObj,lowBattery 用 optionDdl。
+    // mixin 默认只认 optionObj,低电量页签下视图数据会写错表格,故按当前页签取对应分页对象。
+    _cvTableObj () {
+      const config = this.getActiveTabConfig();
+      return (config && config.pageKey === 'optionDdl') ? this.optionDdl : this.optionObj;
+    },
+    _cvPager () {
+      return this._cvTableObj().form;
+    },
+    _cvSetResult (records, total) {
+      const target = this._cvTableObj();
+      target.dataList = records;
+      target.total = total;
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {

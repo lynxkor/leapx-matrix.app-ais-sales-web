@@ -554,6 +554,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, adjustWarehouse } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import customViewMixin from '@/libs/mixins/customView';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo, vehicleRoof, vehicleOptionPackage, vehicleExterior, vehicleInterior, vehicleWheelHub } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -656,7 +657,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -1674,6 +1675,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
@@ -1714,6 +1716,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
 
@@ -1729,6 +1733,10 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配(注入行级 deleteLoading,与业务列表保持一致) ----
+    customViewListAdapter (records) {
+      return (records || []).map(item => ({ ...item, deleteLoading: false }));
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {

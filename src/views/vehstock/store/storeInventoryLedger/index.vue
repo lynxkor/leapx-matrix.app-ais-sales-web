@@ -260,6 +260,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import customViewMixin from '@/libs/mixins/customView';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
@@ -311,7 +312,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -594,6 +595,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
@@ -636,6 +638,9 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
+
       const config = this.getActiveConfig();
       this.loading = true;
       this.selectionList = [];
@@ -653,6 +658,22 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配 ----
+    // 本页有 2 个页签对应 2 个表格对象(homePage→optionObj、unmatchedOrder→optionUnmatched)，
+    // mixin 默认只认 optionObj，视图数据会写进当前不显示的表格导致页面空白，
+    // 故复用页面已有的 getActiveConfig() 按当前页签路由到正确表格对象。
+    _cvPager () {
+      return this.getActiveConfig().form;
+    },
+    _cvSetResult (records, total) {
+      const config = this.getActiveConfig();
+      config.dataList = records;
+      config.total = total;
+    },
+    // 与业务列表保持一致：行级注入 deleteLoading
+    customViewListAdapter (records) {
+      return (records || []).map(item => ({ ...item, deleteLoading: false }));
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
