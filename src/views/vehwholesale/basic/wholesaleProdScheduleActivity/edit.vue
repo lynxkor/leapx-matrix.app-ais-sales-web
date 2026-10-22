@@ -93,6 +93,17 @@
                       filterable
                     />
                 </el-form-item>
+                <!-- 是否二网：补货申请选择本活动时，按此值锁定该单的是否二网（下游同步零小跑用） -->
+                <el-form-item label="是否二网：" prop="secondDealerFlag">
+                  <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.secondDealerFlag"
+                      placeholder="请选择是否二网"
+                      clearable
+                      filterable
+                    />
+                </el-form-item>
                   <el-form-item label="指定发运方式：" prop="deliveryWay">
                   <fetch-select
                     :request="fetchOptions"
@@ -182,6 +193,9 @@
                 </el-form-item>
                   <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                   {{ form.needAutoAllocateCarLabel }}
+                </el-form-item>
+                <el-form-item label="是否二网：">
+                  {{ secondDealerFlagLabel }}
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
                   {{ form.deliveryWayLabel }}
@@ -361,6 +375,8 @@ const defaultForm = {
   startTime: '',
   endTime: '',
   needAutoAllocateCar: '',
+  // 是否二网：默认「否」，与后端 DDL DEFAULT 0 保持一致（不传 null，避免存量列被写成 NULL）
+  secondDealerFlag: 0,
   deliveryWay: '',
   allowLockRetail: '',
   allowLockNode: ''
@@ -394,6 +410,11 @@ export default {
     },
     title () {
       return '排产专项活动：' + (this.form.activityCode || '');
+    },
+    // 「是否二网」后端未挂字典注解，不会自动补 Label，这里用 YES_NO_ENUM 翻译；存量 NULL 按「否」展示
+    secondDealerFlagLabel () {
+      const match = this.yes_no_enum.find(enumItem => enumItem.code === String(this.form.secondDealerFlag ?? 0));
+      return match ? match.message : '';
     }
   },
   watch: {
@@ -595,6 +616,9 @@ export default {
         needAutoAllocateCar: [
           { required: true, message: '请输入是否需要自动配车', trigger: 'change' }
         ],
+        secondDealerFlag: [
+          { required: true, message: '请选择是否二网', trigger: 'change' }
+        ],
         // deliveryWay: [
         //   { required: true, message: '请输入指定发运方式', trigger: 'change' }
         // ],
@@ -675,8 +699,8 @@ export default {
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
+          Object.assign(this.form, this.normalizeDetail(res));
+          Object.assign(this.originalForm, this.normalizeDetail(res));
         });
       }
     },
@@ -769,14 +793,25 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => this.normalizeDetail(res));
       }
+    },
+    /**
+     * 详情兜底：存量行的 second_dealer_flag 为 NULL（DDL 默认值不改写存量），统一按「否」处理
+     */
+    normalizeDetail (res) {
+      if (res && (res.secondDealerFlag === null || res.secondDealerFlag === undefined)) {
+        res.secondDealerFlag = 0;
+      }
+      return res;
     },
     submitRequest () {
       // 后端约定：空值传 null 而非空串
       const submitForm = { ...this.form };
       if (submitForm.allowLockRetail === '') submitForm.allowLockRetail = null;
       if (submitForm.allowLockNode === '') submitForm.allowLockNode = null;
+      // 是否二网：清空或存量 NULL 一律按「否」提交，不写 NULL
+      submitForm.secondDealerFlag = Number(submitForm.secondDealerFlag) || 0;
       // submitForm 去除两个额度数量
       delete submitForm.totalQuotaQty;
       delete submitForm.usedQuotaQty;
