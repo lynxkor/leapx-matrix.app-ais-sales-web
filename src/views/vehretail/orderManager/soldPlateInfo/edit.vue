@@ -132,7 +132,7 @@
                 <el-form-item label="证件类型：" prop="idCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.idCardType"
                     placeholder="请选择"
                     clearable
@@ -362,7 +362,7 @@
                 <el-form-item label="发票证件类型：" prop="ocrIdCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.ocrIdCardType"
                     placeholder="请选择"
                     clearable
@@ -737,6 +737,7 @@
           </div>
           <div class="common-section-body">
             <AisAttachment
+              v-show="isEditing"
               v-for="(item, index) in attachmentList" :key="index"
               :businessId="_id"
               :ref="'attachment' + index"
@@ -747,6 +748,14 @@
               :readonly="form.status === 1050 || !isEditing"
               type="card"
               @upload-loading-change="handleUploadLoadingChange($event)"
+            />
+            <AttachmentList
+              v-show="!isEditing"
+              :business-id="_id"
+              :config-code="'mcs_subsidies'"
+              type="card"
+              :readonly="true"
+              onlyShowUnclassifiedType
             />
             <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
 <!--            <simple-dialog :_id="_id" :readonly="!((form.status === 1010 || form.status === 1040) && isEditing)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>-->
@@ -793,6 +802,7 @@ import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
 import { getByCode } from '@/libs/api/attachment/index';
 import { validateAttachments } from '@/libs/utils';
+import AttachmentList from '@/libs/components/AttachmentList/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -879,6 +889,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     AisAttachment,
+    AttachmentList,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,

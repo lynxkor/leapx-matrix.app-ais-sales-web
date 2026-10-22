@@ -248,6 +248,9 @@ export default {
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/service/datacenter/store/store/detail?storeCode=' + row.saleDealerCode); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
+          { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 110 },
+          { props: 'secondDealerCode', label: '二网门店编码', visible: false, width: 160 },
+          { props: 'secondDealerName', label: '二网门店名称', visible: true, width: 200 },
           {
             props: 'prodScheduleActivity',
             label: '专项活动名称',

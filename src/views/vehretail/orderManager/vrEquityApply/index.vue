@@ -231,8 +231,22 @@
       <el-button v-if="canImport" size="small" @click="handleImport">导入发放结果</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button
+        v-if="batchAuditShow"
+        size="small"
+        :disabled="selectionList.length === 0"
+        @click="openBatchAuditShow"
+      >批量审核</el-button>
     </div>
     <div class="ais-table-c">
+      <el-tabs v-model="activeAuditTab" @tab-click="handleAuditTabClick">
+        <el-tab-pane
+          v-for="tab in auditTabs"
+          :key="tab.name"
+          :label="tab.label"
+          :name="tab.name"
+        />
+      </el-tabs>
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
@@ -256,6 +270,13 @@
       :id="'importExcelForIssueInfo'"
       @close="handleUploadDialogClose"
     />
+    <audit-dialog
+      ref="auditRef"
+      audit-title="批量审核"
+      :audit-data-list="[]"
+      field="code"
+      @audit="handleBatchAuditSubmit"
+    />
   </div>
 </template>
 
@@ -263,11 +284,12 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, getDecryptField } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getList, deleteItem, getDecryptField, batchFirstApprove, batchApprove } from '@/api/vehretail/orderManager/vrEquityApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
 import { getSelect as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
+import auditDialog from '@/libs/components/auditDialog';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
@@ -310,13 +332,22 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    auditDialog
   },
   data () {
     return {
       pageTitle: '订单权益申请',
       pageType: 'list',
       moduleKey: 'AISVR-vrEquityApply',
+      activeAuditTab: 'all',
+      auditTabs: [
+        { label: '全部', name: 'all', status: null, showBatch: false },
+        { label: '已提交', name: 'submitted', status: '30', showBatch: true },
+        { label: '已初审', name: 'firstAudited', status: '40', showBatch: true }
+      ],
+      canBatchFirstAudit: false,
+      canBatchAudit: false,
       form: {
         ...defaultForm
       },
@@ -464,7 +495,7 @@ export default {
             width: 150,
             buttons: [{
               name: '编辑',
-              show: (row) => row.permissions.edit && this.permissions.has(`${this.moduleKey}-addOrUpdate`),
+              show: (row) => Number(row.auditStatus) !== 70 && row.permissions.edit && this.permissions.has(`${this.moduleKey}-addOrUpdate`),
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/orderManager/vrEquityApply/edit',
@@ -488,11 +519,72 @@ export default {
       ]
     };
   },
+  computed: {
+    currentTab () {
+      return this.auditTabs.find(t => t.name === this.activeAuditTab) || this.auditTabs[0];
+    },
+    batchAuditShow () {
+      const tab = this.currentTab;
+      if (!tab || !tab.showBatch) return false;
+      if (tab.name === 'submitted') return this.canBatchFirstAudit;
+      if (tab.name === 'firstAudited') return this.canBatchAudit;
+      return false;
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    this.initPermissions();
     this.getData();
   },
   methods: {
+    initPermissions () {
+      this.canBatchFirstAudit = this.permissions.has(`${this.moduleKey}-batchFirstApprove`);
+      this.canBatchAudit = this.permissions.has(`${this.moduleKey}-batchApprove`);
+    },
+    handleAuditTabClick () {
+      // TAB 切换时按 TAB 设置搜索区 auditStatus 默认值：全部→清空；已提交→'30'；已初审→'40'
+      this.form.auditStatus = this.currentTab.status || '';
+      this.selectionList = [];
+      this.optionObj.form.page = 1;
+      this.getData();
+    },
+    openBatchAuditShow () {
+      if (this.selectionList.length === 0) {
+        this.$message.error('请选择要批量审核的权益申请！');
+        return;
+      }
+      if (!this.validateSelectionStatus()) return;
+      this.$refs.auditRef.show();
+    },
+    validateSelectionStatus () {
+      const expected = this.currentTab.status; // '30' 或 '40'
+      const invalid = this.selectionList.filter(
+        item => String(item.auditStatus) !== expected
+      );
+      return invalid.length === 0;
+    },
+    handleBatchAuditSubmit (auditForm) {
+      // 二次防御校验
+      if (!this.validateSelectionStatus()) return;
+
+      const idList = this.selectionList.map(item => item.id);
+      const params = {
+        idList,
+        isAudit: Boolean(auditForm.result),
+        auditOpinion: auditForm.remark || ''
+      };
+
+      const apiFn = this.currentTab.name === 'submitted' ? batchFirstApprove : batchApprove;
+
+      return apiFn(params).then(() => {
+        this.$message.success('批量审核成功');
+        this.selectionList = [];
+        this.optionObj.form.page = 1;
+        this.getData();
+      }).catch(() => {
+        // 错误已由 axios 全局拦截器统一提示，此处不再重复弹
+      });
+    },
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
         return {
@@ -522,6 +614,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.activeAuditTab = 'all';
+      this.selectionList = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -616,6 +710,16 @@ export default {
           delete data[key];
         }
       });
+
+      // 申请单状态：用户在下拉中选择的值优先；未选择时按当前 TAB 注入；都没有则不传
+      const tab = this.currentTab;
+      if (this.form.auditStatus) {
+        data.auditStatus = this.form.auditStatus;
+      } else if (tab && tab.status) {
+        data.auditStatus = tab.status;
+      } else {
+        delete data.auditStatus;
+      }
 
       if (this.form.submitTime) {
         delete data.submitTime;

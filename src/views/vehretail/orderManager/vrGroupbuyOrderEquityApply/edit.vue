@@ -415,7 +415,7 @@
                 <el-form-item label="证件类型：" prop="idType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.idType"
                     placeholder="请选择"
                     clearable

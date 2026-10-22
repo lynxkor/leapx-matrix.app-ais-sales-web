@@ -232,6 +232,9 @@
                   <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
+                <el-form-item label="是否二网：" prop="secondDealerFlag">
+                  {{ Number(form.secondDealerFlag) === 1 ? '是' : '否' }}
+                </el-form-item>
                 <el-form-item label="开始日期：" prop="startTime">
                   {{ form.startTime }}
                 </el-form-item>

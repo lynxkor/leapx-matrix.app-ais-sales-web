@@ -59,6 +59,15 @@
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
                   </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    <el-input placeholder="请输入" :value="Number(form.secondDealerFlag) === 1 ? '是' : '否'" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店编码：" prop="secondDealerCode">
+                    <el-input placeholder="请输入" v-model="form.secondDealerCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店名称：" prop="secondDealerName">
+                    <el-input placeholder="请输入" v-model="form.secondDealerName" clearable disabled />
+                  </el-form-item>
                   <el-form-item label="允许锁零售节点：" prop="allowLockNode">
                     <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type"
                       v-model="form.allowLockNode" placeholder="请选择允许锁零售节点" clearable filterable />
@@ -171,6 +180,15 @@
                     <el-link type="primary"
                       :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailId}`"
                       target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    {{ Number(form.secondDealerFlag) === 1 ? '是' : '否' }}
+                  </el-form-item>
+                  <el-form-item label="二网门店编码：" prop="secondDealerCode">
+                    {{ form.secondDealerCode }}
+                  </el-form-item>
+                  <el-form-item label="二网门店名称：" prop="secondDealerName">
+                    {{ form.secondDealerName }}
                   </el-form-item>
                   <el-form-item label="允许锁零售节点：" prop="allowLockNodeLabel">
                     {{ form.allowLockNodeLabel }}
@@ -796,6 +814,10 @@ const defaultForm = {
   clearedFlag: '',
   purchaseOrderId: '',
   wholesaleOrderId: '',
+  // 二网标识与门店（厂端同门店端同字段含义；下推时从补货申请带过来，厂端仅展示）
+  secondDealerFlag: 0,
+  secondDealerCode: '',
+  secondDealerName: '',
 };
 
 export default {

@@ -244,6 +244,14 @@ export function calculateDeliveryAmount (data) {
 }
 
 /**
+ * 关闭录音
+ * @param {Object} data
+ */
+export function manualStopAudio (data) {
+  return api.jsonPost(prefix + 'manualStopAudio', data);
+}
+
+/**
  * 查看脱敏数据
  * @param {String|Number} id 订单ID
  * @param {String} field 需要解密的字段名

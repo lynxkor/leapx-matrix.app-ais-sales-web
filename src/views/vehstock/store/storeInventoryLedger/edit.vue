@@ -45,11 +45,14 @@
                 <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
                   {{ form.deliveryDealerCode }}
                 </el-form-item>
-                <el-form-item label="二网门店编码：" prop="secondNetStoreCode">
-                  {{ form.secondNetStoreCode }}
+                <el-form-item label="是否二网：" prop="secondDealerFlag">
+                  {{ form.secondDealerFlagLabel }}
                 </el-form-item>
-                <el-form-item label="二网门店名称：" prop="secondNetStoreName">
-                  {{ form.secondNetStoreName }}
+                <el-form-item label="二网门店编码：" prop="secondDealerCode">
+                  {{ form.secondDealerCode }}
+                </el-form-item>
+                <el-form-item label="二网门店名称：" prop="secondDealerName">
+                  {{ form.secondDealerName }}
                 </el-form-item>
                 <el-form-item label="仓库编码：" prop="dealerWarehouseCode">
                   {{ form.dealerWarehouseCode }}
@@ -126,6 +129,12 @@
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
                   <el-link type="primary" :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link>
                  <!-- {{ form.retailOrderCode }} -->
+                </el-form-item>
+                <el-form-item label="零售订单二网编码：" prop="secondNetStoreCode">
+                  {{ form.secondNetStoreCode }}
+                </el-form-item>
+                <el-form-item label="零售订单二网名称：" prop="secondNetStoreName">
+                  {{ form.secondNetStoreName }}
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
@@ -420,6 +429,10 @@ const defaultForm = {
   saleDealerName: '',
   secondNetStoreCode: '',
   secondNetStoreName: '',
+  secondDealerFlag: '',
+  secondDealerFlagLabel: '',
+  secondDealerCode: '',
+  secondDealerName: '',
   deliveryDealerCode: '',
   deliveryDealerName: '',
   poentryDealerCode: '',
