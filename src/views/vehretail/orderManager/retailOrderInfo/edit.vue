@@ -209,6 +209,22 @@
                     :disabled="!canEditField('blindOrderLabel')"
                   />
                 </el-form-item>
+                <el-form-item label="是否员工购车：" prop="isEmployeePurchaseLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.isEmployeePurchaseLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationTypeLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cooperationTypeLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="订单备注：">
                   <el-input
                     placeholder="请输入"
@@ -511,6 +527,7 @@ const defaultForm = {
   deliveryUserName: '',
   preSaleOrderLabel: '',
   blindOrderLabel: '',
+  isEmployeePurchaseLabel: '',
   orderRemark: '',
   specialRemark: '',
   contractTerminationFileUrl: '',
