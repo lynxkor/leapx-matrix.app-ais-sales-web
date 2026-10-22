@@ -23,7 +23,106 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <!-- 新增场景精简表单（5 字段） -->
+              <el-form v-if="isAddMode" :inline="true" :model="form" :rules="addRules" ref="ruleFormAdd" label-width="150px" class="form-edit">
+                <el-form-item label="门店名称：" prop="dealerCode">
+                  <fetch-select
+                    :remote-method="dealerSearch"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    v-model="form.dealerCode"
+                    placeholder="请输入门店名称搜索"
+                    filterable clearable remote reserve-keyword
+                    style="width: 260px"
+                    @change="handleDealerChange"
+                  />
+                </el-form-item>
+                <el-form-item label="适用订单分类：" prop="applyOrderCategory">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_order_category"
+                    v-model="form.applyOrderCategory"
+                    placeholder="请选择"
+                    clearable filterable
+                    style="width: 260px"
+                  />
+                </el-form-item>
+                <el-form-item label="系列：">
+                  <fetch-select
+                    :key="modelLineKey"
+                    :remote-method="modelLineSearch"
+                    :params="form.modelLineName"
+                    value-key="id"
+                    label-key="name"
+                    v-model="form.modelLineId"
+                    placeholder="请输入系列名称搜索"
+                    filterable clearable remote reserve-keyword
+                    style="width: 260px"
+                    @change="handleModelLineChange"
+                  />
+                </el-form-item>
+                <el-form-item label="车系：">
+                  <fetch-select
+                    :key="seriesKey"
+                    :remote-method="seriesSearch"
+                    :params="form.seriesName"
+                    value-key="id"
+                    label-key="name"
+                    v-model="form.seriesId"
+                    placeholder="请输入车系名称搜索"
+                    filterable clearable remote reserve-keyword
+                    style="width: 260px"
+                    @change="handleSeriesChange"
+                  />
+                </el-form-item>
+                <el-form-item label="年款：">
+                  <fetch-select
+                    :key="yearTypeKey"
+                    :remote-method="yearTypeSearch"
+                    :params="form.yearTypeName"
+                    value-key="id"
+                    label-key="name"
+                    v-model="form.yearTypeId"
+                    placeholder="请输入年款名称搜索"
+                    filterable clearable remote reserve-keyword
+                    style="width: 260px"
+                    @change="handleYearTypeChange"
+                  />
+                </el-form-item>
+                <el-form-item label="整车物料：">
+                  <fetch-select
+                    :remote-method="materialsSearch"
+                    value-key="id"
+                    label-key="materialsCode"
+                    v-model="form.materialsId"
+                    placeholder="请输入物料编码搜索"
+                    filterable clearable remote reserve-keyword
+                    style="width: 260px"
+                    @change="handleMaterialsChange"
+                  />
+                </el-form-item>
+                <el-form-item label="额度数量：" prop="totalQuotaQty">
+                  <el-input
+                    type="number"
+                    v-model.number="form.totalQuotaQty"
+                    placeholder="请输入"
+                    style="width: 260px"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="备注：">
+                  <el-input
+                    maxlength="150"
+                    placeholder="请输入(最多150个字符)"
+                    v-model="form.remark"
+                    style="width: 260px"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+
+              <!-- 原编辑表单（仅在非新增场景下显示） -->
+              <el-form v-if="!isAddMode && (isEditing || !_id)" :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit">
                 <el-form-item label="主键：" prop="id">
                   <el-input
                     placeholder="请输入"
@@ -219,7 +318,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-if="!isAddMode && !(isEditing || !_id)">
                 <el-form-item label="活动编码：" prop="activityCode">
                   <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.scheduleActivityId}`" target="_blank">{{ form.activityCode }}</el-link>
                 </el-form-item>
@@ -315,10 +414,19 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
+// 物料详情：用于按物料编码反查系列/车系/年款
+import { getDetail as getVehicleMaterialsDetail } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import {
+  getEnum,
+  listOrgStoreInfo,
+  vehicleSeriesList,
+  vehicleModelLineList,
+  listVehicleYearType,
+  vehicleMaterials
+} from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -346,6 +454,7 @@ const defaultForm = {
   modelLineName: '',
   materialsId: '',
   materialsCode: '',
+  materialsDesc: '',
   applyOrderCategory: '',
   totalQuotaQty: '',
   usedQuotaQty: '',
@@ -377,7 +486,14 @@ export default {
     _id () {
       return this.id || this.form.id || this.$route.query.id;
     },
+    // 新增模式：URL 携带 scheduleActivityId 但无明细 id
+    isAddMode () {
+      return !this._id && !!this.$route.query.scheduleActivityId;
+    },
     title () {
+      if (this.isAddMode) {
+        return '新增排产专项活动明细';
+      }
       return '排产专项活动明细：' + (this.form.activityDetailCode || '');
     }
   },
@@ -386,6 +502,15 @@ export default {
       handler (val) {
         if (val) {
           this.getDetailData();
+        }
+      },
+      immediate: true
+    },
+    isAddMode: {
+      handler (val) {
+        if (val) {
+          // 新增场景：把 URL 上的 scheduleActivityId 写入表单
+          this.form.scheduleActivityId = this.$route.query.scheduleActivityId || '';
         }
       },
       immediate: true
@@ -403,6 +528,10 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      // 物料变更后强制 fetch-select 重挂载，触发首次 loadRemoteMethod 按当前 form.xxxName 搜索反显 Name
+      modelLineKey: 0,
+      seriesKey: 0,
+      yearTypeKey: 0,
       defaultNewRow: {
         name: '',
       },
@@ -476,7 +605,8 @@ export default {
           { required: true, message: '请输入适用订单分类', trigger: 'change' }
         ],
         totalQuotaQty: [
-          { required: true, message: '请输入额度数量', trigger: 'change' }
+          { required: true, message: '请输入额度数量', trigger: 'change' },
+          { type: 'number', min: 1, max: 9999, message: '额度数量需为1~9999', trigger: 'change' }
         ],
         usedQuotaQty: [
           { required: true, message: '请输入已提报数量', trigger: 'change' }
@@ -489,6 +619,19 @@ export default {
         ],
         yearTypeName: [
           { required: true, message: '请选择年款名称', trigger: 'change' }
+        ],
+      },
+      // 新增场景精简校验：门店 / 订单分类 / 额度数量
+      addRules: {
+        dealerCode: [
+          { required: true, message: '请选择门店', trigger: 'change' }
+        ],
+        applyOrderCategory: [
+          { required: true, message: '请选择适用订单分类', trigger: 'change' }
+        ],
+        totalQuotaQty: [
+          { required: true, message: '请输入额度数量', trigger: 'change' },
+          { type: 'number', min: 1, max: 9999, message: '额度数量需为1~9999', trigger: 'change' }
         ],
       }
     };
@@ -512,7 +655,141 @@ export default {
       }
     },
     submitRequest () {
+      // 新增场景：仅提交必要字段，避免脏字段覆盖；后端会补 usedQuotaQty=0 并累加主表额度
+      if (this.isAddMode) {
+        const submitFields = [
+          'scheduleActivityId', 'dealerCode', 'dealerName', 'dealerId',
+          'applyOrderCategory',
+          'seriesId', 'seriesName',
+          'modelLineId', 'modelLineName',
+          'materialsId', 'materialsCode', 'materialsDesc',
+          'yearTypeId', 'yearTypeName',
+          'totalQuotaQty', 'remark'
+        ];
+        const payload = {};
+        submitFields.forEach(k => { payload[k] = this.form[k]; });
+        return addOrUpdate(payload);
+      }
       return addOrUpdate({ ...this.form });
+    },
+    // 新增场景：门店选择回填
+    handleDealerChange (val, opt) {
+      if (val && opt) {
+        this.form.dealerCode = opt.storeCode || val;
+        this.form.dealerName = opt.storeName || '';
+        this.form.dealerId = opt.storeId || '';
+      } else {
+        this.form.dealerCode = '';
+        this.form.dealerName = '';
+        this.form.dealerId = '';
+      }
+    },
+    // 新增场景：系列/车系/年款/物料下拉回填（选 ID + 名称）
+    handleModelLineChange (val, opt) {
+      if (val && opt) {
+        this.form.modelLineId = opt.id || val;
+        this.form.modelLineName = opt.modelLineName || opt.name || '';
+      } else {
+        this.form.modelLineId = '';
+        this.form.modelLineName = '';
+      }
+      // 系列变更后清空物料：物料依赖系列，避免遗留不匹配物料
+      this.form.materialsId = '';
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
+    },
+    handleSeriesChange (val, opt) {
+      if (val && opt) {
+        this.form.seriesId = opt.id || val;
+        this.form.seriesName = opt.seriesName || opt.name || '';
+      } else {
+        this.form.seriesId = '';
+        this.form.seriesName = '';
+      }
+      // 车系变更后清空系列（系列包含车系）与物料，避免遗留不匹配数据
+      this.form.modelLineId = '';
+      this.form.modelLineName = '';
+      this.form.materialsId = '';
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
+    },
+    handleYearTypeChange (val, opt) {
+      if (val && opt) {
+        this.form.yearTypeId = opt.id || val;
+        this.form.yearTypeName = opt.yearTypeName || opt.name || '';
+      } else {
+        this.form.yearTypeId = '';
+        this.form.yearTypeName = '';
+      }
+      // 年款变更后清空物料：物料依赖年款，避免遗留不匹配物料
+      this.form.materialsId = '';
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
+    },
+    async handleMaterialsChange (val, opt) {
+      if (val && opt) {
+        this.form.materialsId = opt.id || val;
+        this.form.materialsCode = opt.materialsCode || opt.code || '';
+        let materials = opt;
+        // list 接口未带关联字段时，用详情接口兜底（保证反显名称可用）
+        if (!materials.seriesId && !materials.modelLineId && !materials.yearTypeId) {
+          try {
+            const res = await getVehicleMaterialsDetail(this.form.materialsId);
+            if (res) {
+              materials = res;
+            }
+          } catch (e) {
+            materials = opt;
+          }
+        }
+        this.fillFormByMaterials(materials);
+      } else {
+        this.form.materialsId = '';
+        this.form.materialsCode = '';
+      }
+    },
+    // 按物料数据回填：系列 / 车系 / 年款（物料优先，覆盖手工选择）
+    fillFormByMaterials (materials) {
+      if (!materials) {
+        return;
+      }
+      if (materials.modelLineId) {
+        this.form.modelLineId = materials.modelLineId;
+        this.form.modelLineName = materials.modelLineName || '';
+      }
+      if (materials.seriesId) {
+        this.form.seriesId = materials.seriesId;
+        this.form.seriesName = materials.seriesName || '';
+      }
+      if (materials.yearTypeId) {
+        this.form.yearTypeId = materials.yearTypeId;
+        this.form.yearTypeName = materials.yearTypeName || '';
+      }
+      if (materials.materialsDesc) {
+        this.form.materialsDesc = materials.materialsDesc;
+      }
+      // 强制 fetch-select 重新挂载：复用新实例首次 watch 加载的 loadRemoteMethod，
+      // 按当前 form.xxxName 远程搜索，命中即在 input 框展示 Name（不依赖 FetchSelect 公共组件的内部行为变更）
+      this.modelLineKey++;
+      this.seriesKey++;
+      this.yearTypeKey++;
+    },
+    // 门店/系列/车系/年款/物料远程搜索（fetch-select 远程模式）
+    dealerSearch (params) {
+      // 销售门店（带 isWholesaleSale=true），按名称模糊搜索
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    modelLineSearch (params) {
+      return vehicleModelLineList({ modelLineNameLike: params, status: 1 });
+    },
+    seriesSearch (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    yearTypeSearch (params) {
+      return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
+    },
+    materialsSearch (params) {
+      return vehicleMaterials({ materialsCodeLike: params, status: 1 });
     },
     // 打开侧边栏
     openPane () {

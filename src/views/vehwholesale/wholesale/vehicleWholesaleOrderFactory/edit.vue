@@ -686,7 +686,7 @@
 </template>
 
 <script>
-import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1237,33 +1237,17 @@ export default {
       // 其他情况直接显示手工配车对话框
       this.showManualVehicleDialog = true;
     },
-    confirmVinSubmit (params, notice) {
-      this.$confirm(notice, '操作提醒', {
-        confirmButtonText: '确定配车',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        vinAllocateVehicleSubmitItem(params).then(() => {
-          this.$message({
-            type: 'success',
-            message: '配车成功!'
-          });
-          this.getDetailData();
-        });
-      }).catch(() => { });
-    },
     confirmVin (data) {
       const params = {
         wholesaleOrderId: this.form.id,
         vin: data.vin
       };
-      vinAllocateVehicleCheckItem(params).then((res) => {
-        this.confirmVinSubmit(params, res);
-      }).catch(() => {
+      vinAllocateVehicleSubmitItem(params).then(() => {
         this.$message({
-          type: 'error',
-          message: '配车校验失败!'
+          type: 'success',
+          message: '配车成功!'
         });
+        this.getDetailData();
       });
     },
     handleDelete () { // 删除
