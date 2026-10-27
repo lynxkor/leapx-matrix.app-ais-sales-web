@@ -68,6 +68,14 @@ export function plantWholesaleInStockCreateApply (data) {
 }
 
 /**
+ *  厂端现车批售-弹框 「特供车」tab 查询特供车 VIN 明细列表
+ * @param {Object} data
+ */
+export function querySpecialSupplyVehicleInventory (data) {
+  return api.jsonPost(prefix + 'querySpecialSupplyVehicleInventory', data);
+}
+
+/**
  *  厂端现车批售-弹框 校验库存是否充足
  * @param {Object} data
  */

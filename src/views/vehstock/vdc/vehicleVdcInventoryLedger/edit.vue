@@ -214,6 +214,12 @@
                   <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark">
                     <el-input v-model="form.vehicleLogisticsReserveRemark" disabled />
                   </el-form-item>
+                  <el-form-item label="是否特供车：" prop="isSpecialSupplyLabel">
+                    <el-input v-model="form.isSpecialSupplyLabel" disabled />
+                  </el-form-item>
+                  <el-form-item label="特供车标记：" prop="specialSupplyMarkLabel">
+                    <el-input v-model="form.specialSupplyMarkLabel" disabled />
+                  </el-form-item>
                 </template>
               </el-form>
 
@@ -294,6 +300,12 @@
                 </el-form-item>
                 <el-form-item label="销售预留时间：" prop="salesReservedon">
                   {{ form.salesReservedon }}
+                </el-form-item>
+                <el-form-item label="是否特供车：" prop="isSpecialSupplyLabel">
+                  {{ form.isSpecialSupplyLabel }}
+                </el-form-item>
+                <el-form-item label="特供车标记：" prop="specialSupplyMarkLabel">
+                  {{ form.specialSupplyMarkLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -473,6 +485,8 @@ const defaultForm = {
   salesReservationOperatorName: '',
   allowLockRetail: '',
   allowLockRetailLabel: '',
+  isSpecialSupplyLabel: '',
+  specialSupplyMarkLabel: '',
   erpSalesOrder: '',
   erpDeliverOrder: '',
   erpInvoice: '',

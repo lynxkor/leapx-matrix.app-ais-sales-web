@@ -242,6 +242,26 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="是否特供车">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.isSpecialSupply"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="特供车标记">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_special_supply_mark"
+            v-model="form.specialSupplyMark"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="物流预留备注">
           <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
         </el-form-item>
@@ -726,6 +746,8 @@ const defaultForm = {
   vehicleReturnFlag: '',
   secondDealerFlag: '',
   secondDealerNames: [],
+  isSpecialSupply: '',
+  specialSupplyMark: '',
 };
 
 const pageSize = 20;
@@ -1098,6 +1120,8 @@ export default {
             }]
           },
           { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
