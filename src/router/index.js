@@ -2627,7 +2627,7 @@ const routes = [
         keepAlive: true,
         // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
         customViewBizKey: 'entVehicleOrderPage',
-        customViewResourceTag: 'AISVW-entVehicleOrderPage-customeView'
+        customViewResourceTag: 'AISVW-entVehicleOrder-customeView'
       }
     }, {
       path: '/vehwholesale/entorder/entVehicleOrder/edit',
