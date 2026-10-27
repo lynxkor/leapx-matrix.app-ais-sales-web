@@ -309,7 +309,7 @@
                 <el-form-item label="变更后购车人证件类型：" prop="newIdCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.newIdCardType"
                     placeholder="请选择"
                     :disabled="form.originalOrderStatus === 9"

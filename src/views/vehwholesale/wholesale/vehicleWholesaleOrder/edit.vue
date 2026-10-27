@@ -103,6 +103,12 @@
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
                   </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    <el-input placeholder="请输入" :value="secondDealerFlagLabel" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店：" prop="secondDealerName">
+                    <el-input placeholder="请输入" v-model="form.secondDealerName" clearable disabled />
+                  </el-form-item>
                   <el-form-item label="充电桩编码：" prop="chargingPortCode">
                     <el-input placeholder="请输入" v-model="form.chargingPortCode" clearable disabled />
                   </el-form-item>
@@ -193,6 +199,12 @@
                     <el-button class="link" style="padding: 0;" type="text"
                       @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailId)">{{
                         form.replenishApplyDetailCode }}</el-button>
+                  </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    {{ secondDealerFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="二网门店：" prop="secondDealerName">
+                    {{ form.secondDealerName }}
                   </el-form-item>
                   <el-form-item label="充电桩编码：" prop="chargingPortCode">
                     {{ form.chargingPortCode }}
@@ -611,7 +623,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -697,6 +709,8 @@ const defaultForm = {
   saleTargetTrackingId: '',
   replenishApplyDetailCode: '',
   chargingPortCode: '',
+  secondDealerFlag: 0,
+  secondDealerName: '',
   id: '',
   creator: '',
   creatorName: '',
@@ -768,6 +782,11 @@ export default {
     },
     title () {
       return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
+    },
+    // 0/1 → 是/否，null → 「否」（存量数据兜底）
+    secondDealerFlagLabel () {
+      const match = this.yes_no_enum.find(item => item.code === String(this.form.secondDealerFlag ?? 0));
+      return match ? match.message : '';
     },
     financingOrgOptions () {
       const ft = this.form.settleFundType + '';
@@ -1109,33 +1128,17 @@ export default {
     handleManualVehicleAllocation () { // 手工配车
       this.showManualVehicleDialog = true;
     },
-    confirmVinSubmit (params, notice) {
-      this.$confirm(notice, '操作提醒', {
-        confirmButtonText: '确定配车',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        vinAllocateVehicleSubmitItem(params).then(() => {
-          this.$message({
-            type: 'success',
-            message: '配车成功!'
-          });
-          this.getDetailData();
-        });
-      }).catch(() => { });
-    },
     confirmVin (data) {
       const params = {
         wholesaleOrderId: this.form.id,
         vin: data.vin
       };
-      vinAllocateVehicleCheckItem(params).then((res) => {
-        this.confirmVinSubmit(params, res);
-      }).catch(() => {
+      vinAllocateVehicleSubmitItem(params).then(() => {
         this.$message({
-          type: 'error',
-          message: '配车校验失败!'
+          type: 'success',
+          message: '配车成功!'
         });
+        this.getDetailData();
       });
     },
     handleDelete () { // 删除

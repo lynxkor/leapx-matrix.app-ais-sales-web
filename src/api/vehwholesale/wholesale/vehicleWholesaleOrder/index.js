@@ -111,15 +111,6 @@ export function vinAllocateVehicleSubmitItem (data) {
 }
 
 /**
- * 指定VIN配车-先校验-弹框提示
- * @param {Object} data
- */
-
-export function vinAllocateVehicleCheckItem (data) {
-  return api.jsonPost(prefix + 'vinAllocateVehicleCheck', data);
-}
-
-/**
  * 批量配车
  * @param {Object} data
  */
