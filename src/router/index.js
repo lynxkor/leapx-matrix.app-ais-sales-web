@@ -506,7 +506,10 @@ const routes = [
 
       meta: {
         name: '整车主数据-整车物料管理',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehicleMaterialsPage',
+        customViewResourceTag: 'AISDC-vehicleMaterials-customeView'
       }
     }, {
       path: '/datacenter/materials/vehicleMaterials/detail',
