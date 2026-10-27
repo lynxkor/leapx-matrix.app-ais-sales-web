@@ -170,6 +170,35 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+         <el-form-item label="合作类型">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="ws_cooperation_type"
+                  v-model="form.cooperationType"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                />
+              </el-form-item>
+              <el-form-item label="是否员工购车">
+                <fetch-select
+                  :options="yes_no_enum"
+                  v-model="form.isEmployeePurchase"
+                  placeholder="请选择"
+                  clearable
+                />
+              </el-form-item>
+              <el-form-item label="门店整车订单类型">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="vr_order_type"
+                  v-model="form.orderTypes"
+                  placeholder="请选择"
+                  clearable
+                  multiple
+                  filterable
+                />
+              </el-form-item>
         <el-form-item label="创建时间">
           <dateranges
             v-model="form.createTime"
@@ -268,6 +297,9 @@ const defaultForm = {
   cityCodeList: [],
   dealerCompanyCodeList: [],
   dealerCompanyNameList: [],
+  cooperationType: '',
+  isEmployeePurchase: '',
+  orderTypes: [],
   // seriesIdList: [],
 };
 
@@ -426,6 +458,9 @@ export default {
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140 },
           { props: 'vehicleMaterialCode', label: '整车物料编码', visible: true, width: 240 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 140 },
+          { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
+          { props: 'orderTypeLabel', label: '门店整车订单类型', visible: true, width: 150 },
           { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',

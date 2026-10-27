@@ -155,6 +155,9 @@
         <el-form-item label="是否预售订单">
           <fetch-select :options="yes_no_enum" v-model="form.preSaleOrder" placeholder="请选择" clearable />
         </el-form-item>
+        <el-form-item label="是否员工购车">
+          <fetch-select :options="yes_no_enum" v-model="form.isEmployeePurchase" placeholder="请选择" clearable />
+        </el-form-item>
         <el-form-item label="是否绑定批售">
           <fetch-select :options="yes_no_enum" v-model="form.wholesaleBindStatus" placeholder="请选择" clearable />
         </el-form-item>
@@ -182,7 +185,7 @@
         <el-form-item label="证件类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vehretail_id_card_type"
+            enumCode="vr_id_card_type"
             v-model="form.idCardTypeList"
             placeholder="请选择"
             clearable
@@ -383,6 +386,7 @@ const defaultForm = {
   lockStatusLabel: '',
   lockTime: '',
   wholesaleBindStatus: '',
+  isEmployeePurchase: '',
   priceAfterSubsidy: '',
   depositAmount: '',
   agentName: '',
@@ -558,6 +562,7 @@ export default {
           { props: 'agentName', label: '代办联系人', visible: true, width: 140 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 240 },
+          { props: 'saleDealerCode', label: '订单销售门店编码', visible: true, width: 160 },
           { props: 'provinceName', label: '销售门店-省', visible: true, width: 160 },
           { props: 'cityName', label: '销售门店-市', visible: true, width: 160 },
           { props: 'regionName', label: '所属区域或部门', visible: true, width: 160 },
@@ -607,6 +612,7 @@ export default {
             mask: true,
             getValue: (row) => getDetailDecryptField(row.id, 'orderUserPhone')
           },
+          { props: 'isEmployeePurchaseLabel', label: '是否员工购车', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'idCardTypeLabel', label: '证件类型', visible: true, width: 200 },
           {
@@ -898,8 +904,6 @@ export default {
             { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
           );
         }
-      }).catch(() => {
-        this.$message.error('导出失败，请稍后重试');
       }).finally(() => {
         this.exportLoading = false;
       });

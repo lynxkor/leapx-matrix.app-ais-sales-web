@@ -81,7 +81,7 @@
         <el-form-item label="新车主证件类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vehretail_id_card_type"
+            enumCode="vr_id_card_type"
             v-model="form.newOwnerIdType"
             placeholder="请选择新车主证件类型"
             clearable

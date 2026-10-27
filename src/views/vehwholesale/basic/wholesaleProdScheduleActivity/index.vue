@@ -64,6 +64,10 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.deliveryWays"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
+         <el-form-item label="是否二网">
+                          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.secondDealerFlag"
+                            placeholder="请选择" clearable  filterable />
+         </el-form-item>
       </template>
       <!-- v-if="canList" -->
       <page-search-action v-model="show" is-expandable v-if="canList" :loading="loading" @submit="onSubmit"
@@ -229,6 +233,7 @@ export default {
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
           { props: 'allowLockNodeLabel', label: '允许锁零售单节点', visible: true, width: 140 },
+          { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 110 },
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 100, align: 'right' },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 100, align: 'right' },
           { props: 'startTime', label: '开始日期', visible: true, width: 160 },

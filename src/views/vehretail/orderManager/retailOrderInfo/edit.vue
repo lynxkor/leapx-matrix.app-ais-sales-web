@@ -209,6 +209,22 @@
                     :disabled="!canEditField('blindOrderLabel')"
                   />
                 </el-form-item>
+                <el-form-item label="是否员工购车：" prop="isEmployeePurchaseLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.isEmployeePurchaseLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationTypeLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cooperationTypeLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="订单备注：">
                   <el-input
                     placeholder="请输入"
@@ -217,7 +233,7 @@
                     :max-length="100"
                   />
                 </el-form-item>
-                <el-form-item label="特殊备注：" prop="specialRemark">
+                <el-form-item label="特殊备注：" prop="specialRemark" v-if="canViewSpecialRemark">
                   <el-input
                     placeholder="请输入"
                     v-model="form.specialRemark"
@@ -511,6 +527,7 @@ const defaultForm = {
   deliveryUserName: '',
   preSaleOrderLabel: '',
   blindOrderLabel: '',
+  isEmployeePurchaseLabel: '',
   orderRemark: '',
   specialRemark: '',
   contractTerminationFileUrl: '',
@@ -635,6 +652,7 @@ export default {
       canOrderUnlockApply: false, // 质量问题解绑申请
       canVrEquityApply: false, // 权益申请
       canVrGroupbuyOrderEquityApply: false, // 团购申请
+      canViewSpecialRemark: false, // 查看特殊备注
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -942,6 +960,11 @@ export default {
       this.canOrderUnlockApply = this.permissions.has(`${this.moduleKey}-orderUnlockApply-addOrUpdate`);
       this.canVrEquityApply = this.permissions.has(`${this.moduleKey}-vrEquityApply-addOrUpdate`);
       this.canVrGroupbuyOrderEquityApply = this.permissions.has(`${this.moduleKey}-vrGroupbuyOrderEquityApply-addOrUpdate`);
+      this.canViewSpecialRemark = this.permissions.has(`${this.moduleKey}-specialRemark`);
+      // 无特殊备注查看权限时，详情态（动态字段渲染）也不展示该字段
+      if (!this.canViewSpecialRemark) {
+        this.displayFields = this.displayFields.filter(item => item.key !== 'specialRemark');
+      }
     },
     loginUserGet () {
       loginUserGet().then(res => {
