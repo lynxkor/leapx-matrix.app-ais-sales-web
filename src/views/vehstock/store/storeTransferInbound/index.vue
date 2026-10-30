@@ -23,11 +23,11 @@
           label-key="storeName"
         />
       </el-form-item>
+      <template v-if="show">
       <el-form-item label="单据状态" v-show="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_inbound_audit_status"
           v-model="form.auditStatus" placeholder="请选择" clearable filterable />
       </el-form-item>
-      <template v-if="show">
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />

@@ -10,7 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.permissions.edit && perEdit"
+        :showEditBtn="canEdit"
       >
         <template #status>
           <span v-if="form.auditStatus === 10" class="status link">{{ form.auditStatusLabel }}</span>
@@ -54,6 +54,15 @@
                     placeholder="请选择商城订单号"
                     @change="handleMallOrderNoChange"
                     :disabled="!form.permissions.draft && isEditing"
+                  />
+                </el-form-item>
+                <el-form-item v-if="!!_id" label="OA流程编号：" prop="oaProcessNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.oaProcessNo"
+                    clearable
+                    maxlength="50"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="整车订单编号：" prop="vehicleOrderNo">
@@ -154,6 +163,9 @@
                 <el-form-item label="商城订单号：">
                   {{ form.mallOrderNo }}
                 </el-form-item>
+                <el-form-item v-if="!!_id" label="OA流程编号：">
+                  {{ form.oaProcessNo || '-' }}
+                </el-form-item>
                 <el-form-item label="整车订单编号：">
                   {{ form.vehicleOrderNo }}
                 </el-form-item>
@@ -218,7 +230,7 @@
                 <el-form-item label="原车主证件类型：" prop="originalOwnerIdType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.originalOwnerIdType"
                     placeholder="请选择"
                     clearable
@@ -351,7 +363,7 @@
                 <el-form-item label="购车人证件类型：" prop="buyerIdType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.buyerIdType"
                     placeholder="请选择"
                     clearable
@@ -571,7 +583,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="!form.permissions.editIssue"
+                    :disabled="isIssueDisabled"
                   />
                 </el-form-item>
                 <el-form-item label="预计发放日期：" prop="expectedIssueDate">
@@ -580,7 +592,7 @@
                     type="date"
                     value-format="yyyy-MM-dd"
                     placeholder="选择日期"
-                    :disabled="!form.permissions.editIssue"
+                    :disabled="isIssueDisabled"
                   />
                 </el-form-item>
                 <el-form-item label="发放类型：" prop="issueType">
@@ -591,7 +603,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="!form.permissions.editIssue"
+                    :disabled="isIssueDisabled"
                   />
                 </el-form-item>
               </el-form>
@@ -855,6 +867,15 @@ export default {
     title () {
       return '订单权益申请单号：' + (this.form.code || '');
     },
+    canEdit () {
+      // 作废状态（auditStatus=70）不允许编辑
+      if (Number(this.form.auditStatus) === 70) return false;
+      return this.perEdit;
+    },
+    isIssueDisabled () {
+      // 发放信息字段：作废状态下不可编辑
+      return Number(this.form.auditStatus) === 70;
+    }
   },
   watch: {
     id: {

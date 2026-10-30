@@ -74,6 +74,15 @@
                 <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
                   <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entVehorderId}`" target="_blank">{{form.entVehorderCode}}</el-link>
                 </el-form-item>
+                <el-form-item label="商城订单号：" prop="mallOrderCode">
+                  <el-link
+                    v-if="form.retailOrderId"
+                    type="primary"
+                    :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`"
+                    target="_blank"
+                  >{{ form.mallOrderCode }}</el-link>
+                  <template v-else>{{ form.mallOrderCode }}</template>
+                </el-form-item>
                 <el-form-item label="交车单号：" prop="deliveryOrderCode">
                   <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
@@ -138,6 +147,8 @@ const defaultForm = {
   wholesaleOrderCode: '',
   deliveryOrderId: '',
   deliveryOrderCode: '',
+  mallOrderCode: '',
+  retailOrderId: '',
   dealerName: '',
   dealerCompanyName: '',
   dealerComapnyCode: '',

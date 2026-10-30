@@ -86,6 +86,13 @@ export default {
         },
         dataProp: [
           {
+            props: 'code',
+            label: '权益编码',
+            visible: true,
+            width: 180,
+            fixed: 'left'
+          },
+          {
             props: 'equityCategoryName',
             label: '权益名称',
             visible: true,

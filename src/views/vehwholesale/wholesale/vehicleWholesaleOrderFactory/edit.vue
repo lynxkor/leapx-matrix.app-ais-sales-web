@@ -59,6 +59,15 @@
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
                   </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    <el-input placeholder="请输入" :value="Number(form.secondDealerFlag) === 1 ? '是' : '否'" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店编码：" prop="secondDealerCode">
+                    <el-input placeholder="请输入" v-model="form.secondDealerCode" clearable disabled />
+                  </el-form-item>
+                  <el-form-item label="二网门店名称：" prop="secondDealerName">
+                    <el-input placeholder="请输入" v-model="form.secondDealerName" clearable disabled />
+                  </el-form-item>
                   <el-form-item label="允许锁零售节点：" prop="allowLockNode">
                     <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type"
                       v-model="form.allowLockNode" placeholder="请选择允许锁零售节点" clearable filterable />
@@ -137,21 +146,17 @@
                       placeholder="请选择" clearable filterable
                       :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)" />
                   </el-form-item>
-                  <el-form-item label="资金校验开关：" prop="fundCheckFlag">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.fundCheckFlag"
-                      placeholder="请选择" clearable filterable disabled />
+                  <el-form-item label="资金校验开关：" prop="fundCheckFlagLabel">
+                    {{ form.fundCheckFlagLabel }}
                   </el-form-item>
-                  <el-form-item label="未配车作废开关：" prop="unallocatedCancelFlag">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.unallocatedCancelFlag"
-                      placeholder="请选择" clearable filterable disabled />
+                  <el-form-item label="未配车作废开关：" prop="unallocatedCancelFlagLabel">
+                    {{ form.unallocatedCancelFlagLabel }}
                   </el-form-item>
-                  <el-form-item label="未结算释放资源开关：" prop="unsettledReleaseFlag">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.unsettledReleaseFlag"
-                      placeholder="请选择" clearable filterable disabled />
+                  <el-form-item label="未结算释放资源开关：" prop="unsettledReleaseFlagLabel">
+                    {{ form.unsettledReleaseFlagLabel }}
                   </el-form-item>
-                  <el-form-item label="按序配车开关：" prop="seqAllocateFlag">
-                    <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.seqAllocateFlag"
-                      placeholder="请选择" clearable filterable disabled />
+                  <el-form-item label="按序配车开关：" prop="seqAllocateFlagLabel">
+                    {{ form.seqAllocateFlagLabel }}
                   </el-form-item>
                   <!-- <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
                     <el-input placeholder="请输入" v-model="form.dealerWarehouseCode" clearable disabled />
@@ -187,6 +192,15 @@
                     <el-link type="primary"
                       :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailId}`"
                       target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="是否二网：" prop="secondDealerFlag">
+                    {{ Number(form.secondDealerFlag) === 1 ? '是' : '否' }}
+                  </el-form-item>
+                  <el-form-item label="二网门店编码：" prop="secondDealerCode">
+                    {{ form.secondDealerCode }}
+                  </el-form-item>
+                  <el-form-item label="二网门店名称：" prop="secondDealerName">
+                    {{ form.secondDealerName }}
                   </el-form-item>
                   <el-form-item label="允许锁零售节点：" prop="allowLockNodeLabel">
                     {{ form.allowLockNodeLabel }}
@@ -257,6 +271,18 @@
                   </el-form-item>
                   <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                     {{ form.needAutoAllocateCarLabel }}
+                  </el-form-item>
+                  <el-form-item label="资金校验开关：" prop="fundCheckFlagLabel">
+                    {{ form.fundCheckFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="未配车作废开关：" prop="unallocatedCancelFlagLabel">
+                    {{ form.unallocatedCancelFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="未结算释放资源开关：" prop="unsettledReleaseFlagLabel">
+                    {{ form.unsettledReleaseFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="按序配车开关：" prop="seqAllocateFlagLabel">
+                    {{ form.seqAllocateFlagLabel }}
                   </el-form-item>
 
                   <el-form-item label="创建时间：" prop="createTime">
@@ -684,7 +710,7 @@
 </template>
 
 <script>
-import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -812,6 +838,10 @@ const defaultForm = {
   clearedFlag: '',
   purchaseOrderId: '',
   wholesaleOrderId: '',
+  // 二网标识与门店（厂端同门店端同字段含义；下推时从补货申请带过来，厂端仅展示）
+  secondDealerFlag: 0,
+  secondDealerCode: '',
+  secondDealerName: '',
 };
 
 export default {
@@ -1231,33 +1261,17 @@ export default {
       // 其他情况直接显示手工配车对话框
       this.showManualVehicleDialog = true;
     },
-    confirmVinSubmit (params, notice) {
-      this.$confirm(notice, '操作提醒', {
-        confirmButtonText: '确定配车',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        vinAllocateVehicleSubmitItem(params).then(() => {
-          this.$message({
-            type: 'success',
-            message: '配车成功!'
-          });
-          this.getDetailData();
-        });
-      }).catch(() => { });
-    },
     confirmVin (data) {
       const params = {
         wholesaleOrderId: this.form.id,
         vin: data.vin
       };
-      vinAllocateVehicleCheckItem(params).then((res) => {
-        this.confirmVinSubmit(params, res);
-      }).catch(() => {
+      vinAllocateVehicleSubmitItem(params).then(() => {
         this.$message({
-          type: 'error',
-          message: '配车校验失败!'
+          type: 'success',
+          message: '配车成功!'
         });
+        this.getDetailData();
       });
     },
     handleDelete () { // 删除

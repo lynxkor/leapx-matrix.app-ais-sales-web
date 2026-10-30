@@ -35,6 +35,7 @@
           <el-button v-if="canCancelDelivery && form?.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
           <el-button v-if="canPushDeliveryActive && form?.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
           <el-button v-if="canCalculateDeliveryAmount && form?.status === 4" size="small" :loading="buttonLoading['calculateDeliveryAmount']" @click="handleCalculateDeliveryAmount">计算尾款</el-button>
+          <el-button v-if="canManualStopAudio" size="small" :loading="buttonLoading['manualStopAudio']" @click="handleManualStopAudio">关闭录音</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -436,6 +437,7 @@ import {
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
   calculateDeliveryAmount, // 计算尾款
+  manualStopAudio, // 关闭录音
   getDetailDecryptField, // 加密
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 // import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
@@ -628,6 +630,7 @@ export default {
       canCancelDelivery: false, // 交车撤回
       canPushDeliveryActive: false, // 推送激活信息
       canCalculateDeliveryAmount: false, // 计算尾款
+      canManualStopAudio: false, // 关闭录音
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -747,6 +750,9 @@ export default {
         { key: 'deliveryDealerName', label: '交付门店', link: '/service/datacenter/store/store/detail', paramKey: 'deliveryDealerCode', paramName: 'storeCode' },
         { key: 'deliveryVin', label: '交车VIN码' },
         { key: 'deliveryTime', label: '交车时间' },
+        { key: 'orderTypeLabel', label: '门店整车订单类型' },
+        { key: 'isEmployeePurchaseLabel', label: '是否员工购车' },
+        { key: 'cooperationTypeLabel', label: '合作类型' },
       ],
       realNameAuthFields: [
         { key: 'realNameAuthSourceLabel', label: '实名认证来源' },
@@ -776,7 +782,8 @@ export default {
         { key: 'appointmentChangeCount', label: '预约变更次数' },
         { key: 'appointmentOperationTime', label: '预约操作时间' },
         { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' },
+        { key: 'userStoreTime', label: '用户到店时间' }
       ],
       // 预约记录列配置
       appointmentRecordColumns: [
@@ -860,6 +867,7 @@ export default {
       this.canCancelDelivery = has(`${this.moduleKey}-cancelDelivery`);
       this.canPushDeliveryActive = has(`${this.moduleKey}-pushDeliveryActive`);
       this.canCalculateDeliveryAmount = has(`${this.moduleKey}-calculateDeliveryAmount`);
+      this.canManualStopAudio = has(`${this.moduleKey}-manualStopAudio`);
       // 跨模块权限：从 store 原始数据判断，绕过 mixin 的前缀过滤
       this.canRetailOrderPayRecordDelete = has('AISVR-retailOrderPayRecord-delete');
     },
@@ -1448,6 +1456,23 @@ export default {
       await this.withLoading('calculateDeliveryAmount', async () => {
         await calculateDeliveryAmount({ deliveryOrderId: this.form.deliveryOrderId });
         this.$message.success('计算尾款成功');
+        this.$refs.containerRef?.loadDetail();
+      });
+    },
+    // 关闭录音
+    async handleManualStopAudio () {
+      try {
+        await this.$confirm('确认关闭录音吗？', '关闭录音提醒', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        });
+      } catch (error) {
+        return;
+      }
+      await this.withLoading('manualStopAudio', async () => {
+        await manualStopAudio({ deliveryOrderCode: this.form.deliveryOrderCode });
+        this.$message.success('关闭录音成功');
         this.$refs.containerRef?.loadDetail();
       });
     },

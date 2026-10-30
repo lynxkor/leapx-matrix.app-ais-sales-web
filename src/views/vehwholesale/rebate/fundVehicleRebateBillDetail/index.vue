@@ -41,7 +41,7 @@
     <el-form-item label="门店名称">
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
     </el-form-item>
-    <el-form-item label="单据状态" prop="billStatuses">
+      <el-form-item label="单据状态" prop="billStatuses">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_rebate_bills_detail_status"
@@ -49,6 +49,16 @@
           placeholder="请选择"
           clearable
           multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="是否入账">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
+          v-model="form.posted"
+          placeholder="请选择"
+          clearable
           filterable
         />
       </el-form-item>
@@ -78,6 +88,9 @@
         </el-form-item>
          <el-form-item label="交车单号">
           <tag-input v-model="form.deliveryOrderCodes" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="备选单号">
+          <tag-input v-model="form.vehiclePurposeChangeApplyNos" placeholder="请输入" />
         </el-form-item>
       <el-form-item label="车系">
         <fetch-select
@@ -260,11 +273,13 @@ const defaultForm = {
   auditTime: '',
   billStatus: '',
   deliveryOrderCode: '',
+  vehiclePurposeChangeApplyNos: [],
   // 新增筛选字段
   auditorName: '', // 初审人
   reviewName: '', // 复审人
   reviewTime: [], // 复审时间(区间)
   remark: '', // 备注
+  posted: '', // 是否入账（1是0否）
 };
 
 const pageSize = 20;
@@ -406,6 +421,7 @@ export default {
           { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
           { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + row.deliveryOrderId); }, type: 'primary' }] },
+          { props: 'vehiclePurposeChangeApplyNo', label: '备选单号', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },

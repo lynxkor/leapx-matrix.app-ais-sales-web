@@ -94,17 +94,7 @@
         />
       </el-form-item>
       <el-form-item label="所属母公司">
-        <fetch-select
-          :remote-method="getParentCompany"
-          remote
-          v-model="form.dealerCompanyCodes"
-          placeholder="请选择"
-          labelKey="companyName"
-          valueKey="companyCode"
-          multiple
-          clearable
-          filterable
-        />
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="批售方式">
         <fetch-select
@@ -502,6 +492,19 @@
             clearable
           />
         </el-form-item>
+         <el-form-item label="是否二网">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
+                  v-model="form.secondDealerFlag"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                />
+              </el-form-item>
+              <el-form-item label="二网门店">
+                <tag-input v-model="form.secondDealerNames" placeholder="请输入" />
+              </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -670,6 +673,7 @@ const defaultForm = {
   syncSapMsg: '',
   createTime: '',
   dealerCompanyCode: '',
+  dealerCompanyNames: [],
   applyReason: '',
   applyReasonLike: '',
   dealerCompanyName: '',
@@ -720,6 +724,8 @@ const defaultForm = {
   taxInvoiceFlag: '',
   cooperateTypes: [],
   vehicleReturnFlag: '',
+  secondDealerFlag: '',
+  secondDealerNames: [],
 };
 
 const pageSize = 20;
@@ -871,6 +877,13 @@ export default {
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.prodScheduleActivityId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 110 },
+          { props: 'secondDealerCode', label: '二网门店编码', visible: false, width: 160 },
+          { props: 'secondDealerName', label: '二网门店名称', visible: true, width: 200 },
+          { props: 'fundCheckFlagLabel', label: '资金校验开关', visible: true, width: 120 },
+          { props: 'unallocatedCancelFlagLabel', label: '未配车作废开关', visible: true, width: 130 },
+          { props: 'unsettledReleaseFlagLabel', label: '未结算释放资源开关', visible: true, width: 150 },
+          { props: 'seqAllocateFlagLabel', label: '按序配车开关', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
           { props: 'allowLockNodesLabel', label: '锁单节点', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 120, align: 'right' },

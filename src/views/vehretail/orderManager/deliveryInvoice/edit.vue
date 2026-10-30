@@ -346,7 +346,7 @@
                 <el-form-item label="证件类型：" prop="orderIdCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.orderIdCardType"
                     placeholder="请选择"
                     clearable
@@ -529,7 +529,7 @@
                 <el-form-item label="车主证件类型：" prop="carIdCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="form.carIdCardType"
                     placeholder="请选择"
                     clearable
@@ -651,7 +651,7 @@
                   <fetch-select
                     v-if="scope.row.fieldKey === 'carIdCardType'"
                     :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
+                    enumCode="vr_id_card_type"
                     v-model="scope.row.recognizedValue"
                     placeholder="请选择"
                     size="small"
