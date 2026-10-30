@@ -131,6 +131,42 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/risktask/riskCheckTask',
+      name: 'riskCheckTask',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/index.vue'),
+
+      meta: {
+        name: '车辆排查任务',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTask/edit',
+      name: 'riskCheckTaskEdit',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/edit.vue'),
+
+      meta: {
+        name: '车辆排查任务详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTask/detail',
+      name: 'riskCheckTaskDetail',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/detail.vue'),
+
+      meta: {
+        name: '车辆排查清单',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTask/audit',
+      name: 'riskCheckTaskAudit',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/audit.vue'),
+
+      meta: {
+        name: '车辆排查任务审核',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/basic/vehicleReservationDetail',
       name: 'vehicleReservationDetail',
       component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
