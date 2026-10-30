@@ -173,10 +173,11 @@ const defaultForm = {
   seriesName: '',
   yearTypeId: '',
   yearTypeName: '',
-  fundCheckFlag: '',
-  unallocatedCancelFlag: '',
-  unsettledReleaseFlag: '',
-  seqAllocateFlag: '',
+  // 新增态开关默认值：与后端 Boolean 字段类型一致，必须用布尔字面量而非字符串
+  fundCheckFlag: true, // 资金校验：默认是
+  unallocatedCancelFlag: false, // 未配车作废：默认否
+  unsettledReleaseFlag: false, // 未结算释放资源：默认否
+  seqAllocateFlag: true, // 按序配车：默认是
   status: 1,
   remark: ''
 };
@@ -207,11 +208,12 @@ export default {
       rules: {
         seriesId: [{ required: true, message: '请选择车系', trigger: 'change' }],
         yearTypeId: [{ required: true, message: '请选择年款', trigger: 'change' }],
-        fundCheckFlag: [{ required: true, message: '请选择资金校验', trigger: 'change' }],
-        unallocatedCancelFlag: [{ required: true, message: '请选择未配车作废', trigger: 'change' }],
-        unsettledReleaseFlag: [{ required: true, message: '请选择未结算释放资源', trigger: 'change' }],
-        seqAllocateFlag: [{ required: true, message: '请选择按序配车', trigger: 'change' }],
-        status: [{ required: true, message: '请选择状态', trigger: 'change' }]
+        // 4 个开关为后端 Boolean 字段，须显式声明 type，否则 async-validator 默认按 string 校验，布尔值会被判为类型错误
+        fundCheckFlag: [{ required: true, type: 'boolean', message: '请选择资金校验', trigger: 'change' }],
+        unallocatedCancelFlag: [{ required: true, type: 'boolean', message: '请选择未配车作废', trigger: 'change' }],
+        unsettledReleaseFlag: [{ required: true, type: 'boolean', message: '请选择未结算释放资源', trigger: 'change' }],
+        seqAllocateFlag: [{ required: true, type: 'boolean', message: '请选择按序配车', trigger: 'change' }],
+        status: [{ required: true, type: 'number', message: '请选择状态', trigger: 'change' }]
       },
       // 4 个开关统一是/否下拉，value 与后端 Boolean 字段一一对应
       booleanOptions: [
