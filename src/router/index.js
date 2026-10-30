@@ -167,6 +167,15 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/risktask/riskCheckTask/auditDetail',
+      name: 'riskCheckTaskAuditDetail',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/auditDetail.vue'),
+
+      meta: {
+        name: '排查任务审核详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/basic/vehicleReservationDetail',
       name: 'vehicleReservationDetail',
       component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),

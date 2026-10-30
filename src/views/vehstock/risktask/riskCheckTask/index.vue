@@ -9,18 +9,10 @@
       class="ais-search-form"
     >
       <el-form-item label="任务编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.checkTaskCode"
-          clearable
-        />
+        <tag-input v-model="form.checkTaskCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="任务名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.taskName"
-          clearable
-        />
+        <tag-input v-model="form.taskNameList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="任务状态">
         <fetch-select
@@ -78,8 +70,8 @@
       <el-button v-permission="moduleKey+'-publish'" size="small" :disabled="!hasDraftSelected" @click="handleBatchPublish">发布</el-button>
       <el-button v-permission="moduleKey+'-addVehicle'" size="small" :disabled="selectionList.length !== 1" @click="handleAddVehicle">新增车辆</el-button>
       <el-button v-permission="moduleKey+'-importVehicle'" size="small" :disabled="selectionList.length !== 1" @click="handleImport">导入车辆</el-button>
-      <el-button v-permission="moduleKey+'-end'" size="small" :disabled="selectionList.length === 0" @click="handleBatchEnd">结束任务</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-permission="moduleKey+'-end'" size="small" :disabled="!hasEndSelected" @click="handleBatchEnd">结束任务</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="!hasDeleteSelected">批量删除</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
@@ -126,10 +118,11 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getEndOfDayString, downloadExcel } from '@/libs/utils';
 import AddVehicleDialog from './AddVehicleDialog.vue';
 import Upload from '@/libs/components/UploadDialog';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
-  checkTaskCode: '',
-  taskName: '',
+  checkTaskCodeList: [],
+  taskNameList: [],
   taskStatusList: [],
   lockVehicleFlag: '',
   auditTypeList: [],
@@ -148,7 +141,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     AddVehicleDialog,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -212,6 +206,8 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              // 🔑 仅草稿/进行中（editButton）的单个任务可编辑；权限由 fixTableConfig 过滤
+              show: (row) => !!(row.buttonControl && row.buttonControl.editButton),
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehstock/risktask/riskCheckTask/edit',
@@ -238,22 +234,24 @@ export default {
               type: 'primary'
             }, {
               name: '发布',
-              // 🔑 仅草稿(10)的任务可发布
-              show: (row) => Number(row.taskStatus) === 10,
+              // 🔑 仅草稿（publishButton）的单个任务可发布；权限由 fixTableConfig 过滤
+              show: (row) => !!(row.buttonControl && row.buttonControl.publishButton),
               click: (rowIndex, row) => {
                 this.handlePublish([row.id]);
               },
               type: 'primary'
             }, {
               name: '结束任务',
-              // 🔑 仅进行中(60)的任务可结束
-              show: (row) => Number(row.taskStatus) === 60,
+              // 🔑 仅进行中（endButton）的单个任务可结束；权限由 fixTableConfig 过滤
+              show: (row) => !!(row.buttonControl && row.buttonControl.endButton),
               click: (rowIndex, row) => {
                 this.handleEnd([row.id]);
               },
               type: 'primary'
             }, {
               name: '删除',
+              // 🔑 仅草稿（deleteButton）的单个任务可删除；权限由 fixTableConfig 过滤
+              show: (row) => !!(row.buttonControl && row.buttonControl.deleteButton),
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
@@ -292,9 +290,17 @@ export default {
     this.getData();
   },
   computed: {
-    // 勾选项中是否存在草稿状态（只有草稿可发布）
+    // 勾选项中是否存在可发布的任务（后端 buttonControl.publishButton，仅草稿）
     hasDraftSelected () {
-      return this.selectionList.some(item => Number(item.taskStatus) === 10);
+      return this.selectionList.some(item => !!(item.buttonControl && item.buttonControl.publishButton));
+    },
+    // 勾选项中是否存在可结束的任务（后端 buttonControl.endButton，仅进行中）
+    hasEndSelected () {
+      return this.selectionList.some(item => !!(item.buttonControl && item.buttonControl.endButton));
+    },
+    // 勾选项中是否存在可删除的任务（后端 buttonControl.deleteButton，仅草稿）
+    hasDeleteSelected () {
+      return this.selectionList.some(item => !!(item.buttonControl && item.buttonControl.deleteButton));
     }
   },
   methods: {
@@ -429,6 +435,17 @@ export default {
           data.createTimeEnd = getEndOfDayString(this.form.createTime[1]);
         }
       }
+      // 任务编码 / 任务名称：TagInput 多行输入，逐条精准匹配（IN），不支持模糊
+      // 与 storeInventoryLedger 的 vinList 多值入参范式一致，但不走 vinLike 那种单值模糊分支
+      const { checkTaskCodeList = [], taskNameList = [] } = this.form;
+      delete data.checkTaskCodeList;
+      delete data.taskNameList;
+      if (checkTaskCodeList.length > 0) {
+        data.checkTaskCodeList = checkTaskCodeList;
+      }
+      if (taskNameList.length > 0) {
+        data.taskNameList = taskNameList;
+      }
       return data;
     },
     async fetchOptions (code) {
@@ -465,10 +482,10 @@ export default {
         }).catch(() => {});
       }).catch(() => {});
     },
-    // 批量发布
+    // 批量发布（按 buttonControl.publishButton 过滤，仅草稿可发布）
     handleBatchPublish () {
       const ids = this.selectionList
-        .filter(item => Number(item.taskStatus) === 10)
+        .filter(item => item.buttonControl && item.buttonControl.publishButton)
         .map(item => item.id);
       this.handlePublish(ids);
     },
@@ -508,9 +525,15 @@ export default {
         });
       });
     },
-    // 批量删除
+    // 批量删除（按 buttonControl.deleteButton 过滤，仅草稿可删除）
     handleBatchDelete () {
-      const ids = this.selectionList.map(item => item.id) || [];
+      const ids = this.selectionList
+        .filter(item => item.buttonControl && item.buttonControl.deleteButton)
+        .map(item => item.id) || [];
+      if (!ids.length) {
+        this.$message.warning('请选择草稿状态的任务进行删除');
+        return;
+      }
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
         confirmButtonText: '确定',
@@ -556,9 +579,15 @@ export default {
         this.exportLoading = false;
       });
     },
-    // 结束任务（支持批量）
+    // 结束任务（支持批量，按 buttonControl.endButton 过滤，仅进行中可结束）
     handleBatchEnd () {
-      const ids = this.selectionList.map(item => item.id) || [];
+      const ids = this.selectionList
+        .filter(item => item.buttonControl && item.buttonControl.endButton)
+        .map(item => item.id) || [];
+      if (!ids.length) {
+        this.$message.warning('请选择进行中状态的任务进行结束');
+        return;
+      }
       this.handleEnd(ids);
     },
     // 新增车辆（弹窗批量输入 VIN）

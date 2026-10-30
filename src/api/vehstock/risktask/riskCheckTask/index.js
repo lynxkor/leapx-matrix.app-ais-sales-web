@@ -35,3 +35,8 @@ export const addVehicle = (params) => {
 export const publishTask = (params) => {
   return api.jsonPost('vehstock/web/risktask/riskCheckTask/publish', params);
 };
+
+// 查询用户角色（权限）列表，供「推送对象」下拉选择：value=authorityCode（存编码）、label=authorityName（显名称）
+export const getAuthorityList = (params) => {
+  return api.get('passport/authorityInfo/page', params);
+};

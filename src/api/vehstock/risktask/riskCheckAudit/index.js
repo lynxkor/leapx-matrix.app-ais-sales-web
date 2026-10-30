@@ -14,3 +14,8 @@ export const approve = (params) => {
 export const submitCheckResult = (params) => {
   return api.jsonPost('vehstock/web/risktask/riskCheckAudit/submit', params);
 };
+
+// 审核详情查询（T24）
+export const getAuditDetail = (params) => {
+  return api.jsonPost('vehstock/web/risktask/riskCheckAudit/get', params);
+};
