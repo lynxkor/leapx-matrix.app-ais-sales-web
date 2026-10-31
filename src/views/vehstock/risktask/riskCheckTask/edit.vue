@@ -303,8 +303,9 @@
                 </el-form-item>
                 <el-form-item label="车辆类型：">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vs_vehicle_category"
+                    :options="vehicleCategoryOptions"
+                    labelKey="label"
+                    valueKey="value"
                     v-model="detailForm.vehicleTypeList"
                     placeholder="请选择"
                     clearable
@@ -559,7 +560,7 @@ const VEHICLE_STATUS_MAP = (() => {
  */
 
 /**
- * 车辆类型选项：与后端 VehicleCategoryEnum 1:1（1商品车 3展车 10试驾车）
+ * 车辆类型选项：与后端 ReservationStatusEnum 1:1（1商品车 3展车 10试驾车），字典 vs_vehicle_category
  * 🔑 用静态 options 而非 enumCode，保证与后端 Integer 码值回显时类型一致（多选 el-select 严格相等匹配）
  */
 const VEHICLE_CATEGORY_OPTIONS = [

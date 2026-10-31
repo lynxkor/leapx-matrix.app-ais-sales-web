@@ -17,8 +17,9 @@
       </el-form-item>
       <el-form-item label="车辆类型">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="vs_vehicle_category"
+          :options="vehicleCategoryOptions"
+          labelKey="label"
+          valueKey="value"
           v-model="form.vehicleType"
           placeholder="请选择"
           clearable
@@ -154,6 +155,12 @@ export default {
         { label: '销售出库', value: 13 },
         { label: '调拨在途', value: 16 },
         { label: '作废', value: 99 }
+      ],
+      // 🔑 车辆类型硬编码：与后端 ReservationStatusEnum 1:1（1商品车 3展车 10试驾车），字典 vs_vehicle_category
+      vehicleCategoryOptions: [
+        { label: '商品车', value: 1 },
+        { label: '展车', value: 3 },
+        { label: '试驾车', value: 10 }
       ],
       optionObj: {
         id: 'riskCheckTaskDetailTable',
