@@ -148,19 +148,24 @@
                           :prop="'pushConfigList.' + scope.$index + '.vehicleStatusList'"
                           :rules="pushConfigRules.vehicleStatusList"
                         >
-                          <fetch-select
-                            class="push-config-select"
-                            :options="vehicleStatusOptions"
-                            labelKey="label"
-                            valueKey="value"
-                            v-model="scope.row.vehicleStatusList"
-                            placeholder="请选择车辆状态"
-                            clearable
-                            filterable
-                            multiple
-                            :collapse-tags="false"
-                            wrap-tags
-                          />
+                          <el-tooltip
+                            :content="statusText(scope.row.vehicleStatusList)"
+                            :disabled="!(scope.row.vehicleStatusList || []).length"
+                            placement="top"
+                            effect="light"
+                          >
+                            <fetch-select
+                              class="push-config-select"
+                              :options="vehicleStatusOptions"
+                              labelKey="label"
+                              valueKey="value"
+                              v-model="scope.row.vehicleStatusList"
+                              placeholder="请选择车辆状态"
+                              clearable
+                              filterable
+                              multiple
+                            />
+                          </el-tooltip>
                         </el-form-item>
                       </template>
                     </el-table-column>
@@ -171,19 +176,24 @@
                           :prop="'pushConfigList.' + scope.$index + '.vehicleCategoryList'"
                           :rules="pushConfigRules.vehicleCategoryList"
                         >
-                          <fetch-select
-                            class="push-config-select"
-                            :options="vehicleCategoryOptions"
-                            labelKey="label"
-                            valueKey="value"
-                            v-model="scope.row.vehicleCategoryList"
-                            placeholder="请选择车辆类型"
-                            clearable
-                            filterable
-                            multiple
-                            :collapse-tags="false"
-                            wrap-tags
-                          />
+                          <el-tooltip
+                            :content="categoryText(scope.row.vehicleCategoryList)"
+                            :disabled="!(scope.row.vehicleCategoryList || []).length"
+                            placement="top"
+                            effect="light"
+                          >
+                            <fetch-select
+                              class="push-config-select"
+                              :options="vehicleCategoryOptions"
+                              labelKey="label"
+                              valueKey="value"
+                              v-model="scope.row.vehicleCategoryList"
+                              placeholder="请选择车辆类型"
+                              clearable
+                              filterable
+                              multiple
+                            />
+                          </el-tooltip>
                         </el-form-item>
                       </template>
                     </el-table-column>
@@ -213,19 +223,24 @@
                           :prop="'pushConfigList.' + scope.$index + '.pushUserRoleList'"
                           :rules="pushConfigRules.pushUserRoleList"
                         >
-                          <fetch-select
-                            class="push-config-select"
-                            :options="pushUserRoleOptions"
-                            labelKey="label"
-                            valueKey="value"
-                            v-model="scope.row.pushUserRoleList"
-                            placeholder="请选择推送对象"
-                            clearable
-                            filterable
-                            multiple
-                            :collapse-tags="false"
-                            wrap-tags
-                          />
+                          <el-tooltip
+                            :content="pushUserRoleText(scope.row.pushUserRoleList)"
+                            :disabled="!(scope.row.pushUserRoleList || []).length"
+                            placement="top"
+                            effect="light"
+                          >
+                            <fetch-select
+                              class="push-config-select"
+                              :options="pushUserRoleOptions"
+                              labelKey="label"
+                              valueKey="value"
+                              v-model="scope.row.pushUserRoleList"
+                              placeholder="请选择推送对象"
+                              clearable
+                              filterable
+                              multiple
+                            />
+                          </el-tooltip>
                         </el-form-item>
                       </template>
                     </el-table-column>
@@ -484,7 +499,11 @@
                .page-common-edit .el-form-item{width:33.3%;display:flex}，把 label 挤到换行；
                移出到 body 后恢复 element 默认布局（label 定宽 90px 右对齐，不换行） -->
           <el-dialog title="新增车辆" :visible.sync="addVehicleDialogVisible" width="560px" append-to-body @close="addVinList = []">
-            <el-form label-width="90px" class="add-vehicle-form">
+            <!-- 🔑 @submit.native.prevent：TagInput 单条输入框是裸 <input>，且本 el-form 内只有这一个 input、
+                 又没有 submit 按钮，正好命中浏览器「隐式表单提交」（Implicit Submission）条件——
+                 回车会触发原生 GET 提交，URL 的 ?id= 被表单序列化结果覆盖，路由变成无 id 的新增页。
+                 阻止原生提交后，回车只走 TagInput 的 @keyup.enter 逻辑（VIN 落成一个 tag） -->
+            <el-form label-width="90px" class="add-vehicle-form" @submit.native.prevent>
               <el-form-item label="车辆VIN：">
                 <tag-input v-model="addVinList" placeholder="支持批量，回车分隔，每行一个VIN" style="width:100%" />
               </el-form-item>
@@ -1319,26 +1338,8 @@ export default {
     width: 100%;
   }
 
-  // ---- 多选展示全部选中值并自动换行 ----
-  // 1) 覆盖 FetchSelect 组件内强制的 flex-wrap: nowrap（加 !important 保证优先级）
-  // 2) 给右侧箭头图标让位，tags 在剩余宽度内换行
-  // 3) el-select 在 filterable 下会按 tags 实际高度自动撑高输入框（resetInputHeight），行高随之增长
-  ::v-deep .push-config-select .el-select__tags {
-    flex-wrap: wrap !important;
-    white-space: normal;
-    max-width: calc(100% - 30px);
-  }
-
-  // tag 内容不做省略，保证每个选中值完整可见
-  ::v-deep .el-select__tags-text {
-    max-width: none;
-  }
-
-  // 换行后的 tag 行距紧凑一些
-  ::v-deep .push-config-select .el-tag {
-    margin-top: 2px;
-    margin-bottom: 2px;
-  }
+  // ---- 多选下拉：沿用 FetchSelect 组件默认 collapse-tags 单行收起（+N），对齐 salesConfig 销售顾问配置 ----
+  // 悬浮完整内容见各列 el-tooltip；不再强制展开换行，避免表格行高随选中项数量增长
 }
 
 .push-config-footer {
