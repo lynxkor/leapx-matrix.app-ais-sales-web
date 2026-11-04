@@ -4,7 +4,7 @@
       <el-form-item label="排查任务" required>
         <el-input :value="taskCode" disabled placeholder="系统自动带出" />
       </el-form-item>
-      <el-form-item label="车辆VIN码" required>
+      <el-form-item label="VIN码" required>
         <el-input
           v-model="vinText"
           type="textarea"

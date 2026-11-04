@@ -219,17 +219,12 @@ export default {
               },
               type: 'info'
             }, {
-              name: '车辆清单',
+              name: '新增车辆',
+              // 🔑 仅进行中（addVehicleButton）的任务可新增车辆；权限由 fixTableConfig 过滤；
+              //    弹窗交互与详情页 edit.vue 的【新增车辆】一致（批量 VIN 调 addVehicle）
+              show: (row) => !!(row.buttonControl && row.buttonControl.addVehicleButton),
               click: (rowIndex, row) => {
-                this.goDetail(row);
-              },
-              type: 'primary'
-            }, {
-              name: '审核',
-              // 🔑 审核列表（人工审核才有待审记录）
-              show: (row) => Number(row.auditType) === 10,
-              click: (rowIndex, row) => {
-                this.goAudit(row);
+                this.handleRowAddVehicle(row);
               },
               type: 'primary'
             }, {
@@ -333,9 +328,9 @@ export default {
       if (!this.permissions.has(`${this.moduleKey}-publish`)) {
         operate.buttons = operate.buttons.filter(item => item.name !== '发布');
       }
-      // 本模块专属：审核
-      if (!this.permissions.has(`${this.moduleKey}-audit-page`)) {
-        operate.buttons = operate.buttons.filter(item => item.name !== '审核');
+      // 本模块专属：新增车辆（与工具栏【新增车辆】按钮同一权限点）
+      if (!this.permissions.has(`${this.moduleKey}-addVehicle`)) {
+        operate.buttons = operate.buttons.filter(item => item.name !== '新增车辆');
       }
       if (operate.buttons.length === 0) {
         this.optionObj.dataProp = this.optionObj.dataProp.filter(item => item.props !== 'operate');
@@ -347,26 +342,6 @@ export default {
     handleAdd () {
       this.$router.push({
         path: '/vehstock/risktask/riskCheckTask/edit'
-      });
-    },
-    // 进入车辆清单页（T10）
-    goDetail (row) {
-      this.$router.push({
-        path: '/vehstock/risktask/riskCheckTask/detail',
-        query: {
-          checkTaskId: row.id,
-          checkTaskCode: row.checkTaskCode
-        }
-      });
-    },
-    // 进入审核列表页（T14）
-    goAudit (row) {
-      this.$router.push({
-        path: '/vehstock/risktask/riskCheckTask/audit',
-        query: {
-          checkTaskId: row.id,
-          checkTaskCode: row.checkTaskCode
-        }
       });
     },
     onSubmit () {
@@ -596,6 +571,14 @@ export default {
         return;
       }
       this.currentTask = this.selectionList[0];
+      this.addVehicleVisible = true;
+    },
+    // 操作列【新增车辆】（同详情页 edit.vue 的【新增车辆】：仅进行中可操作，按行直接打开弹窗）
+    handleRowAddVehicle (row) {
+      if (!(row.buttonControl && row.buttonControl.addVehicleButton)) {
+        return;
+      }
+      this.currentTask = row;
       this.addVehicleVisible = true;
     },
     // 关闭新增车辆弹窗

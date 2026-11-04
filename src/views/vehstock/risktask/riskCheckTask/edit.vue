@@ -437,64 +437,57 @@
                 </el-form-item>
               </el-form>
 
-              <!-- 操作区 -->
+              <!-- 操作区：可见 = 有权限 AND 后端 buttonControl 允许；值为 false 的按钮不渲染（需求：不能只禁用） -->
               <div class="ais-actions detail-actions">
-                <el-button size="small" type="primary" plain :disabled="!canOperateVehicle || detailSelection.length === 0" @click="handleCancelCheck">取消排查</el-button>
-                <el-button size="small" type="primary" plain :disabled="!canOperateVehicle || detailSelection.length === 0" @click="handleUnlockVehicle">车辆解锁</el-button>
-                <el-button size="small" type="primary" plain :disabled="!canOperateVehicle" @click="handleAddVehicle">新增车辆</el-button>
-                <el-button size="small" type="primary" plain :disabled="!canOperateVehicle" @click="openImport">导入</el-button>
+                <!-- 取消排查：后端 buttonControl.cancelCheckButton（已结束隐藏）+ 取消排查权限点 -->
+                <el-button v-if="canCancelCheck" size="small" type="primary" plain :disabled="detailSelection.length === 0" @click="handleCancelCheck">取消排查</el-button>
+                <!-- 删除：仅【草稿】状态可删除排查明细（后端 buttonControl.deleteDetailButton + 删除权限点） -->
+                <el-button
+                  v-if="canDeleteDetail"
+                  size="small"
+                  type="danger"
+                  plain
+                  :disabled="detailSelection.length === 0"
+                  @click="handleDeleteDetail"
+                >删除</el-button>
+                <!-- 车辆解锁：后端 buttonControl.unlockVehicleButton（已结束隐藏）+ 解锁权限点 -->
+                <el-button v-if="canUnlockVehicle" size="small" type="primary" plain :disabled="detailSelection.length === 0" @click="handleUnlockVehicle">车辆解锁</el-button>
+                <!-- 新增车辆：后端 buttonControl.addVehicleButton（草稿/进行中可操作）+ 新增车辆权限点 -->
+                <el-button v-if="canAddVehicle" size="small" type="primary" plain @click="handleAddVehicle">新增车辆</el-button>
+                <!-- 导入：后端 buttonControl.importVehicleButton（草稿/进行中可操作）+ 导入权限点 -->
+                <el-button v-if="canImportVehicle" size="small" type="primary" plain @click="openImport">导入</el-button>
                 <el-button size="small" @click="handleOneClickRemind">一键提醒</el-button>
               </div>
 
-              <!-- 表格 -->
-              <el-table
-                ref="detailTable"
-                :data="detailTableData"
-                v-loading="detailLoading"
-                border
-                size="small"
-                @selection-change="handleDetailSelectionChange"
-              >
-                <el-table-column type="selection" width="48" align="center" />
-                <el-table-column prop="vin" label="VIN" min-width="180" />
-                <el-table-column prop="saleDealerName" label="销售门店" min-width="160" show-overflow-tooltip />
-                <el-table-column prop="deliveryDealerName" label="交付门店" min-width="160" show-overflow-tooltip />
-                <el-table-column prop="vehicleTypeLabel" label="车辆类型" min-width="100" />
-                <el-table-column prop="seriesName" label="车系名称" min-width="120" show-overflow-tooltip />
-                <el-table-column prop="modelName" label="车型名称" min-width="120" show-overflow-tooltip />
-                <el-table-column prop="yearTypeName" label="年款" min-width="100" />
-                <el-table-column prop="exteriorName" label="外观名称" min-width="120" show-overflow-tooltip />
-                <el-table-column prop="interiorName" label="内饰名称" min-width="120" show-overflow-tooltip />
-                <el-table-column label="车辆状态" min-width="120">
-                  <template slot-scope="scope">{{ formatVehicleStatus(scope.row.vehicleStatus) }}</template>
-                </el-table-column>
-                <el-table-column prop="checkStatusLabel" label="排检状态" min-width="100" />
-                <el-table-column prop="lockStatusLabel" label="锁定状态" min-width="100" />
-                <el-table-column prop="checkTime" label="排检时间" min-width="170" />
-              </el-table>
-
-              <!-- 分页 -->
-              <div class="detail-pagination">
-                <el-pagination
-                  @size-change="handleDetailSizeChange"
-                  @current-change="handleDetailCurrentChange"
-                  :current-page="detailPageNum"
-                  :page-sizes="[10, 20, 50, 100]"
-                  :page-size="detailPageSize"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  :total="detailTotal"
+              <!-- 表格：与任务列表页 /vehstock/risktask/riskCheckTask 使用同一套 LPVxeTable
+                   （斑马纹 + border="inner" + 行高 40 + 表头样式 + 右浮动「共 N 条」分页 + 表格设置），
+                   保证详情页与列表页表格视觉完全一致 -->
+              <div class="detail-table-wrap">
+                <LPVxeTable
+                  ref="detailTable"
+                  v-loading="detailLoading"
+                  is-checkbox
+                  is-page
+                  checkboxFixed
+                  :option-obj="detailTableOption"
+                  :get-config="getDetailTableConfig"
+                  :save-or-update="saveDetailTableOrUpdate"
+                  @paginationChange="handleDetailPaginationChange"
+                  @handleSelect="handleDetailSelectionChange"
                 />
               </div>
             </div>
           </section>
 
           <!-- 新增车辆：批量 VIN 录入（同筛选区 TagInput，支持回车分隔） -->
-          <el-dialog title="新增车辆" :visible.sync="addVehicleDialogVisible" width="560px" @close="addVinList = []">
-            <el-form label-width="90px">
+          <!-- 🔑 append-to-body：弹框默认渲染在 .page-common-edit 内部，会命中 pages.scss 里
+               .page-common-edit .el-form-item{width:33.3%;display:flex}，把 label 挤到换行；
+               移出到 body 后恢复 element 默认布局（label 定宽 90px 右对齐，不换行） -->
+          <el-dialog title="新增车辆" :visible.sync="addVehicleDialogVisible" width="560px" append-to-body @close="addVinList = []">
+            <el-form label-width="90px" class="add-vehicle-form">
               <el-form-item label="车辆VIN：">
                 <tag-input v-model="addVinList" placeholder="支持批量，回车分隔，每行一个VIN" style="width:100%" />
               </el-form-item>
-              <div class="add-vehicle-tip">仅「进行中」任务可新增车辆；单次最多 200 条，重复或已存在的 VIN 由后端跳过</div>
             </el-form>
             <div slot="footer">
               <el-button @click="addVehicleDialogVisible = false">取消</el-button>
@@ -522,14 +515,15 @@
 
 <script>
 import { getDetail, addOrUpdate, update, getAuthorityList, publishTask, addVehicle } from '@/api/vehstock/risktask/riskCheckTask/index';
-import { getDetailList, cancelCheck, unlockVehicle, oneClickRemind } from '@/api/vehstock/risktask/riskCheckTaskDetail/index';
+import { getDetailList, cancelCheck, unlockVehicle, deleteDetail, oneClickRemind } from '@/api/vehstock/risktask/riskCheckTaskDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import TagInput from '@/libs/components/TagInput';
-import { getEnum, vehicleSeriesList, vehicleModelList, listVehicleYearType, vehicleExterior, vehicleInterior } from '@/api/common';
+import { getEnum, getTableConfig, tableAddOrUpdate, vehicleSeriesList, vehicleModelList, listVehicleYearType, vehicleExterior, vehicleInterior } from '@/api/common';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import Upload from '@/libs/components/UploadDialog';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -545,13 +539,6 @@ const VEHICLE_STATUS_OPTIONS = [
   { value: '12', label: '已入门店库' },
   { value: '16', label: '调拨在途' }
 ];
-
-// 🔑 车辆状态为台账码值（无 DictEnumType 自动出 Label），前端用此 map 兜底中文
-const VEHICLE_STATUS_MAP = (() => {
-  const m = {};
-  VEHICLE_STATUS_OPTIONS.forEach(o => { m[o.value] = o.label; });
-  return m;
-})();
 
 /**
  * 推送对象（用户角色）改为动态查询：
@@ -692,16 +679,39 @@ export default {
     buttonControl () {
       return (this.form && this.form.buttonControl) || {};
     },
-    // 🔑 发布按钮：后端 buttonControl.publishButton（仅草稿可发布）+ 发布权限
+    // 🔑 发布按钮：后端 buttonControl.publishButton（仅草稿且有排查车辆清单可发布，
+    //    清单为空时后端同源返回 false，按钮直接不渲染）+ 发布权限；
+    //    前端兜底「车辆数量>0」：新建未保存（无 id、无 buttonControl 回包）或数据未加载时不露出
     canPublish () {
-      return !!this._id && !!this.buttonControl.publishButton &&
+      const hasVehicle = Number(this.form.totalVehicleCount) > 0;
+      return !!this._id && hasVehicle && !!this.buttonControl.publishButton &&
         this.permissions.has(this.moduleKey + '-publish');
     },
-    // 🔑 车辆操作区（取消排查/解锁/新增车辆/导入）：
-    //    后端 buttonControl.addVehicleButton（仅进行中可操作）+ 新增车辆权限
-    canOperateVehicle () {
+    // 🔑 车辆操作按钮可见性：可见 = 有权限 AND 后端 buttonControl 允许（值为 false 的按钮不渲染，仅禁用不满足需求）
+    // 取消排查：后端 buttonControl.cancelCheckButton（已结束隐藏）+ 取消排查权限点
+    canCancelCheck () {
+      return !!this.buttonControl.cancelCheckButton &&
+        this.permissions.has(this.moduleKey + '-detail-cancelCheck');
+    },
+    // 车辆解锁：后端 buttonControl.unlockVehicleButton（已结束隐藏）+ 解锁权限点
+    canUnlockVehicle () {
+      return !!this.buttonControl.unlockVehicleButton &&
+        this.permissions.has(this.moduleKey + '-detail-unlockVehicle');
+    },
+    // 新增车辆：后端 buttonControl.addVehicleButton（草稿/进行中可操作）+ 新增车辆权限点
+    canAddVehicle () {
       return !!this.buttonControl.addVehicleButton &&
         this.permissions.has(this.moduleKey + '-addVehicle');
+    },
+    // 导入：后端 buttonControl.importVehicleButton（草稿/进行中可操作）+ 导入权限点
+    canImportVehicle () {
+      return !!this.buttonControl.importVehicleButton &&
+        this.permissions.has(this.moduleKey + '-importVehicle');
+    },
+    // 🔑 删除排查明细：后端 buttonControl.deleteDetailButton（仅草稿可删）+ 删除权限点
+    canDeleteDetail () {
+      return !!this.buttonControl.deleteDetailButton &&
+        this.permissions.has(this.moduleKey + '-detail-delete');
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
@@ -711,7 +721,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     AisAttachment,
-    Upload
+    Upload,
+    LPVxeTable
   },
   data () {
     const form = this.getDefautlForm();
@@ -741,11 +752,35 @@ export default {
         lockStatusList: [],
         checkStatusList: []
       },
-      detailTableData: [],
+      // 🔑 排查车辆清单表格配置：与列表页 /vehstock/risktask/riskCheckTask 同款 LPVxeTable
+      //    id（tableCode）独立于列表页的 riskCheckTaskTable，避免两个页面的用户表头配置互相污染
+      detailTableOption: {
+        id: 'riskCheckTaskEditDetailTable',
+        dataList: [],
+        form: {
+          page: 1,
+          size: 20
+        },
+        dataProp: [
+          // 🔑 LPVxeTable 只把 width 透传给 vxe-column（minWidth 不生效，会退化成 auto 宽），
+          //    这里全部用 width 定宽，视觉与列表页一致；最后一列（排检时间）由组件按剩余宽度自适应
+          { props: 'vin', label: 'VIN', visible: true, width: 190, fixed: 'left' },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 140 },
+          { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 140 },
+          { props: 'vehicleTypeLabel', label: '车辆类型', visible: true, width: 100 },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 120 },
+          { props: 'modelName', label: '车型名称', visible: true, width: 120 },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 100 },
+          { props: 'exteriorName', label: '外观名称', visible: true, width: 120 },
+          { props: 'interiorName', label: '内饰名称', visible: true, width: 120 },
+          { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 110 },
+          { props: 'checkStatusLabel', label: '排检状态', visible: true, width: 100 },
+          { props: 'lockStatusLabel', label: '锁定状态', visible: true, width: 100 },
+          { props: 'checkTime', label: '排检时间', visible: true, width: 170 }
+        ],
+        total: 0
+      },
       detailLoading: false,
-      detailPageNum: 1,
-      detailPageSize: 10,
-      detailTotal: 0,
       detailSelection: [],
       // 🔑 发布任务 loading
       publishLoading: false,
@@ -813,7 +848,7 @@ export default {
     // 🔑 新建保存后路由带上 ?id=，或由列表跳入编辑时，ID 变化即重载清单
     _id (val) {
       if (val) {
-        this.detailPageNum = 1;
+        this.detailTableOption.form.page = 1;
         this.queryDetailList();
       }
     }
@@ -956,12 +991,12 @@ export default {
     },
     // ==================== 排查车辆清单（T10） ====================
     handleDetailQuery () {
-      this.detailPageNum = 1;
+      this.detailTableOption.form.page = 1;
       this.queryDetailList();
     },
     handleDetailReset () {
       Object.keys(this.detailForm).forEach(key => { this.detailForm[key] = []; });
-      this.detailPageNum = 1;
+      this.detailTableOption.form.page = 1;
       this.queryDetailList();
     },
     /**
@@ -975,8 +1010,8 @@ export default {
       const f = this.detailForm;
       const params = {
         checkTaskId: this._id,
-        pageNum: this.detailPageNum,
-        pageSize: this.detailPageSize,
+        pageNum: this.detailTableOption.form.page,
+        pageSize: this.detailTableOption.form.size,
         vinList: this.toArr(f.vinList),
         vehicleTypeList: this.toNumList(f.vehicleTypeList),
         seriesIdList: this.toArr(f.seriesIdList),
@@ -991,13 +1026,15 @@ export default {
         checkStatusList: this.toNumList(f.checkStatusList)
       };
       this.detailLoading = true;
+      // 🔑 换页/重新查询后清空选中行（原 el-table 换数据会自动清空，vxe-table 不会）
+      this.detailSelection = [];
       getDetailList(params).then(res => {
         const data = (res && res.data) ? res.data : res;
-        this.detailTableData = (data && data.records) || [];
-        this.detailTotal = (data && (data.total !== null && data.total !== undefined ? data.total : data.totals)) || 0;
+        this.detailTableOption.dataList = (data && data.records) || [];
+        this.detailTableOption.total = (data && (data.total !== null && data.total !== undefined ? data.total : data.totals)) || 0;
       }).catch(() => {
-        this.detailTableData = [];
-        this.detailTotal = 0;
+        this.detailTableOption.dataList = [];
+        this.detailTableOption.total = 0;
       }).finally(() => {
         this.detailLoading = false;
       });
@@ -1010,16 +1047,45 @@ export default {
     toNumList (arr) {
       return (arr && arr.length) ? arr.map(item => Number(item)) : null;
     },
+    /**
+     * LPVxeTable 选中行回调（@handleSelect）
+     * 🔑 返回的是表格行对象（含 id），与原 el-table selection-change 语义一致
+     */
     handleDetailSelectionChange (selection) {
-      this.detailSelection = selection;
+      this.detailSelection = selection || [];
     },
-    handleDetailSizeChange (size) {
-      this.detailPageSize = size;
+    /**
+     * LPVxeTable 分页回调（@paginationChange）
+     * 🔑 type: 'page' 翻页 / 'size' 改每页条数
+     */
+    handleDetailPaginationChange (type, num) {
+      if (type === 'page') {
+        this.detailTableOption.form.page = num;
+      } else {
+        this.detailTableOption.form.size = num;
+        // 🔑 改每页条数后回到第 1 页，否则停留在旧页码可能超出新的总页数
+        this.detailTableOption.form.page = 1;
+      }
       this.queryDetailList();
     },
-    handleDetailCurrentChange (page) {
-      this.detailPageNum = page;
-      this.queryDetailList();
+    /**
+     * 表格用户列配置读取（LPVxeTable 必传 get-config）
+     */
+    getDetailTableConfig () {
+      return new Promise((resolve) => {
+        getTableConfig(this.detailTableOption.id).then(data => {
+          resolve({ data });
+        }).catch(err => {
+          console.error('排查车辆清单表格配置读取失败:', err);
+          resolve({ data: null });
+        });
+      });
+    },
+    /**
+     * 表格用户列配置保存（LPVxeTable 必传 save-or-update）
+     */
+    saveDetailTableOrUpdate (data) {
+      return tableAddOrUpdate(data);
     },
     // 主数据远程搜索：车系/车型/年款/外观/内饰
     async seriesSearch (query) {
@@ -1072,21 +1138,15 @@ export default {
         return [];
       }
     },
-    // 车辆状态中文（台账码值无 DictEnumType 自动 Label）
-    formatVehicleStatus (value) {
-      if (value === null || value === undefined || value === '') {
-        return '';
-      }
-      return VEHICLE_STATUS_MAP[String(value)] || value;
-    },
     // 取消排查（G9：已排查不可取消，由后端拦截；支持单条/批量：选中 1 行=单、多行=批）
+    // 🔑 后端契约：checkTaskId 必填（@NotEmpty），detailIds 为数组，一次请求提交全部选中行（后端逐条校验 G9）
     handleCancelCheck () {
       if (!this.detailSelection.length) {
         return;
       }
-      const list = this.detailSelection;
-      this.$confirm(`确认取消排查选中的 ${list.length} 辆车？已排查的将被后端跳过`, '提示', { type: 'warning' })
-        .then(() => Promise.all(list.map(row => cancelCheck({ detailId: row.id }))))
+      const detailIds = this.detailSelection.map(row => row.id);
+      this.$confirm(`确认取消排查选中的 ${detailIds.length} 辆车？已排查的将被后端跳过`, '提示', { type: 'warning' })
+        .then(() => cancelCheck({ checkTaskId: this._id, detailIds }))
         .then(() => {
           this.$message.success('批量取消排查成功');
           this.queryDetailList();
@@ -1094,16 +1154,35 @@ export default {
         .catch(() => {});
     },
     // 车辆解锁（G10：已解锁不重复操作，由后端拦截；支持单条/批量）
+    // 🔑 后端契约：detailIds 为数组，一次请求提交全部选中行
     handleUnlockVehicle () {
       if (!this.detailSelection.length) {
         return;
       }
-      const list = this.detailSelection;
-      this.$confirm(`确认解锁选中的 ${list.length} 辆车？已解锁的将被后端跳过`, '提示', { type: 'warning' })
-        .then(() => Promise.all(list.map(row => unlockVehicle({ detailId: row.id }))))
+      const detailIds = this.detailSelection.map(row => row.id);
+      this.$confirm(`确认解锁选中的 ${detailIds.length} 辆车？已解锁的将被后端跳过`, '提示', { type: 'warning' })
+        .then(() => unlockVehicle({ detailIds }))
         .then(() => {
           this.$message.success('批量解锁成功');
           this.queryDetailList();
+        })
+        .catch(() => {});
+    },
+    // 删除排查明细（仅草稿态可删除；后端会重算主任务与门店子任务的车辆数）
+    handleDeleteDetail () {
+      if (!this.canDeleteDetail || !this.detailSelection.length) {
+        return;
+      }
+      const detailIds = this.detailSelection.map(row => row.id);
+      this.$confirm(`确认删除选中的 ${detailIds.length} 辆车？删除后该车辆将从本次排查任务中移除`, '提示', { type: 'warning' })
+        .then(() => deleteDetail({ checkTaskId: this._id, detailIds }))
+        .then(() => {
+          this.$message.success('删除成功');
+          this.queryDetailList();
+          // 🔑 刷新详情：主任务「车辆数量/完成数量」已被后端重算，需回显最新值
+          if (this.$refs.containerRef && this.$refs.containerRef.loadDetail) {
+            this.$refs.containerRef.loadDetail();
+          }
         })
         .catch(() => {});
     },
@@ -1143,9 +1222,9 @@ export default {
           this.publishLoading = false;
         });
     },
-    // 打开新增车辆弹框（仅在「进行中」可用，按钮层已用 canOperateVehicle 兜底）
+    // 打开新增车辆弹框（可见性已由 canAddVehicle 控制，此处兜底）
     handleAddVehicle () {
-      if (!this.canOperateVehicle) {
+      if (!this.canAddVehicle) {
         return;
       }
       this.addVehicleDialogVisible = true;
@@ -1174,9 +1253,9 @@ export default {
           this.addVehicleLoading = false;
         });
     },
-    // 打开 Excel 导入（通用导入引擎，仅「进行中」）
+    // 打开 Excel 导入（通用导入引擎，可见性已由 canImportVehicle 控制，此处兜底）
     openImport () {
-      if (!this.canOperateVehicle) {
+      if (!this.canImportVehicle) {
         return;
       }
       this.importVisible = true;
@@ -1304,14 +1383,30 @@ export default {
   margin: 4px 0 12px;
 }
 
+// 排查车辆清单表格：与列表页同款 LPVxeTable
+// 🔑 LPVxeTable 内部按「容器高度」分配表格区与分页区（表格区 = 容器高 - 50px），
+//    编辑页是滚动流页面、没有列表页那种「剩余视口高度」，所以这里给固定高度
+.detail-table-wrap {
+  height: 520px;
+
+  // 表格设置齿轮按钮默认 top:-45px；编辑页 .ais-actions 只留 12px 下边距（列表页是 16px），
+  // 这里调到 -40px 让齿轮按钮与上方「取消排查/删除/解锁」按钮行右侧对齐
+  ::v-deep .m-vxe-table-options {
+    top: -40px;
+  }
+}
+
 .add-vehicle-tip {
   font-size: 12px;
   color: #909399;
   line-height: 20px;
 }
 
-.detail-pagination {
-  text-align: right;
-  margin-top: 12px;
+// 新增车辆弹框：label 不换行（弹框已 append-to-body 移出 .page-common-edit，
+// 这里再兜一层，防止后续有人去掉 append-to-body 时标签再次被挤断）
+.add-vehicle-form {
+  ::v-deep .el-form-item__label {
+    white-space: nowrap;
+  }
 }
 </style>

@@ -302,26 +302,28 @@ export default {
       return [];
     },
     // 取消排查（G9）
+    // 🔑 后端契约：detailIds 为数组（单行也传数组）
     handleCancelCheck (row) {
       this.$confirm('取消排查后该车辆将退出本次排查任务，是否继续', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        cancelCheck({ detailId: row.id }).then(() => {
+        cancelCheck({ detailIds: [row.id] }).then(() => {
           this.$message({ type: 'success', message: '取消排查成功!' });
           this.getData();
         }).catch(() => {});
       }).catch(() => {});
     },
     // 车辆解锁（G10）
+    // 🔑 后端契约：detailIds 为数组（单行也传数组）
     handleUnlockVehicle (row) {
       this.$confirm('解锁后该车辆可正常交车，是否继续', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        unlockVehicle({ detailId: row.id }).then(() => {
+        unlockVehicle({ detailIds: [row.id] }).then(() => {
           this.$message({ type: 'success', message: '解锁成功!' });
           this.getData();
         }).catch(() => {});

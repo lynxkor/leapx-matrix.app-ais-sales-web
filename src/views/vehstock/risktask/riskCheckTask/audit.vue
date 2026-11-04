@@ -51,7 +51,7 @@
         @paginationChange="paginationChange"
       />
     </div>
-    <!-- 审核弹窗 -->
+    <!-- 审核弹窗：审核说明始终展示、非必填；不通过时必填（G11）、≤200 字（G12） -->
     <el-dialog
       :title="auditDialogTitle"
       :visible.sync="auditDialogVisible"
@@ -65,14 +65,14 @@
             <el-radio :label="false">不通过</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="审核说明" v-if="!auditForm.pass">
+        <el-form-item label="审核说明">
           <el-input
             type="textarea"
             :rows="4"
             maxlength="200"
             show-word-limit
             v-model="auditForm.auditOpinion"
-            placeholder="不通过时必填，最多200字"
+            placeholder="非必填，最多200字"
           />
         </el-form-item>
       </el-form>
