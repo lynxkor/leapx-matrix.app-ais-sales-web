@@ -204,7 +204,8 @@ export default {
     }
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['风险车辆排查', '排查任务审核']);
+    // 与「排查任务审核」列表页 pageTitle 对齐，点击首级回跳审核列表（由路由父级路径决定）
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['排查任务审核', '详情']);
     this.getData();
   },
   methods: {

@@ -142,7 +142,26 @@ export default {
           size: pageSize
         },
         dataProp: [
-          { props: 'checkTaskCode', label: '任务编码', visible: true, width: 170, fixed: 'left' },
+          {
+            // 任务编码点击跳任务详情页：id 取 checkTaskId（任务主键），不是审核记录 row.id
+            props: 'checkTaskCode',
+            label: '任务编码',
+            visible: true,
+            width: 170,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehstock/risktask/riskCheckTask/edit',
+                  query: {
+                    id: row.checkTaskId,
+                    isEditing: false
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'taskName', label: '任务名称', visible: true, minWidth: 160 },
           { props: 'vin', label: 'VIN码', visible: true, minWidth: 190 },
           { props: 'storeName', label: '门店名称', visible: true, minWidth: 140 },

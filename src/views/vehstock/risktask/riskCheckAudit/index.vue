@@ -172,7 +172,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/risktask/riskCheckTask/auditDetail',
+                  path: '/vehstock/risktask/riskCheckAudit/auditDetail',
                   query: {
                     id: row.id
                   }
@@ -190,7 +190,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/risktask/riskCheckTask/auditDetail',
+                  path: '/vehstock/risktask/riskCheckAudit/auditDetail',
                   query: {
                     id: row.id
                   }
@@ -200,9 +200,9 @@ export default {
             }]
           },
           {
-            // 任务编号点击跳任务详情页：id 取 checkTaskId（任务主键），不是审核记录 row.id
+            // 任务编码点击跳任务详情页：id 取 checkTaskId（任务主键），不是审核记录 row.id
             props: 'checkTaskCode',
-            label: '任务编号',
+            label: '任务编码',
             visible: true,
             width: 200,
             buttons: [{

@@ -167,7 +167,9 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehstock/risktask/riskCheckTask/auditDetail',
+      // 属于「排查任务审核」列表的下级详情：面包屑首级点击依赖父级路径回跳，
+      // 故必须挂在 /riskCheckAudit 下（AisPageTitle.handleClick 会去掉路径最后一段）
+      path: '/vehstock/risktask/riskCheckAudit/auditDetail',
       name: 'riskCheckTaskAuditDetail',
       component: () => import('@/views/vehstock/risktask/riskCheckTask/auditDetail.vue'),
 
@@ -175,6 +177,10 @@ const routes = [
         name: '排查任务审核详情',
         noResourceUrl: 'true'
       }
+    }, {
+      // 兼容旧链接（历史收藏 / 外部引用），保留 query.id
+      path: '/vehstock/risktask/riskCheckTask/auditDetail',
+      redirect: to => ({ path: '/vehstock/risktask/riskCheckAudit/auditDetail', query: to.query })
     }, {
       path: '/vehstock/risktask/riskCheckAudit',
       name: 'riskCheckAudit',
