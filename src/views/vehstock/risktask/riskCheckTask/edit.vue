@@ -1266,6 +1266,11 @@ export default {
           this.addVehicleDialogVisible = false;
           this.addVinList = [];
           this.queryDetailList();
+          // 🔑 刷新详情：后端 addVehicle 已累加主任务 total_vehicle_count（batchAddDetails 乐观锁更新），
+          //    「车辆数量/剩余数量」需重新请求 getDetail 回显最新值（与 handleDeleteDetail 同一模式）
+          if (this.$refs.containerRef && this.$refs.containerRef.loadDetail) {
+            this.$refs.containerRef.loadDetail();
+          }
         })
         .catch(() => {})
         .finally(() => {
