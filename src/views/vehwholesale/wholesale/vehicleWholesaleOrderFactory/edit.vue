@@ -434,6 +434,12 @@
                     <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`"
                       target="_blank">{{ form.vin }}</el-link>
                   </el-form-item>
+                  <el-form-item label="是否特供车：" prop="isSpecialSupplyLabel">
+                    {{ form.isSpecialSupplyLabel }}
+                  </el-form-item>
+                  <el-form-item label="特供车标记：" prop="specialSupplyMarkLabel">
+                    {{ form.specialSupplyMarkLabel }}
+                  </el-form-item>
                   <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
                     {{ form.firstSettleFailedTime }}
                   </el-form-item>

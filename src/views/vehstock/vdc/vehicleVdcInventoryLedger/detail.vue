@@ -86,6 +86,12 @@
             <el-form-item label="销售预留类型：" prop="reservedType">
               {{ info.reservedTypeLabel }}
             </el-form-item>
+            <el-form-item label="是否特供车：" prop="isSpecialSupply">
+              {{ info.isSpecialSupplyLabel }}
+            </el-form-item>
+            <el-form-item label="特供车标记：" prop="specialSupplyMark">
+              {{ info.specialSupplyMarkLabel }}
+            </el-form-item>
             <el-form-item label="门店：" prop="dealerName">
               {{ info.dealerName }}
             </el-form-item>

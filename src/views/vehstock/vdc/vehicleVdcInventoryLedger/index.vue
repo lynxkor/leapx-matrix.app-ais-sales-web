@@ -24,6 +24,14 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type" v-model="form.reservedType"
             placeholder="请选择" clearable filterable />
         </el-form-item>
+        <el-form-item label="是否特供车">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.isSpecialSupply"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="特供车标记">
+          <fetch-select :request="fetchOptions" enumCode="vw_special_supply_mark" v-model="form.specialSupplyMark"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
         <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
             unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
@@ -156,6 +164,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey + '-specialSupplyImport'" size="small" @click="handleSpecialSupplyImport">特供车导入</el-button>
       <el-button v-permission="moduleKey + '-batchEdit'" size="small" @click="handleEdit"
         :disabled="selectionList.length === 0">批量编辑</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
@@ -179,6 +188,21 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
+    <Upload :visible="specialSupplyUploadDialogVisible" :id="'vehicleVdcLedgerSpecialSupplyImport'" @close="handleSpecialSupplyUploadDialogClose" @getData="getData" />
+    <el-dialog title="特供车编辑" :visible.sync="specialSupplyEditVisible" width="420px" :close-on-click-modal="false">
+      <el-form ref="specialSupplyEditFormRef" :model="specialSupplyEditForm" label-width="120px">
+        <el-form-item label="是否特供车：" prop="isSpecialSupply" :rules="[{ required: true, message: '请选择是否特供车', trigger: 'change' }]">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="specialSupplyEditForm.isSpecialSupply" placeholder="请选择" clearable filterable @change="handleSpecialSupplyTypeChange" />
+        </el-form-item>
+        <el-form-item v-if="String(specialSupplyEditForm.isSpecialSupply) === '1'" label="特供车标记：" prop="specialSupplyMark" :rules="[{ required: true, message: '请选择特供车标记', trigger: 'change' }]">
+          <fetch-select :request="fetchOptions" enumCode="vw_special_supply_mark" v-model="specialSupplyEditForm.specialSupplyMark" placeholder="请选择" clearable filterable />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="specialSupplyEditVisible = false">取消</el-button>
+        <el-button size="small" type="primary" :loading="specialSupplyEditLoading" @click="confirmSpecialSupplyEdit">确定</el-button>
+      </div>
+    </el-dialog>
     <el-dialog title="批量更新允许锁单节点" :visible.sync="batchUpdateAllowLockNodeVisible" width="400px">
       <el-form label-width="120px">
         <el-form-item label="允许锁单节点：">
@@ -198,7 +222,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchUpdateAllowLockNode } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getList, deleteItem, enableItem, batchUpdateAllowLockNode, specialSupplyEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -225,6 +249,8 @@ const defaultForm = {
   logisticsReserved: '0',
   reserved: '',
   reservedType: '',
+  isSpecialSupply: '',
+  specialSupplyMark: '',
   allowWholesale: '',
   returnLabel: '',
   status: '1',
@@ -289,6 +315,14 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      specialSupplyUploadDialogVisible: false,
+      specialSupplyEditVisible: false,
+      specialSupplyEditLoading: false,
+      specialSupplyEditForm: {
+        id: '',
+        isSpecialSupply: '',
+        specialSupplyMark: ''
+      },
       batchUpdateAllowLockNodeVisible: false,
       batchUpdateAllowLockNodeValue: null,
       erpInvoiceFilterMode: 'include',
@@ -330,6 +364,8 @@ export default {
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 240, sortable: true },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 180 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 160 },
           { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 120 },
           { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 160 },
@@ -394,6 +430,13 @@ export default {
               },
               type: 'info'
             }, {
+              name: '特供车编辑',
+              show: (row) => this.permissions.has(this.moduleKey + '-specialSupplyEdit'),
+              click: (rowIndex, row) => {
+                this.handleSpecialSupplyEdit(row);
+              },
+              type: 'info'
+            }, {
               name: '删除',
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',
@@ -451,6 +494,8 @@ export default {
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, sortable: true },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 160 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 140 },
           { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 120 },
           { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 200 },
@@ -506,6 +551,13 @@ export default {
                     id: row.id
                   }
                 });
+              },
+              type: 'info'
+            }, {
+              name: '特供车编辑',
+              show: (row) => this.permissions.has(this.moduleKey + '-specialSupplyEdit'),
+              click: (rowIndex, row) => {
+                this.handleSpecialSupplyEdit(row);
               },
               type: 'info'
             }, {
@@ -624,6 +676,51 @@ export default {
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
+    },
+    handleSpecialSupplyImport () {
+      this.specialSupplyUploadDialogVisible = true;
+    },
+    handleSpecialSupplyUploadDialogClose () {
+      this.specialSupplyUploadDialogVisible = false;
+    },
+    handleSpecialSupplyEdit (row) {
+      this.specialSupplyEditForm = {
+        id: row.id,
+        isSpecialSupply: (row.isSpecialSupply === undefined || row.isSpecialSupply === null) ? '' : String(row.isSpecialSupply),
+        specialSupplyMark: row.specialSupplyMark || ''
+      };
+      this.specialSupplyEditVisible = true;
+    },
+    handleSpecialSupplyTypeChange (val) {
+      if (String(val) !== '1') {
+        this.specialSupplyEditForm.specialSupplyMark = '';
+      }
+    },
+    confirmSpecialSupplyEdit () {
+      const form = this.specialSupplyEditForm;
+      if (form.isSpecialSupply === '' || form.isSpecialSupply === null || form.isSpecialSupply === undefined) {
+        this.$message.warning('请选择是否特供车');
+        return;
+      }
+      const isYes = String(form.isSpecialSupply) === '1';
+      if (isYes && !form.specialSupplyMark) {
+        this.$message.warning('请选择特供车标记');
+        return;
+      }
+      this.specialSupplyEditLoading = true;
+      specialSupplyEdit({
+        id: form.id,
+        isSpecialSupply: Number(form.isSpecialSupply),
+        specialSupplyMark: isYes ? form.specialSupplyMark : ''
+      }).then(() => {
+        this.$message.success('特供车编辑成功');
+        this.specialSupplyEditVisible = false;
+        this.getData();
+      }).catch(() => {
+        this.$message.error('特供车编辑失败');
+      }).finally(() => {
+        this.specialSupplyEditLoading = false;
+      });
     },
     handleAdd () {
       this.$router.push({

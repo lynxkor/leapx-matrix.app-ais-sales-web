@@ -66,3 +66,11 @@ export function getByVin (data) {
 export function batchUpdateAllowLockNode (data) {
   return api.jsonPost(prefix + 'batchUpdateAllowLockNode', data);
 }
+
+/**
+ * 特供车编辑
+ * @param {Object} data
+ */
+export function specialSupplyEdit (data) {
+  return api.jsonPost(prefix + 'specialSupplyEdit', data);
+}
