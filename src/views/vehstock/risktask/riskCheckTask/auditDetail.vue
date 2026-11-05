@@ -54,7 +54,7 @@
       </div>
     </section>
 
-    <!-- 排查结果：任务下发的排查方法 + 门店提交的排查说明 + 排查附件 -->
+    <!-- 排查结果：任务下发的排查方法 + 门店提交的排查说明 -->
     <section class="common-section">
       <div class="common-section-header">
         <h2>排查结果</h2>
@@ -64,15 +64,24 @@
           <el-form-item label="排查方法：" class="form-item-full">{{ detail.checkMethod || '-' }}</el-form-item>
           <el-form-item label="排查说明：" class="form-item-full">{{ detail.checkResultNote || '-' }}</el-form-item>
         </el-form>
+      </div>
+    </section>
+
+    <!-- 排查附件：门店提交的排查结果附件，独立成区（对齐 edit.vue「排查方法附件」section 范式） -->
+    <section class="common-section">
+      <div class="common-section-header">
+        <h2>排查附件</h2>
+      </div>
+      <div class="common-section-body">
         <!-- 🔑 businessId = 排查明细ID（Resp.detailId），附件按明细维度查询
-             🔑 attachType 与落库一致：门店 H5 端提交排查结果时写死 'riskCheckResult'（UAT 实测）
-             🔑 不传 configCode：attachment_config 表无风险排查配置，
-                传 configCode 且不传 uploadConfig 时组件会请求 getByCode 并抛错，
-                导致后续文件列表加载被中断（附件恒为空） -->
+             🔑 attachType 与门店 H5 落库一致：单一常量 RISK_CHECK_ATTACH_CODE = 'vehicle_risk_task'
+                （H5 configCode 与 attachType 同值，见 pdi-h5/riskCheck/VehicleDetailView.vue:180）
+             🔑 本页只读回显，不传 configCode：组件跳过 getByCode，
+                只按 businessId + attachType 调 attachment/list 加载文件 -->
         <AisAttachment
           v-if="detail.detailId"
           :businessId="detail.detailId"
-          attachType="riskCheckResult"
+          attachType="vehicle_risk_task"
           :readonly="true"
           emptyText="暂无附件"
         />

@@ -199,6 +199,25 @@ export default {
               type: 'primary'
             }]
           },
+          {
+            // 任务编号点击跳任务详情页：id 取 checkTaskId（任务主键），不是审核记录 row.id
+            props: 'checkTaskCode',
+            label: '任务编号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehstock/risktask/riskCheckTask/edit',
+                  query: {
+                    id: row.checkTaskId,
+                    isEditing: false
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'taskName', label: '任务名称', visible: true, minWidth: 180 },
           { props: 'storeName', label: '门店名称', visible: true, minWidth: 160 },
           { props: 'checkStatusLabel', label: '车辆状态', visible: true, width: 100 },
