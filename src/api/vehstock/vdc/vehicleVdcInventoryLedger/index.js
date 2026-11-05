@@ -74,3 +74,11 @@ export function batchUpdateAllowLockNode (data) {
 export function specialSupplyEdit (data) {
   return api.jsonPost(prefix + 'specialSupplyEdit', data);
 }
+
+/**
+ * 特供车批量编辑
+ * @param {Object} data
+ */
+export function specialSupplyBatchEdit (data) {
+  return api.jsonPost(prefix + 'specialSupplyBatchEdit', data);
+}

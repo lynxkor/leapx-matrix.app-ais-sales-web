@@ -164,6 +164,8 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey + '-specialSupplyEdit'" size="small" @click="handleSpecialSupplyBatchEdit"
+        :disabled="selectionList.length === 0">特供车编辑</el-button>
       <el-button v-permission="moduleKey + '-specialSupplyImport'" size="small" @click="handleSpecialSupplyImport">特供车导入</el-button>
       <el-button v-permission="moduleKey + '-batchEdit'" size="small" @click="handleEdit"
         :disabled="selectionList.length === 0">批量编辑</el-button>
@@ -189,7 +191,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
     <Upload :visible="specialSupplyUploadDialogVisible" :id="'vehicleVdcLedgerSpecialSupplyImport'" @close="handleSpecialSupplyUploadDialogClose" @getData="getData" />
-    <el-dialog title="特供车编辑" :visible.sync="specialSupplyEditVisible" width="420px" :close-on-click-modal="false">
+    <el-dialog :title="'特供车编辑（已选 ' + specialSupplyBatchIds.length + ' 辆）'" :visible.sync="specialSupplyEditVisible" width="420px" :close-on-click-modal="false">
       <el-form ref="specialSupplyEditFormRef" :model="specialSupplyEditForm" label-width="120px">
         <el-form-item label="是否特供车：" prop="isSpecialSupply" :rules="[{ required: true, message: '请选择是否特供车', trigger: 'change' }]">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="specialSupplyEditForm.isSpecialSupply" placeholder="请选择" clearable filterable @change="handleSpecialSupplyTypeChange" />
@@ -222,7 +224,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchUpdateAllowLockNode, specialSupplyEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getList, deleteItem, enableItem, batchUpdateAllowLockNode, specialSupplyBatchEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -319,10 +321,10 @@ export default {
       specialSupplyEditVisible: false,
       specialSupplyEditLoading: false,
       specialSupplyEditForm: {
-        id: '',
         isSpecialSupply: '',
         specialSupplyMark: ''
       },
+      specialSupplyBatchIds: [],
       batchUpdateAllowLockNodeVisible: false,
       batchUpdateAllowLockNodeValue: null,
       erpInvoiceFilterMode: 'include',
@@ -427,13 +429,6 @@ export default {
                     isEditing: true
                   }
                 });
-              },
-              type: 'info'
-            }, {
-              name: '特供车编辑',
-              show: (row) => this.permissions.has(this.moduleKey + '-specialSupplyEdit'),
-              click: (rowIndex, row) => {
-                this.handleSpecialSupplyEdit(row);
               },
               type: 'info'
             }, {
@@ -551,13 +546,6 @@ export default {
                     id: row.id
                   }
                 });
-              },
-              type: 'info'
-            }, {
-              name: '特供车编辑',
-              show: (row) => this.permissions.has(this.moduleKey + '-specialSupplyEdit'),
-              click: (rowIndex, row) => {
-                this.handleSpecialSupplyEdit(row);
               },
               type: 'info'
             }, {
@@ -683,13 +671,30 @@ export default {
     handleSpecialSupplyUploadDialogClose () {
       this.specialSupplyUploadDialogVisible = false;
     },
-    handleSpecialSupplyEdit (row) {
+    handleSpecialSupplyBatchEdit () {
+      if (this.selectionList.length === 0) {
+        this.$message.warning('请选择要编辑的车辆');
+        return;
+      }
+      // 全部阻断：任一行非 车辆下线(2)/VDC入库(3) 状态则整批不提交，披露不合规VIN
+      const invalidList = this.selectionList.filter(row =>
+        String(row.vehicleDeliveryStatus) !== '2' && String(row.vehicleDeliveryStatus) !== '3');
+      if (invalidList.length > 0) {
+        const vins = invalidList.map(row => row.vin).join('、');
+        this.$message.warning('仅车辆下线/VDC入库状态的车辆可编辑特供车，不合规VIN：' + vins);
+        return;
+      }
+      this.specialSupplyBatchIds = this.selectionList.map(item => item.id);
       this.specialSupplyEditForm = {
-        id: row.id,
-        isSpecialSupply: (row.isSpecialSupply === undefined || row.isSpecialSupply === null) ? '' : String(row.isSpecialSupply),
-        specialSupplyMark: row.specialSupplyMark || ''
+        isSpecialSupply: '',
+        specialSupplyMark: ''
       };
       this.specialSupplyEditVisible = true;
+      this.$nextTick(() => {
+        if (this.$refs.specialSupplyEditFormRef) {
+          this.$refs.specialSupplyEditFormRef.clearValidate();
+        }
+      });
     },
     handleSpecialSupplyTypeChange (val) {
       if (String(val) !== '1') {
@@ -708,8 +713,8 @@ export default {
         return;
       }
       this.specialSupplyEditLoading = true;
-      specialSupplyEdit({
-        id: form.id,
+      specialSupplyBatchEdit({
+        ids: this.specialSupplyBatchIds,
         isSpecialSupply: Number(form.isSpecialSupply),
         specialSupplyMark: isYes ? form.specialSupplyMark : ''
       }).then(() => {
@@ -717,7 +722,7 @@ export default {
         this.specialSupplyEditVisible = false;
         this.getData();
       }).catch(() => {
-        this.$message.error('特供车编辑失败');
+        // 失败原因已由 axios 拦截器 toast
       }).finally(() => {
         this.specialSupplyEditLoading = false;
       });
