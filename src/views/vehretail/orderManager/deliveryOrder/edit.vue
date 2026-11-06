@@ -566,6 +566,26 @@ export default {
     },
     title () {
       return '交车单编号：' + (this.form.deliveryOrderCode || '');
+    },
+    appointmentFields () {
+      const fields = [
+        { key: 'appointmentTime', label: '预约提车时间' },
+        { key: 'appointmentDelayStatusLabel', label: '是否延期预约' },
+        { key: 'appointmentChangeCount', label: '预约变更次数' },
+        { key: 'appointmentOperationTime', label: '预约操作时间' },
+        { key: 'appointmentRemark', label: '预约备注' },
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' },
+        { key: 'userStoreTime', label: '用户到店时间' },
+        { key: 'audioStopTime', label: '交付顾问工牌结束时间' },
+        { key: 'audioStopTypeLabel', label: '交付顾问工牌结束方式' },
+        { key: 'derivativeAudioStopTime', label: '衍生工程师工牌结束时间' },
+        { key: 'derivativeAudioStopTypeLabel', label: '衍生工程师工牌结束方式' }
+      ];
+      // 有权限时展示到店验证码字段
+      if (this.canCarryupVerificationCode) {
+        fields.push({ key: 'carryupVerificationCode', label: '到店验证码' });
+      }
+      return fields;
     }
   },
   watch: {
@@ -631,6 +651,7 @@ export default {
       canPushDeliveryActive: false, // 推送激活信息
       canCalculateDeliveryAmount: false, // 计算尾款
       canManualStopAudio: false, // 关闭录音
+      canCarryupVerificationCode: false, // 到店验证码
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -776,15 +797,6 @@ export default {
         { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }
       ],
-      appointmentFields: [
-        { key: 'appointmentTime', label: '预约提车时间' },
-        { key: 'appointmentDelayStatusLabel', label: '是否延期预约' },
-        { key: 'appointmentChangeCount', label: '预约变更次数' },
-        { key: 'appointmentOperationTime', label: '预约操作时间' },
-        { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReason', label: '预约超时原因' },
-        { key: 'userStoreTime', label: '用户到店时间' }
-      ],
       // 预约记录列配置
       appointmentRecordColumns: [
         { field: 'appointmentOperationTime', title: '预约操作时间', width: 200 },
@@ -868,6 +880,7 @@ export default {
       this.canPushDeliveryActive = has(`${this.moduleKey}-pushDeliveryActive`);
       this.canCalculateDeliveryAmount = has(`${this.moduleKey}-calculateDeliveryAmount`);
       this.canManualStopAudio = has(`${this.moduleKey}-manualStopAudio`);
+      this.canCarryupVerificationCode = has(`${this.moduleKey}-carryupVerificationCode`);
       // 跨模块权限：从 store 原始数据判断，绕过 mixin 的前缀过滤
       this.canRetailOrderPayRecordDelete = has('AISVR-retailOrderPayRecord-delete');
     },
