@@ -189,12 +189,16 @@ export default {
           paymentType: row.paymentType ? Number(row.paymentType) : ''
         }))
       };
-      console.log('提交参数:', params);
-      await addPayRecord(params);
-      this.$message.success('保存成功');
-      this.close();
-      this.$emit('refresh');
-      this.submitLoading = false;
+
+      try {
+        await addPayRecord(params);
+        this.$message.success('保存成功');
+        this.close();
+        this.$emit('refresh');
+      } finally {
+        // 业务校验失败时接口会 reject，无论成败都要复位 loading，避免按钮一直转圈
+        this.submitLoading = false;
+      }
     }
   }
 };
