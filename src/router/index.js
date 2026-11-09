@@ -898,6 +898,25 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      // LP260286 7.1 现车批售信息配置
+      path: '/vehwholesale/basic/wholesaleSpotConfig',
+      name: 'wholesaleSpotConfig',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSpotConfig/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-现车批售信息配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleSpotConfig/edit',
+      name: 'wholesaleSpotConfigEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSpotConfig/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-现车批售信息配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehwholesale/basic/wholesaleSaleTargetTracking',
       name: 'wholesaleSaleTargetTracking',
       component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/index.vue'),
