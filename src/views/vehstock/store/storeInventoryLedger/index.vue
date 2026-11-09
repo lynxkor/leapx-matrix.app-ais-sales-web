@@ -198,7 +198,7 @@
             clearable filterable multiple collapseTags />
         </el-form-item>
       </template>
-      <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+      <page-search-action v-if="canList" v-model="show" is-expandable :view-scope="activeName" :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
     <div class="ais-active">
@@ -662,7 +662,7 @@ export default {
     onSubmit () {
       const config = this.getActiveConfig();
       config.form.page = 1;
-      this.getData();
+      this.debouncedGetData();
     },
     onReset () {
       this.form = { ...defaultForm };
@@ -671,7 +671,7 @@ export default {
       this.optionUnmatched.form.page = 1;
       this.optionUnmatched.form.pageSize = pageSize;
       this.sortColumns = [...DEFAULT_SORT_COLUMNS];
-      this.getData();
+      this.debouncedGetData();
     },
     exportExcel () {
       this.exportLoading = true;
