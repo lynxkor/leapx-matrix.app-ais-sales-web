@@ -371,6 +371,12 @@
                       target="_blank">{{ form.vin }}</el-link> -->
                       {{ form.vin }}
                   </el-form-item>
+                  <el-form-item label="是否特供车：" prop="isSpecialSupplyLabel">
+                    {{ form.isSpecialSupplyLabel }}
+                  </el-form-item>
+                  <el-form-item label="特供车标记：" prop="specialSupplyMarkLabel">
+                    {{ form.specialSupplyMarkLabel }}
+                  </el-form-item>
                   <el-form-item label="配车时间：" prop="allocateTime">
                     {{ form.allocateTime }}
                   </el-form-item>

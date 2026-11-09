@@ -157,64 +157,128 @@
           <span>
           </span>
       </div> -->
-      <section class="common-section">
-        <div class="common-section-body">
-          <div class="common-section-table">
-            <vxe-table
-            ref="table"
-            :data="currentTableData"
-            stripe
-            resizable
-            border="inner"
-            size="small"
-            height="auto"
-            width="100%"
-            min-height="200px"
-            max-height="420px"
-          >
-            <vxe-column field="checkbox" title="补货数量" align="center" width="150">
-              <template v-slot="{ row }">
-                <el-input-number
-                  :min="0"
-                  :max="999"
-                  :precision="0"
-                  :controls="false"
-                  v-model="row.applyQty"
-                  @change="handleApplyQtyChange(row, $event)"
-                />
-              </template>
-            </vxe-column>
-            <vxe-column field="modelName" title="车型" align="center" width="150" />
-            <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
-            <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
-              <template v-slot="{ row }">
-                <span
-                  :class="getInventoryStatusClass(row.inventoryStatus)"
-                  :title="getInventoryStatusText(row.inventoryStatus)"
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+        <el-tab-pane label="现车批售" name="normal">
+          <section class="common-section">
+            <div class="common-section-body">
+              <div class="common-section-table">
+                <vxe-table
+                  ref="table"
+                  :data="currentTableData"
+                  stripe
+                  resizable
+                  border="inner"
+                  size="small"
+                  height="auto"
+                  width="100%"
+                  min-height="200px"
+                  max-height="420px"
                 >
-                  {{ getInventoryStatusText(row.inventoryStatus) }}
-                </span>
-                <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
-                  ({{ row.inventoryQty || 0 }})
-                </span>
-              </template>
-            </vxe-column>
-            <vxe-column field="materialsDesc" title="物料描述" align="center" />
-            <vxe-column field="optionPackageName" title="选装包" align="center" width="140" />
-          </vxe-table>
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pagination.currentPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pagination.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="pagination.total"
-            style="margin-top: 20px;">
-          </el-pagination>
-          </div>
-        </div>
-      </section>
+                  <vxe-column field="checkbox" title="补货数量" align="center" width="150">
+                    <template v-slot="{ row }">
+                      <el-input-number
+                        :min="0"
+                        :max="999"
+                        :precision="0"
+                        :controls="false"
+                        v-model="row.applyQty"
+                        @change="handleApplyQtyChange(row, $event)"
+                      />
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="modelName" title="车型" align="center" width="150" />
+                  <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
+                  <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
+                    <template v-slot="{ row }">
+                      <span
+                        :class="getInventoryStatusClass(row.inventoryStatus)"
+                        :title="getInventoryStatusText(row.inventoryStatus)"
+                      >
+                        {{ getInventoryStatusText(row.inventoryStatus) }}
+                      </span>
+                      <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
+                        ({{ row.inventoryQty || 0 }})
+                      </span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="materialsDesc" title="物料描述" align="center" />
+                  <vxe-column field="optionPackageName" title="选装包" align="center" width="140" />
+                </vxe-table>
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="pagination.currentPage"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="pagination.pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="pagination.total"
+                  style="margin-top: 20px;">
+                </el-pagination>
+              </div>
+            </div>
+          </section>
+        </el-tab-pane>
+        <el-tab-pane label="特供车" name="special">
+          <section class="common-section">
+            <div class="common-section-body">
+              <div class="common-section-table">
+                <vxe-table
+                  ref="specialTable"
+                  :data="currentTableData"
+                  stripe
+                  resizable
+                  border="inner"
+                  size="small"
+                  height="auto"
+                  width="100%"
+                  min-height="200px"
+                  max-height="420px"
+                >
+                  <vxe-column field="checkbox" title="补货数量" align="center" width="150">
+                    <template v-slot="{ row }">
+                      <el-input-number
+                        :min="0"
+                        :max="999"
+                        :precision="0"
+                        :controls="false"
+                        v-model="row.applyQty"
+                        @change="handleApplyQtyChange(row, $event)"
+                      />
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="modelName" title="车型" align="center" width="150" />
+                  <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
+                  <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
+                    <template v-slot="{ row }">
+                      <span
+                        :class="getInventoryStatusClass(row.inventoryStatus)"
+                        :title="getInventoryStatusText(row.inventoryStatus)"
+                      >
+                        {{ getInventoryStatusText(row.inventoryStatus) }}
+                      </span>
+                      <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
+                        ({{ row.inventoryQty || 0 }})
+                      </span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="materialsDesc" title="物料描述" align="center" />
+                  <vxe-column field="optionPackageName" title="选装包" align="center" width="140" />
+                </vxe-table>
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="pagination.currentPage"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="pagination.pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="pagination.total"
+                  style="margin-top: 20px;">
+                </el-pagination>
+              </div>
+            </div>
+          </section>
+        </el-tab-pane>
+      </el-tabs>
       <el-form
         ref="fundForm"
         :model="fundForm"
@@ -270,7 +334,7 @@
       <el-button size="small" @click="fundAccountDialogVisible = true">整车资金账户信息</el-button>
       <div>
         <el-button size="small" @click="handleCancel">取消</el-button>
-        <el-button size="small" type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
+        <el-button v-if="activeTab === 'normal' || activeTab === 'special'" size="small" type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </div>
   </el-dialog>
@@ -329,6 +393,9 @@ export default {
       },
       tableData: [],
       originalTableData: [],
+      specialSupplyTableData: [],
+      specialSupplyOriginalData: [],
+      activeTab: 'normal',
       // 添加分页相关数据
       pagination: {
         currentPage: 1,
@@ -370,11 +437,14 @@ export default {
     // hiddenFilterFields () {
     //   return this.filterFields.slice(2);
     // },
+    activeTableData () {
+      return this.activeTab === 'special' ? this.specialSupplyTableData : this.tableData;
+    },
     // // 计算当前页数据
     currentTableData () {
       const start = (this.pagination.currentPage - 1) * this.pagination.pageSize;
       const end = start + this.pagination.pageSize;
-      return this.tableData.slice(start, end);
+      return this.activeTableData.slice(start, end);
     },
     // 资金类型下拉：按 fundType 去重，只显示本名
     fundTypeOptions () {
@@ -427,8 +497,13 @@ export default {
       // 切换资金类型时清空已选金融机构，避免上个类型残留
       this.fundForm.financialOrganizationId = '';
     },
+    handleTabClick () {
+      this.pagination.currentPage = 1;
+      this.pagination.total = this.activeTableData.length;
+    },
     filterTableData () {
-      let filteredData = [...this.originalTableData];
+      const source = this.activeTab === 'special' ? this.specialSupplyOriginalData : this.originalTableData;
+      let filteredData = [...source];
 
       // 整车仓库用 warehouseName 判断
       if (this.form.warehouseId) {
@@ -464,7 +539,11 @@ export default {
         );
       }
 
-      this.tableData = filteredData;
+      if (this.activeTab === 'special') {
+        this.specialSupplyTableData = filteredData;
+      } else {
+        this.tableData = filteredData;
+      }
       this.pagination.total = filteredData.length;
       this.pagination.currentPage = 1;
     },
@@ -483,6 +562,10 @@ export default {
       this.form = { ...defaultForm }; // 重置表单数据
       this.fundForm = { fundType: '', financialOrganizationId: '' }; // 重置资金类型表单
       this.tableData = []; // 清空表格数据
+      this.specialSupplyTableData = [];
+      this.specialSupplyOriginalData = [];
+      this.activeTab = 'normal';
+      this.pagination = { currentPage: 1, pageSize: 10, total: 0 };
     },
     onSubmit () {
       this.filterTableData();
@@ -552,8 +635,27 @@ export default {
 
     async dialogshow () {
       await this.getData();
+      await this.getSpecialSupplyData();
       await this.listCanSettleAccount();
       this.dialogVisible = true;
+    },
+    // 特供车 tab：复用现车批售聚合分组查询，仅加「是否特供车=是」过滤
+    async getSpecialSupplyData () {
+      try {
+        const res = await queryPlantWholesaleInStockInventory({ isSpecialSupply: 1 });
+        const data = (res?.data) || res || {};
+        this.specialSupplyOriginalData = (data.inStockInventoryDtoList || []).map(item => ({
+          ...item,
+          applyQty: item.applyQty || 0
+        }));
+        this.specialSupplyTableData = [...this.specialSupplyOriginalData];
+        if (this.activeTab === 'special') {
+          this.pagination.total = this.specialSupplyTableData.length;
+          this.pagination.currentPage = 1;
+        }
+      } catch (error) {
+        console.error('加载特供车数据失败:', error);
+      }
     },
     async getEnum () {
       const response = await getEnum('vw_stock_status');
@@ -598,7 +700,7 @@ export default {
 
         // 首次提交参数：默认不校验其他账户
         const baseParams = {
-          materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => ({
+          materialsList: this.activeTableData.filter(row => row.applyQty > 0).map(ele => ({
             warehouseCode: ele.warehouseCode,
             materialDesc: ele.materialsDesc,
             applyQty: ele.applyQty
