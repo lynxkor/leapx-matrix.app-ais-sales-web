@@ -416,6 +416,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import customViewMixin from '@/libs/mixins/customView';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
@@ -456,7 +457,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -1210,6 +1211,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
@@ -1257,6 +1259,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
 
@@ -1277,6 +1281,10 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配(注入行级 deleteLoading,与业务列表保持一致) ----
+    customViewListAdapter (records) {
+      return (records || []).map(item => ({ ...item, deleteLoading: false }));
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
