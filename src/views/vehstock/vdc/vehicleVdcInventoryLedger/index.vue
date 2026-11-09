@@ -150,7 +150,7 @@
             filterable />
         </el-form-item>
       </template>
-      <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+      <page-search-action v-if="canList" v-model="show" is-expandable :view-scope="activeName" :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
     <div class="ais-active">
@@ -642,11 +642,19 @@ export default {
         return;
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
-      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
-      this.sortColumns = [{
+      // 按当前页签取对应列配置，避免低电量页签误用首页签的列定义
+      const option = this.activeName === 'lowBattery' ? this.optionDdl : this.optionObj;
+      const def = (option.dataProp || []).find(d => d.props === latest.field) || {};
+      const sort = (latest.order || '').toUpperCase();
+      const sortColumns = [{
         column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-        sort: (latest.order || '').toUpperCase()
+        sort
       }];
+      // 追加同方向的 id 排序，保证排序列值相同时分页结果稳定
+      if (!sortColumns.some(col => col.column === 'id')) {
+        sortColumns.push({ column: 'id', sort });
+      }
+      this.sortColumns = sortColumns;
       this.refreshTableData();
     },
     // 筛选模式切换时清空对应输入值
@@ -777,9 +785,7 @@ export default {
         this.optionDdl.form.pageSize = pageSize;
       }
       this.sortColumns = [{ column: 'inbound_date_time', sort: 'DESC' }];
-      this.$nextTick(() => {
-        this.getData();
-      });
+      this.debouncedGetData();
     },
     exportExcel () {
       this.exportLoading = true;
@@ -894,7 +900,7 @@ export default {
     // 刷新表格数据
     refreshTableData () {
       this.updateFormByActiveTab();
-      this.getData();
+      this.debouncedGetData();
     },
 
     // 根据活动标签页更新表单字段
@@ -972,7 +978,13 @@ export default {
       if (data.stockAgeLe === 0 || data.stockAgeLe === null || data.stockAgeLe === undefined || data.stockAgeLe === '') {
         delete data.stockAgeLe;
       }
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
 
       // 处理ERP发票号筛选：根据筛选模式映射到不同后端字段
       delete data.erpInvoiceFilterMode;
@@ -1099,7 +1111,7 @@ export default {
         this.form.status = 1;
       }
       this.$nextTick(() => {
-        this.getData();
+        this.debouncedGetData();
       });
       // this.onReset();
     },
