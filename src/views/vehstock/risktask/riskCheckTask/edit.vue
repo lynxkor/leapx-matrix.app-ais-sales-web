@@ -795,7 +795,7 @@ export default {
           { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 110 },
           { props: 'checkStatusLabel', label: '排检状态', visible: true, width: 100 },
           { props: 'lockStatusLabel', label: '锁定状态', visible: true, width: 100 },
-          { props: 'checkTime', label: '排检时间', visible: true, width: 170 }
+          { props: 'checkTime', label: '排查时间', visible: true, width: 170 }
         ],
         total: 0
       },
