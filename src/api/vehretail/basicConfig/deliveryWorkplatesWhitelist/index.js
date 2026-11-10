@@ -49,3 +49,11 @@ export function getDetail (data) {
 export function enableOrDisable (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 用户查询（带权限）
+ * @param {Object} data
+ */
+export function userQueryWithPermission (data) {
+  return api.jsonPost('/users/manager/userQueryWithPermission', data);
+}

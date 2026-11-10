@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :dataTransform="dataTransform"
       >
         <template #status>
         </template>
@@ -22,16 +23,25 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="120px" v-show="isEditing || !_id">
-                <el-form-item label="用户ID：" prop="userId">
-                  <el-input
-                    placeholder="请输入用户ID"
-                    v-model="form.userId"
+                <el-form-item label="用户姓名：" prop="userName">
+                  <fetch-select
+                    :remote-method="remoteUserSearch"
+                    v-model="form.selectedUserId"
+                    :params="form.userName"
+                    placeholder="请输入用户姓名搜索"
+                    labelKey="label"
+                    valueKey="value"
+                    clearable
+                    filterable
+                    remote
+                    :reserve-keyword="false"
+                    @change="handleUserChange"
                   />
                 </el-form-item>
-                <el-form-item label="用户姓名：" prop="userName">
+                <el-form-item label="用户ID：" prop="userId">
                   <el-input
-                    placeholder="请输入用户姓名"
-                    v-model="form.userName"
+                    v-model="form.userId"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="组织名称：">
@@ -70,11 +80,11 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="用户ID：">
-                  {{ form.userId }}
-                </el-form-item>
                 <el-form-item label="用户姓名：">
                   {{ form.userName }}
+                </el-form-item>
+                <el-form-item label="用户ID：">
+                  {{ form.userId }}
                 </el-form-item>
                 <el-form-item label="组织名称：">
                   {{ form.mainOrgName }}
@@ -105,7 +115,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/deliveryWorkplatesWhitelist/index';
+import { getDetail, addOrUpdate, userQueryWithPermission } from '@/api/vehretail/basicConfig/deliveryWorkplatesWhitelist/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -118,6 +128,7 @@ const defaultForm = {
   id: '',
   userId: '',
   userName: '',
+  selectedUserId: '',
   mainOrgCode: '',
   mainOrgName: '',
   mainPostCode: '',
@@ -178,8 +189,7 @@ export default {
       originalForm: { ...form },
       rules: {
         userId: [
-          { required: true, message: '请输入用户ID', trigger: 'blur' },
-          { pattern: /^[1-9]\d*$/, message: '用户ID必须为正整数', trigger: 'blur' }
+          { required: true, message: '请选择用户', trigger: 'change' }
         ],
         userName: [
           { required: true, message: '请输入用户姓名', trigger: 'blur' }
@@ -197,8 +207,15 @@ export default {
         return getDetail(id);
       }
     },
+    dataTransform (res) {
+      return {
+        ...res,
+        selectedUserId: res.userId ? String(res.userId) : ''
+      };
+    },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      const { selectedUserId, ...submitData } = this.form;
+      return addOrUpdate(submitData);
     },
     openPane () {
       this.$refs.editLayout.openPane();
@@ -213,6 +230,43 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async remoteUserSearch (query) {
+      const params = {
+        enabled: '0',
+        page: 1,
+        size: 10,
+        position: '1',
+        sourceCode: 'PC'
+      };
+      if (query) {
+        params.username = query;
+      }
+      const res = await userQueryWithPermission(params);
+      const records = (res && res.data && res.data.records) || (res && res.records) || [];
+      return records.map(item => ({
+        value: String(item.userId),
+        label: `${item.username}(${item.userId})`,
+        rawData: item
+      }));
+    },
+    handleUserChange (val, selectedOption) {
+      if (!val) {
+        this.form.userId = '';
+        this.form.userName = '';
+        this.form.mainOrgName = '';
+        this.form.mainPostName = '';
+        this.form.mobile = '';
+        return;
+      }
+      const data = selectedOption && selectedOption.rawData;
+      if (data) {
+        this.form.userId = String(data.userId) || '';
+        this.form.userName = data.username || '';
+        this.form.mainOrgName = data.orgName || '';
+        this.form.mainPostName = data.postName || '';
+        this.form.mobile = data.mobile || '';
+      }
     }
   }
 };
