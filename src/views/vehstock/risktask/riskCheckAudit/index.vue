@@ -182,6 +182,8 @@ export default {
             }]
           },
           {
+            // VIN 链接 = 排查任务明细详情入口（挂在独立二级菜单 AISVS-riskCheckTaskDetail 下）；
+            // query.id 必须取明细主键 row.detailId，审核记录 row.id 是审核记录主键，明细详情按明细 id 查
             props: 'vin',
             label: 'VIN',
             visible: true,
@@ -189,12 +191,7 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehstock/risktask/riskCheckAudit/auditDetail',
-                  query: {
-                    id: row.id
-                  }
-                });
+                this.goDetailInfo(row);
               },
               type: 'primary'
             }]
@@ -261,6 +258,28 @@ export default {
     }
   },
   methods: {
+    /**
+     * 覆盖 permissions mixin 的同名方法：mixin 只按本模块 canDetail 删 optionObj.dataProp[0].buttons，
+     * 且本页无 operate 列会提前 return。VIN 链接是跨模块入口，权限点挂在独立二级菜单
+     * AISVS-riskCheckTaskDetail 下，必须从 aisPageSource 全量判断（permissions.js:19 只收集本模块前缀）。
+     */
+    fixTableConfig () {
+      const pageSource = this.$store.state.pageSource?.aisPageSource || [];
+      if (!pageSource.includes('AISVS-riskCheckTaskDetail-detail')) {
+        delete this.optionObj.dataProp[1].buttons;
+      }
+    },
+    // 排查任务明细详情入口：id = 明细主键 detailId（后端审核列表页批量回填）
+    goDetailInfo (row) {
+      if (!row.detailId) {
+        this.$message.warning('排查车辆明细不存在');
+        return;
+      }
+      this.$router.push({
+        path: '/vehstock/risktask/riskCheckTaskDetail/detail',
+        query: { id: row.detailId }
+      });
+    },
     onSubmit () {
       this.optionObj.form.page = 1;
       this.getData();

@@ -305,10 +305,10 @@
               />
             </div>
           </section>
-          <!-- 排查车辆清单（T10：分页查询当前排查任务的明细，PRD 多维筛选） -->
+          <!-- 排查任务明细（T10：分页查询当前排查任务的明细，PRD 多维筛选） -->
           <section class="common-section">
             <div class="common-section-header">
-              <h2>排查车辆清单</h2>
+              <h2>排查任务明细</h2>
             </div>
             <div class="common-section-body">
               <!-- 筛选区：VIN/门店名称走 TagInput 批量文本；类型/状态走枚举多选；车系等走主数据远程多选 -->
@@ -434,7 +434,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="排检状态：">
+                <el-form-item label="排查状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vs_risk_check_status"
@@ -698,7 +698,7 @@ export default {
     buttonControl () {
       return (this.form && this.form.buttonControl) || {};
     },
-    // 🔑 发布按钮：后端 buttonControl.publishButton（仅草稿且有排查车辆清单可发布，
+    // 🔑 发布按钮：后端 buttonControl.publishButton（仅草稿且有排查任务明细可发布，
     //    清单为空时后端同源返回 false，按钮直接不渲染）+ 发布权限；
     //    前端兜底「车辆数量>0」：新建未保存（无 id、无 buttonControl 回包）或数据未加载时不露出
     canPublish () {
@@ -756,7 +756,7 @@ export default {
       form,
       // 🔑 附件走前端规则（不请求 attachmentConfig/getByCodeWithBusinessData）
       attachmentUploadConfig: ATTACHMENT_UPLOAD_CONFIG,
-      // ==================== 排查车辆清单（T10） ====================
+      // ==================== 排查任务明细（T10） ====================
       detailForm: {
         vinList: [],
         vehicleTypeList: [],
@@ -771,7 +771,7 @@ export default {
         lockStatusList: [],
         checkStatusList: []
       },
-      // 🔑 排查车辆清单表格配置：与列表页 /vehstock/risktask/riskCheckTask 同款 LPVxeTable
+      // 🔑 排查任务明细表格配置：与列表页 /vehstock/risktask/riskCheckTask 同款 LPVxeTable
       //    id（tableCode）独立于列表页的 riskCheckTaskTable，避免两个页面的用户表头配置互相污染
       detailTableOption: {
         id: 'riskCheckTaskEditDetailTable',
@@ -783,7 +783,20 @@ export default {
         dataProp: [
           // 🔑 LPVxeTable 只把 width 透传给 vxe-column（minWidth 不生效，会退化成 auto 宽），
           //    这里全部用 width 定宽，视觉与列表页一致；最后一列（排检时间）由组件按剩余宽度自适应
-          { props: 'vin', label: 'VIN', visible: true, width: 190, fixed: 'left' },
+          {
+            // 🔑 VIN 链接 = 排查任务明细详情入口，query.id 取明细主键 row.id（不是 checkTaskId）
+            props: 'vin',
+            label: 'VIN',
+            visible: true,
+            width: 190,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.goDetailInfo(row);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 140 },
           { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 140 },
           { props: 'vehicleTypeLabel', label: '车辆类型', visible: true, width: 100 },
@@ -858,7 +871,7 @@ export default {
   mounted () {
     // 🔑 进入页面即拉全量角色，供「推送对象」下拉与详情回显使用
     this.loadAuthorityOptions();
-    // 🔑 已有任务ID（编辑态）则直接拉排查车辆清单
+    // 🔑 已有任务ID（编辑态）则直接拉排查任务明细
     if (this._id) {
       this.queryDetailList();
     }
@@ -873,6 +886,25 @@ export default {
     }
   },
   methods: {
+    /**
+     * 覆盖 permissions mixin 的同名方法：本页明细表格是 detailTableOption 而非 optionObj，
+     * mixin 只删 optionObj.dataProp[0].buttons，覆盖不到这里的 VIN 链接列。
+     * 🔑 明细详情入口挂在独立二级菜单 AISVS-riskCheckTaskDetail 下，mixin 的 permissions
+     *    只收集本模块前缀（permissions.js:19），故从 aisPageSource 全量判断，避免越权入口。
+     */
+    fixTableConfig () {
+      const pageSource = this.$store.state.pageSource?.aisPageSource || [];
+      if (!pageSource.includes('AISVS-riskCheckTaskDetail-detail')) {
+        delete this.detailTableOption.dataProp[0].buttons;
+      }
+    },
+    // 排查任务明细详情入口：query.id = 明细主键 row.id（任务主键是 checkTaskId）
+    goDetailInfo (row) {
+      this.$router.push({
+        path: '/vehstock/risktask/riskCheckTaskDetail/detail',
+        query: { id: row.id }
+      });
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },
@@ -1008,7 +1040,7 @@ export default {
         this.authorityOptions = [];
       });
     },
-    // ==================== 排查车辆清单（T10） ====================
+    // ==================== 排查任务明细（T10） ====================
     handleDetailQuery () {
       this.detailTableOption.form.page = 1;
       this.queryDetailList();
@@ -1095,7 +1127,7 @@ export default {
         getTableConfig(this.detailTableOption.id).then(data => {
           resolve({ data });
         }).catch(err => {
-          console.error('排查车辆清单表格配置读取失败:', err);
+          console.error('排查任务明细表格配置读取失败:', err);
           resolve({ data: null });
         });
       });
@@ -1375,7 +1407,7 @@ export default {
   }
 }
 
-// ---- 排查车辆清单（T10） ----
+// ---- 排查任务明细（T10） ----
 .detail-search-form {
   display: flex;
   flex-wrap: wrap;
@@ -1389,7 +1421,7 @@ export default {
   margin: 4px 0 12px;
 }
 
-// 排查车辆清单表格：与列表页同款 LPVxeTable
+// 排查任务明细表格：与列表页同款 LPVxeTable
 // 🔑 LPVxeTable 内部按「容器高度」分配表格区与分页区（表格区 = 容器高 - 50px），
 //    编辑页是滚动流页面、没有列表页那种「剩余视口高度」，所以这里给固定高度
 .detail-table-wrap {

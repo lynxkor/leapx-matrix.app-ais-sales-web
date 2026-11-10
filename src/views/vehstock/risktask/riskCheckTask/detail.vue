@@ -170,7 +170,21 @@ export default {
           size: pageSize
         },
         dataProp: [
-          { props: 'vin', label: 'VIN码', visible: true, minWidth: 190, fixed: 'left' },
+          {
+            // 🔑 VIN 链接 = 排查任务明细详情入口，query.id 取明细主键 row.id（不是 checkTaskId）
+            //    LPVxeTable 只把 width 透传给 vxe-column，minWidth 会退化成 auto 宽
+            props: 'vin',
+            label: 'VIN码',
+            visible: true,
+            width: 190,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.goDetailInfo(row);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'vehicleTypeLabel', label: '车辆类型', visible: true, width: 100 },
           { props: 'modelName', label: '车型', visible: true, minWidth: 140 },
           { props: 'materialsDesc', label: '物料描述', visible: true, minWidth: 160 },
@@ -221,6 +235,13 @@ export default {
      * 🔑 本模块专属权限点：cancelCheck / unlockVehicle
      */
     fixTableConfig () {
+      // 🔑 VIN 链接 = 排查任务明细详情入口，权限点挂在独立二级菜单 AISVS-riskCheckTaskDetail 下；
+      //    permissions mixin 只收集本模块前缀（permissions.js:19），故从 aisPageSource 全量判断。
+      //    必须放在 operate 判空 return 之前，否则无操作列时会漏摘，形成越权入口。
+      const pageSource = this.$store.state.pageSource?.aisPageSource || [];
+      if (!pageSource.includes('AISVS-riskCheckTaskDetail-detail')) {
+        delete this.optionObj.dataProp[0].buttons;
+      }
       const operate = this.optionObj?.dataProp?.find(item => item.props === 'operate');
       if (!operate) {
         return;
@@ -237,6 +258,13 @@ export default {
       if (operate.buttons.length === 0) {
         this.optionObj.dataProp = this.optionObj.dataProp.filter(item => item.props !== 'operate');
       }
+    },
+    // 排查任务明细详情入口：query.id = 明细主键 row.id（任务主键是 checkTaskId）
+    goDetailInfo (row) {
+      this.$router.push({
+        path: '/vehstock/risktask/riskCheckTaskDetail/detail',
+        query: { id: row.id }
+      });
     },
     onSubmit () {
       this.optionObj.form.page = 1;

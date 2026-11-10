@@ -191,6 +191,25 @@ const routes = [
         keepAlive: true
       }
     }, {
+      path: '/vehstock/risktask/riskCheckTaskDetail',
+      name: 'riskCheckTaskDetailList',
+      component: () => import('@/views/vehstock/risktask/riskCheckTaskDetail/index.vue'),
+
+      meta: {
+        name: '排查任务明细',
+        keepAlive: true
+      }
+    }, {
+      // 🔑 详情页必须挂在所属列表路由路径下：AisPageTitle.handleClick 写死去路径末段回跳首级
+      path: '/vehstock/risktask/riskCheckTaskDetail/detail',
+      name: 'riskCheckTaskDetailInfo',
+      component: () => import('@/views/vehstock/risktask/riskCheckTaskDetail/detail.vue'),
+
+      meta: {
+        name: '排查任务明细详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/basic/vehicleReservationDetail',
       name: 'vehicleReservationDetail',
       component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
