@@ -306,6 +306,8 @@
           <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 预约信息 -->
           <generic-detail-display title="预约信息" :form-data="form" :fields="appointmentFields" :label-width="labelWidth" section-key="appointment" />
+          <!-- 到店信息 -->
+          <generic-detail-display title="到店信息" :form-data="form" :fields="storeArrivalFields" :label-width="labelWidth" section-key="storeArrival" />
           <!-- 整车订单信息 -->
           <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 实名认证信息 -->
@@ -568,20 +570,25 @@ export default {
       return '交车单编号：' + (this.form.deliveryOrderCode || '');
     },
     appointmentFields () {
-      const fields = [
+      return [
         { key: 'appointmentTime', label: '预约提车时间' },
         { key: 'appointmentDelayStatusLabel', label: '是否延期预约' },
         { key: 'appointmentChangeCount', label: '预约变更次数' },
         { key: 'appointmentOperationTime', label: '预约操作时间' },
         { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReason', label: '预约超时原因' },
-        { key: 'userStoreTime', label: '用户到店时间' },
-        { key: 'audioStopTime', label: '交付顾问工牌结束时间' },
-        { key: 'audioStopTypeLabel', label: '交付顾问工牌结束方式' },
-        { key: 'derivativeAudioStopTime', label: '衍生工程师工牌结束时间' },
-        { key: 'derivativeAudioStopTypeLabel', label: '衍生工程师工牌结束方式' }
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
       ];
-      // 有权限时展示到店验证码字段
+    },
+    storeArrivalFields () {
+      const fields = [
+        { key: 'userStoreTime', label: '用户到店时间' },
+        { key: 'audioStartTime', label: '交付录音开始时间' },
+        { key: 'derivativeAudioStartTime', label: '衍生录音开始时间' },
+        { key: 'audioStopTime', label: '交付录音结束时间' },
+        { key: 'derivativeAudioStopTime', label: '衍生录音结束时间' },
+        { key: 'audioStopTypeLabel', label: '交付录音结束方式' },
+        { key: 'derivativeAudioStopTypeLabel', label: '衍生录音结束方式' }
+      ];
       if (this.canCarryupVerificationCode) {
         fields.push({ key: 'carryupVerificationCode', label: '到店验证码' });
       }
