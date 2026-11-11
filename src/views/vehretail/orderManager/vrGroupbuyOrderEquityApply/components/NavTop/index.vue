@@ -2,9 +2,9 @@
   <section>
     <div class="page-common-nav">
       <div
-        :class="{'nav-item': true, 'active': item.isCome}"
-        v-for="(item, index) in stepInfoList"
-        :key="index"
+        :class="{'nav-item': true, 'active': isActive(item.status)}"
+        v-for="item in list"
+        :key="item.status"
       >
         <span class="nav-item-text">{{ item.name }}</span>
         <div class="arrow-shape">
@@ -20,12 +20,41 @@
 export default {
   name: 'PageCommonNav',
   props: {
-    stepInfoList: {
-      type: Array,
-      default: () => []
-    },
+    current: {
+      type: [Number, String],
+      default: null
+    }
+  },
+  data () {
+    return {
+      // 与后端 OrderBenefitApplyStatusEnum 对齐：10 草稿 / 30 已提交 / 40 已初审 / 50 已复审 / 60 已终审
+      list: [
+        { name: '草稿', status: 10 },
+        { name: '已提交', status: 30 },
+        { name: '已初审', status: 40 },
+        { name: '已复审', status: 50 },
+        { name: '已终审', status: 60 }
+      ]
+    };
   },
   methods: {
+    isActive (status) {
+      let currentStatus = Number(this.current);
+      // 作废：全部不高亮
+      if (currentStatus === 70) {
+        return false;
+      }
+      // 驳回按草稿算；无状态（新建页）按草稿算
+      if (currentStatus === 20 || !currentStatus) {
+        currentStatus = 10;
+      }
+      const currentIndex = this.list.findIndex(item => item.status === currentStatus);
+      const targetIndex = this.list.findIndex(item => item.status === status);
+      if (currentIndex === -1) {
+        return false;
+      }
+      return targetIndex !== -1 && targetIndex <= currentIndex;
+    }
   }
 };
 </script>
