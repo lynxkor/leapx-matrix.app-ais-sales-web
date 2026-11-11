@@ -506,7 +506,10 @@ const routes = [
 
       meta: {
         name: '整车主数据-整车物料管理',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehicleMaterialsPage',
+        customViewResourceTag: 'AISDC-vehicleMaterials-customeView'
       }
     }, {
       path: '/datacenter/materials/vehicleMaterials/detail',
@@ -895,6 +898,25 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      // LP260286 7.1 现车批售信息配置
+      path: '/vehwholesale/basic/wholesaleSpotConfig',
+      name: 'wholesaleSpotConfig',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSpotConfig/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-现车批售信息配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleSpotConfig/edit',
+      name: 'wholesaleSpotConfigEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSpotConfig/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-现车批售信息配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehwholesale/basic/wholesaleSaleTargetTracking',
       name: 'wholesaleSaleTargetTracking',
       component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/index.vue'),
@@ -1081,7 +1103,10 @@ const routes = [
 
       meta: {
         name: 'VDC库存台账',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehicleVdcInventoryLedgerPage',
+        customViewResourceTag: 'AISVW-vehicleVdcInventoryLedger-customeView'
       }
     }, {
       path: '/vehstock/vdc/vehicleVdcInventoryLedger/detail',
@@ -1479,7 +1504,10 @@ const routes = [
 
       meta: {
         name: '整车批售-批售主数据-整车批售订单管理',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehwholesaleDealerPage',
+        customViewResourceTag: 'AISVW-vehicleWholesaleOrder-customeView'
       }
     }, {
       path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
@@ -1497,7 +1525,10 @@ const routes = [
 
       meta: {
         name: '整车批售-批售主数据-整车批售订单管理',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehwholesaleDealerPage',
+        customViewResourceTag: 'AISVW-vehicleWholesaleOrder-customeView'
       }
     }, {
       path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
@@ -1515,7 +1546,10 @@ const routes = [
 
       meta: {
         name: '整车批售-批售主数据-整车批售订单管理(厂端)',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehwholesaleFactoryPage',
+        customViewResourceTag: 'AISVW-vehicleWholesaleOrderFactory-customeView'
       }
     }, {
       path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit',
@@ -1569,7 +1603,10 @@ const routes = [
 
       meta: {
         name: '门店库存台账',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'storeInventoryLedgerPage',
+        customViewResourceTag: 'AISVW-storeInventoryLedger-customeView'
       }
     }, {
       path: '/vehstock/store/storeInventoryLedger/edit',
@@ -2282,7 +2319,10 @@ const routes = [
 
       meta: {
         name: '新页面',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'vehicleShippingPlanDetailPage',
+        customViewResourceTag: 'AISVW-vehicleShippingPlanDetail-customeView'
       }
     }, {
       path: '/vehwholesale/shipping/vehicleShippingPlanDetail/edit',
@@ -2606,7 +2646,10 @@ const routes = [
 
       meta: {
         name: '整车销售-企业客户订单-企业客户整车订单管理',
-        keepAlive: true
+        keepAlive: true,
+        // 自定义视图：bizKey 用于查询视图配置表，resourceTag 为资源权限标识
+        customViewBizKey: 'entVehicleOrderPage',
+        customViewResourceTag: 'AISVW-entVehicleOrder-customeView'
       }
     }, {
       path: '/vehwholesale/entorder/entVehicleOrder/edit',

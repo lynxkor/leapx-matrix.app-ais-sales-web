@@ -198,6 +198,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import customViewMixin from '@/libs/mixins/customView';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import TagInput from '@/libs/components/TagInput';
@@ -230,7 +231,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     TagInput,
     PageSearchAction,
@@ -480,6 +481,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.getData();
       this.listVehicleYearType();
@@ -531,6 +533,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
 
@@ -559,6 +563,25 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配(与业务列表保持一致) ----
+    // 自定义视图走 datareport executeQuery,后端返回结构与业务列表一致(同样经过 setLabelName 与 props 组装),
+    // 此处仅做与业务列表相同的字段映射,保证表格列展示一致
+    customViewListAdapter (records) {
+      return (records || []).map(item => {
+        return {
+          ...item,
+          allowWholesaleLabel: item.props?.allowWholesaleLabel,
+          allowProductionScheduleLabel: item.props?.allowProductionScheduleLabel,
+          allowDisplayVehicleWholesaleLabel: item.props?.allowDisplayVehicleWholesaleLabel,
+          allowTestDriveVehicleWholesaleLabel: item.props?.allowTestDriveVehicleWholesaleLabel,
+          allowCustomerSalesLabel: item.props?.allowCustomerSalesLabel,
+          allowWholesaleConfirmLabel: item.props?.allowWholesaleConfirmLabel,
+          allowConfigurationModifyLabel: item.props?.allowConfigurationModifyLabel,
+          discontinueStatusLabel: item.props?.discontinueStatusLabel,
+          deleteLoading: false,
+        };
+      });
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
