@@ -9,12 +9,16 @@
           :class="['detail-status', statusClass]"
         >{{ detail.checkStatusLabel }}</span>
       </h2>
-      <el-button
-        v-if="showAuditBtn"
-        size="small"
-        type="primary"
-        @click="openAuditDialog"
-      >审核</el-button>
+      <div class="title-actions">
+        <!-- 审核日志：recordId = 审核记录主键（$route.query.id），与审核弹窗 auditRecordId=detail.id 同口径 -->
+        <el-button v-if="canLog" size="small" @click="handleJumpAuditLog">审核日志</el-button>
+        <el-button
+          v-if="showAuditBtn"
+          size="small"
+          type="primary"
+          @click="openAuditDialog"
+        >审核</el-button>
+      </div>
     </section>
 
     <!-- 审核信息：label 左 / 值右纯文本，三列流式（对齐 edit 页详情模式与
@@ -209,6 +213,10 @@ export default {
     this.getData();
   },
   methods: {
+    // 审核日志：平台弹窗按 recordId 查询 Canal 采集的业务表字段变更记录
+    handleJumpAuditLog () {
+      this.$auditLog.show({ id: this.$route.query.id });
+    },
     getData () {
       const id = this.$route.query.id;
       if (!id) {
@@ -266,6 +274,13 @@ export default {
 
 <style lang="scss" scoped>
 .m-risk-check-audit-detail {
+  // 标题区右侧按钮组：.common-title 是 flex + space-between，按钮须包一层作为单个 flex item
+  // element-ui 的 .el-button + .el-button 自带 10px 左边距，无需额外 gap
+  .title-actions {
+    display: flex;
+    align-items: center;
+  }
+
   // 标题旁排查状态标签（对齐 EditBaseHeader 的 .status 配色）
   .detail-status {
     display: inline-block;

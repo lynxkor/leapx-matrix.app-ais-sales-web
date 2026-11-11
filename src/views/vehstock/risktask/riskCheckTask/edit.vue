@@ -806,6 +806,9 @@ export default {
           { props: 'exteriorName', label: '外观名称', visible: true, width: 120 },
           { props: 'interiorName', label: '内饰名称', visible: true, width: 120 },
           { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 110 },
+          // 是否匹配订单取自门店库存台账 lock_status，后端 populateDetails 补 bindRetailOrder，
+          // @DictEnumType(BooleanEnum) 下发 bindRetailOrderLabel；与明细清单页列定义保持一致
+          { props: 'bindRetailOrderLabel', label: '是否匹配订单', visible: true, width: 110 },
           { props: 'checkStatusLabel', label: '排检状态', visible: true, width: 100 },
           { props: 'lockStatusLabel', label: '锁定状态', visible: true, width: 100 },
           { props: 'checkTime', label: '排查时间', visible: true, width: 170 }

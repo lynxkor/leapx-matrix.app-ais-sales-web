@@ -2,7 +2,11 @@
   <div class="page-common-detail m-risk-check-task-detail-info" v-loading="loading">
     <section class="common-title">
       <h2>排查任务明细详情</h2>
-      <el-button size="small" @click="goBack">返回</el-button>
+      <div class="title-actions">
+        <!-- 审核日志：平台公共能力（$auditLog），recordId = 排查明细主键（本页 $route.query.id） -->
+        <el-button v-if="canLog" size="small" @click="handleJumpAuditLog">审核日志</el-button>
+        <el-button size="small" @click="goBack">返回</el-button>
+      </div>
     </section>
 
     <!-- 车辆信息：原「任务与车辆」+「门店与库存」合并为同一分组，字段全部来自
@@ -87,6 +91,7 @@
 
 <script>
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import permissions from '@/libs/mixins/permissions';
 import { getDetailInfo } from '@/api/vehstock/risktask/riskCheckTaskDetail/index';
 
 const EMPTY_DETAIL = {
@@ -120,6 +125,8 @@ const EMPTY_DETAIL = {
 };
 
 export default {
+  // canLog 来自 permissions mixin：permissions.has(moduleKey + '-auditLog')
+  mixins: [permissions],
   components: {
     AisAttachment
   },
@@ -139,6 +146,10 @@ export default {
     this.getData();
   },
   methods: {
+    // 审核日志：平台弹窗按 recordId 查询 Canal 采集的业务表字段变更记录
+    handleJumpAuditLog () {
+      this.$auditLog.show({ id: this.$route.query.id });
+    },
     getData () {
       const id = this.$route.query.id;
       if (!id) {
@@ -175,6 +186,13 @@ export default {
 
 <style lang="scss" scoped>
 .m-risk-check-task-detail-info {
+  // 标题区右侧按钮组：.common-title 是 flex + space-between，按钮须包一层作为单个 flex item
+  // element-ui 的 .el-button + .el-button 自带 10px 左边距，无需额外 gap
+  .title-actions {
+    display: flex;
+    align-items: center;
+  }
+
   // 长文本字段（排查方法 / 排查说明）独占一行；.page-common-detail 已提供 form-item-full{width:100%}
   // 🔑 content 是 el-form-item 内部节点，scoped 需 ::v-deep 才能命中
   ::v-deep .el-form-item.form-item-full .el-form-item__content {
