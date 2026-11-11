@@ -67,12 +67,15 @@
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
                   <fetch-select
+                    ref="vehicleAttributeSelect"
                     :request="fetchOptions"
                     enumCode="vehicle_attribute_type"
                     v-model="form.vehicleAttribute"
                     placeholder="请选择车辆属性"
                     clearable
                     filterable
+                    @change="handleVehicleAttributeChange"
+                    @visible-change="handleVehicleAttributeVisibleChange"
                   />
                 </el-form-item>
                 <el-form-item label="车辆用途：" prop="vehiclePurpose">
@@ -647,6 +650,7 @@ export default {
         { label: '附件资料', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '附件资料' }
       ],
       yes_no_enum: YES_NO_ENUM,
+      previousVehicleAttribute: '', // 下拉框打开前记录的车辆属性值
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -1293,6 +1297,29 @@ export default {
             this.form.vehiclePurpose = null;
           }
         }
+      }
+    },
+    // 下拉框显示/隐藏处理
+    handleVehicleAttributeVisibleChange (visible) {
+      if (visible) {
+        // 下拉框打开时，记录当前值
+        this.previousVehicleAttribute = this.form.vehicleAttribute;
+      }
+    },
+    // 车辆属性变更处理
+    handleVehicleAttributeChange (val) {
+      // 当选择"营运"时，弹出确认框
+      if (val === '2' || val === 2) {
+        this.$confirm('车辆属性为营运，质保政策与权益将受影响，请确认车辆属性', '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 用户点击确认，保持当前值（营运），不显示提示
+        }).catch(() => {
+          // 用户点击取消，恢复到下拉框打开前的值
+          this.form.vehicleAttribute = this.previousVehicleAttribute;
+        });
       }
     },
     saleDealerChangeRender (code) {
