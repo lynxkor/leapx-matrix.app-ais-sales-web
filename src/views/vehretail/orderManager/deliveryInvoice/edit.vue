@@ -513,7 +513,7 @@
                   />
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
-                  <el-select v-model="form.vehicleAttribute">
+                  <el-select ref="vehicleAttributeSelect" v-model="form.vehicleAttribute" @change="handleVehicleAttributeChange" @visible-change="handleVehicleAttributeVisibleChange">
                     <el-option
                       v-for="item in vehicleAttributeSelector"
                       :key="item.code"
@@ -525,8 +525,7 @@
                       filterable
                     />
                   </el-select>
-                </el-form-item>
-                <el-form-item label="车主证件类型：" prop="carIdCardType">
+                </el-form-item>                <el-form-item label="车主证件类型：" prop="carIdCardType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vr_id_card_type"
@@ -928,6 +927,7 @@ export default {
       uploadLoading: false,
       businessData: '',
       uploadLoadingCounter: 0,
+      previousVehicleAttribute: null, // 下拉框打开前记录的车辆属性值
       // 车辆属性 1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失
       vehicleAttributeSelector: [
         { code: 1, message: '家用' },
@@ -985,6 +985,31 @@ export default {
   mounted () {
   },
   methods: {
+    // 下拉框显示/隐藏处理
+    handleVehicleAttributeVisibleChange (visible) {
+      if (visible) {
+        // 下拉框打开时，记录当前值
+        this.previousVehicleAttribute = this.form.vehicleAttribute;
+      }
+    },
+    // 车辆属性变更处理
+    handleVehicleAttributeChange (val) {
+      // 当选择"营运"时，弹出确认框（营运对应的 code 为 2）
+      if (val === 2) {
+        // 先关闭下拉框
+        this.$refs.vehicleAttributeSelect && (this.$refs.vehicleAttributeSelect.visible = false);
+        this.$confirm('车辆属性为营运，质保政策与权益将受影响，请确认车辆属性', '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 用户点击确认，保持当前值（营运），不显示提示
+        }).catch(() => {
+          // 用户点击取消，恢复到下拉框打开前的值
+          this.form.vehicleAttribute = this.previousVehicleAttribute;
+        });
+      }
+    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {

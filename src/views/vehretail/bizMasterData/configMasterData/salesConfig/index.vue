@@ -237,6 +237,23 @@
                     </el-select>
                   </el-tooltip>
                 </el-form-item>
+                <el-form-item label="电子工牌在线配置：" prop="gaoKeDeviceStatus">
+                  <el-select
+                    v-model="formData.gaoKeDeviceStatus"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="!showEditBtn"
+                    @change="(val) => handleChange(val, 'gaoKeDeviceStatus')"
+                  >
+                    <el-option
+                      v-for="item in yes_no_enum"
+                      :key="item.code"
+                      :label="item.message"
+                      :value="item.code"
+                    />
+                  </el-select>
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -419,6 +436,9 @@ export default {
         goToSignStatus: [
           { required: true, message: '请选择交车单签署校验', trigger: 'change' }
         ],
+        gaoKeDeviceStatus: [
+          { required: true, message: '请选择电子工牌在线配置', trigger: 'change' }
+        ],
         saleDealerAuthName: [
           { required: true, message: '请选择销售门店配置', trigger: 'change' }
         ],
@@ -534,6 +554,13 @@ export default {
               saleConfigValue: ''
             },
             {
+              salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'gaoKeDeviceStatus',
+              salesConfigName: '电子工牌在线配置',
+              salesConfigType: 'single',
+              saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
+            },
+            {
               salesConfigGroup: 'dealerAuthConfig',
               salesConfigKey: 'saleDealerAuth',
               salesConfigName: '销售门店配置',
@@ -578,6 +605,7 @@ export default {
         phoneRegisterStatus: this.getConfigValue('phoneRegister'),
         realNameAuth: this.getConfigValue('realNameAuth'),
         goToSignStatus: this.getConfigValue('goToSign'),
+        gaoKeDeviceStatus: this.getConfigValue('gaoKeDeviceStatus'),
         deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment'),
         saleDealerAuthName: this.getConfigValue('saleDealerAuth'),
         deliveryDealerAuthName: this.getConfigValue('deliveryDealerAuth')

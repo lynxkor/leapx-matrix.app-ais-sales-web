@@ -2715,6 +2715,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/basicConfig/deliveryWorkplatesWhitelist',
+      name: 'deliveryWorkplatesWhitelist',
+      component: () => import('@/views/vehretail/basicConfig/deliveryWorkplatesWhitelist/index.vue'),
+
+      meta: {
+        name: '交付工牌白名单',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/deliveryWorkplatesWhitelist/edit',
+      name: 'deliveryWorkplatesWhitelistEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryWorkplatesWhitelist/edit.vue'),
+
+      meta: {
+        name: '交付工牌白名单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderManager/deliveryInvoice',
       name: 'deliveryInvoice',
       component: () => import('@/views/vehretail/orderManager/deliveryInvoice/index.vue'),
