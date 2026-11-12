@@ -28,7 +28,7 @@
         </template>
         <el-main>
           <!-- 审核步骤条 -->
-          <NavTop :stepInfoList="stepInfoList"/>
+          <NavTop :current="form.auditStatus"/>
 
           <!-- 基础信息 -->
           <section class="common-section">
@@ -811,7 +811,6 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       approvalDetailList: [],
-      stepInfoList: [],
       isShowAuditorBtn: false,
       auditorList: [],
       auditorDialogVisible: false, // 审核人员弹窗可见性
@@ -1088,11 +1087,12 @@ export default {
         this.approvalDetailList = res.records || [];
       });
     },
-    // 获取流程步骤信息
+    // 获取流程步骤信息（进度条节点由 NavTop 内置，此处仅控制「查看审核人员」按钮）
     getStepInfo (id) {
       queryStepInfo(id).then(res => {
-        this.stepInfoList = res.stepInfoList || [];
-        this.isShowAuditorBtn = res.isShowAuditorBtn;
+        this.isShowAuditorBtn = !!(res && res.isShowAuditorBtn);
+      }).catch(() => {
+        this.isShowAuditorBtn = false;
       });
     },
     async fetchOptions (code) {
