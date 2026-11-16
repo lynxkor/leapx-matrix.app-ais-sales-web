@@ -405,7 +405,7 @@ export default {
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 150 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 150 },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 180 },
-          { props: 'actualDeliveryWayLabel', label: '发运方式', visible: true, width: 150 },
+          { props: 'actualDeliveryWay', label: '发运方式', visible: true, width: 150 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 150 },
           { props: 'provinceName', label: '省份', visible: true, width: 120 },
           { props: 'cityName', label: '城市', visible: true, width: 120 },
