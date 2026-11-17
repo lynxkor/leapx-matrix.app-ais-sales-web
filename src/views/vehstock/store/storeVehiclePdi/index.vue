@@ -273,6 +273,7 @@ export default {
           { props: 'isUnusualLabel', label: '车辆是否存在异常', visible: true, width: 160 },
           { props: 'isRepairedLabel', label: '车辆异常是否修复', visible: true, width: 160 },
           { props: 'lockStatusLabel', label: '是否匹配订单', visible: true, width: 140 },
+          { props: 'unusualCheckItemNames', label: '异常检查项', visible: true, width: 240 },
           { props: 'seriesName', label: '车系', visible: true, width: 100 },
           { props: 'modelName', label: '车型', visible: true, width: 120 },
           { props: 'yearTypeName', label: '年款', visible: true, width: 80 },
