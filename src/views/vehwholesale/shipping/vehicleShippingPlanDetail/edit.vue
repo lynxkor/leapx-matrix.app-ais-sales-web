@@ -125,7 +125,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="指定发运方式：" prop="actualDeliveryWay">
+                <el-form-item label="发运方式：" prop="actualDeliveryWay">
                   <el-input
                     placeholder="请输入"
                     v-model="form.actualDeliveryWay"

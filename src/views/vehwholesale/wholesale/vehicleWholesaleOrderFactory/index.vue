@@ -1057,7 +1057,7 @@ export default {
           { props: 'logisticsReserveRemark', label: '物流预留备注', visible: true, width: 200 },
 
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
-          { props: 'actualDeliveryWayLabel', label: '实际发运方式', visible: true, width: 200 },
+          { props: 'actualDeliveryWay', label: '实际发运方式', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
