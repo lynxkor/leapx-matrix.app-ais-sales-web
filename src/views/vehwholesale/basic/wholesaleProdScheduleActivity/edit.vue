@@ -224,6 +224,21 @@
                 <el-form-item label="门店名称：">
                   <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
+                <el-form-item label="车系名称：">
+                  <el-input v-model="detailForm.seriesNameLike" placeholder="请输入" clearable style="margin-top:4px"/>
+                </el-form-item>
+                <el-form-item label="车型名称：">
+                  <el-input v-model="detailForm.modelLineNameLike" placeholder="请输入" clearable style="margin-top:4px"/>
+                </el-form-item>
+                <el-form-item label="年款名称：">
+                  <el-input v-model="detailForm.yearTypeNameLike" placeholder="请输入" clearable style="margin-top:4px"/>
+                </el-form-item>
+                <el-form-item label="外观名称：">
+                  <el-input v-model="detailForm.exteriorNameLike" placeholder="请输入" clearable style="margin-top:4px"/>
+                </el-form-item>
+                <el-form-item label="内饰名称：">
+                  <el-input v-model="detailForm.interiorNameLike" placeholder="请输入" clearable style="margin-top:4px"/>
+                </el-form-item>
                 <!-- 按钮靠右对齐 -->
                 <el-form-item label="" class="form-item-btns" style="text-align: right;">
                   <el-button size="small" type="primary" plain @click="handleQuery">查询</el-button>
@@ -429,7 +444,13 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
-    const detailForm = {};
+    const detailForm = {
+      seriesNameLike: '',
+      modelLineNameLike: '',
+      yearTypeNameLike: '',
+      exteriorNameLike: '',
+      interiorNameLike: ''
+    };
     const validateTotalQuotaQty = (rule, value, callback) => {
       const { totalQuotaQty, usedQuotaQty } = this.form;
       if (totalQuotaQty < usedQuotaQty) {
@@ -551,6 +572,16 @@ export default {
           field: 'yearTypeName',
           title: '年款',
           width: '120',
+        },
+        {
+          field: 'exteriorName',
+          title: '外观名称',
+          width: '120'
+        },
+        {
+          field: 'interiorName',
+          title: '内饰名称',
+          width: '120'
         },
         {
           field: 'materialsCode',
@@ -718,6 +749,11 @@ export default {
     handleClear () {
       this.detailForm.dealerCodes = [];
       this.detailForm.dealerNames = [];
+      this.detailForm.seriesNameLike = '';
+      this.detailForm.modelLineNameLike = '';
+      this.detailForm.yearTypeNameLike = '';
+      this.detailForm.exteriorNameLike = '';
+      this.detailForm.interiorNameLike = '';
       this.pageNum = 1;
       this.getList();
     },

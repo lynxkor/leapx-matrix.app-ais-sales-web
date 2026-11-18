@@ -131,6 +131,85 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/risktask/riskCheckTask',
+      name: 'riskCheckTask',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/index.vue'),
+
+      meta: {
+        name: '车辆排查任务',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTask/edit',
+      name: 'riskCheckTaskEdit',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/edit.vue'),
+
+      meta: {
+        name: '车辆排查任务详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTask/detail',
+      name: 'riskCheckTaskDetail',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/detail.vue'),
+
+      meta: {
+        name: '车辆排查清单',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTask/audit',
+      name: 'riskCheckTaskAudit',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/audit.vue'),
+
+      meta: {
+        name: '车辆排查任务审核',
+        noResourceUrl: 'true'
+      }
+    }, {
+      // 属于「排查任务审核」列表的下级详情：面包屑首级点击依赖父级路径回跳，
+      // 故必须挂在 /riskCheckAudit 下（AisPageTitle.handleClick 会去掉路径最后一段）
+      path: '/vehstock/risktask/riskCheckAudit/auditDetail',
+      name: 'riskCheckTaskAuditDetail',
+      component: () => import('@/views/vehstock/risktask/riskCheckTask/auditDetail.vue'),
+
+      meta: {
+        name: '排查任务审核详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      // 兼容旧链接（历史收藏 / 外部引用），保留 query.id
+      path: '/vehstock/risktask/riskCheckTask/auditDetail',
+      redirect: to => ({ path: '/vehstock/risktask/riskCheckAudit/auditDetail', query: to.query })
+    }, {
+      path: '/vehstock/risktask/riskCheckAudit',
+      name: 'riskCheckAudit',
+      component: () => import('@/views/vehstock/risktask/riskCheckAudit/index.vue'),
+
+      meta: {
+        name: '排查任务审核',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/risktask/riskCheckTaskDetail',
+      name: 'riskCheckTaskDetailList',
+      component: () => import('@/views/vehstock/risktask/riskCheckTaskDetail/index.vue'),
+
+      meta: {
+        name: '排查任务明细',
+        keepAlive: true
+      }
+    }, {
+      // 🔑 详情页必须挂在所属列表路由路径下：AisPageTitle.handleClick 写死去路径末段回跳首级
+      path: '/vehstock/risktask/riskCheckTaskDetail/detail',
+      name: 'riskCheckTaskDetailInfo',
+      component: () => import('@/views/vehstock/risktask/riskCheckTaskDetail/detail.vue'),
+
+      meta: {
+        name: '排查任务明细详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/basic/vehicleReservationDetail',
       name: 'vehicleReservationDetail',
       component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
