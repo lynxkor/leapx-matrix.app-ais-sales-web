@@ -333,6 +333,26 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="是否特供车">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.isSpecialSupply"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="特供车标记">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_special_supply_mark"
+            v-model="form.specialSupplyMark"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
             :options="settleFundTypeOptions"
@@ -567,6 +587,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, adjustWarehouse } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import customViewMixin from '@/libs/mixins/customView';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, vehicleSeriesList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo, vehicleRoof, vehicleOptionPackage, vehicleExterior, vehicleInterior, vehicleWheelHub } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -663,6 +684,8 @@ const defaultForm = {
   vehicleReturnFlag: '',
   secondDealerFlag: '',
   secondDealerNames: [],
+  isSpecialSupply: '',
+  specialSupplyMark: '',
 };
 
 const pageSize = 20;
@@ -671,7 +694,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -1005,6 +1028,8 @@ export default {
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
           { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
@@ -1692,6 +1717,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
@@ -1732,6 +1758,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
 
@@ -1747,6 +1775,10 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配(注入行级 deleteLoading,与业务列表保持一致) ----
+    customViewListAdapter (records) {
+      return (records || []).map(item => ({ ...item, deleteLoading: false }));
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {

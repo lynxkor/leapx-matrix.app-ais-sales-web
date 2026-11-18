@@ -242,6 +242,26 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="是否特供车">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.isSpecialSupply"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="特供车标记">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_special_supply_mark"
+            v-model="form.specialSupplyMark"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="物流预留备注">
           <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
         </el-form-item>
@@ -630,6 +650,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import customViewMixin from '@/libs/mixins/customView';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import ButtonGroup from '@/libs/components/ButtonGroup';
@@ -726,6 +747,8 @@ const defaultForm = {
   vehicleReturnFlag: '',
   secondDealerFlag: '',
   secondDealerNames: [],
+  isSpecialSupply: '',
+  specialSupplyMark: '',
 };
 
 const pageSize = 20;
@@ -734,7 +757,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -880,6 +903,10 @@ export default {
           { props: 'secondDealerFlagLabel', label: '是否二网', visible: true, width: 110 },
           { props: 'secondDealerCode', label: '二网门店编码', visible: false, width: 160 },
           { props: 'secondDealerName', label: '二网门店名称', visible: true, width: 200 },
+          { props: 'fundCheckFlagLabel', label: '资金校验开关', visible: true, width: 120 },
+          { props: 'unallocatedCancelFlagLabel', label: '未配车作废开关', visible: true, width: 130 },
+          { props: 'unsettledReleaseFlagLabel', label: '未结算释放资源开关', visible: true, width: 150 },
+          { props: 'seqAllocateFlagLabel', label: '按序配车开关', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
           { props: 'allowLockNodesLabel', label: '锁单节点', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 120, align: 'right' },
@@ -1030,7 +1057,7 @@ export default {
           { props: 'logisticsReserveRemark', label: '物流预留备注', visible: true, width: 200 },
 
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
-          { props: 'actualDeliveryWayLabel', label: '实际发运方式', visible: true, width: 200 },
+          { props: 'actualDeliveryWay', label: '实际发运方式', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
@@ -1098,6 +1125,8 @@ export default {
             }]
           },
           { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200, sortable: true },
           {
@@ -1847,6 +1876,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.sortColumns = [];
       this.optionObj.form.page = 1;
@@ -1915,6 +1945,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
 

@@ -306,6 +306,8 @@
           <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 预约信息 -->
           <generic-detail-display title="预约信息" :form-data="form" :fields="appointmentFields" :label-width="labelWidth" section-key="appointment" />
+          <!-- 到店信息 -->
+          <generic-detail-display title="到店信息" :form-data="form" :fields="storeArrivalFields" :label-width="labelWidth" section-key="storeArrival" />
           <!-- 整车订单信息 -->
           <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 实名认证信息 -->
@@ -566,6 +568,31 @@ export default {
     },
     title () {
       return '交车单编号：' + (this.form.deliveryOrderCode || '');
+    },
+    appointmentFields () {
+      return [
+        { key: 'appointmentTime', label: '预约提车时间' },
+        { key: 'appointmentDelayStatusLabel', label: '是否延期预约' },
+        { key: 'appointmentChangeCount', label: '预约变更次数' },
+        { key: 'appointmentOperationTime', label: '预约操作时间' },
+        { key: 'appointmentRemark', label: '预约备注' },
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
+      ];
+    },
+    storeArrivalFields () {
+      const fields = [
+        { key: 'userStoreTime', label: '用户到店时间' },
+        { key: 'audioStartTime', label: '交付录音开始时间' },
+        { key: 'derivativeAudioStartTime', label: '衍生录音开始时间' },
+        { key: 'audioStopTime', label: '交付录音结束时间' },
+        { key: 'derivativeAudioStopTime', label: '衍生录音结束时间' },
+        { key: 'audioStopTypeLabel', label: '交付录音结束方式' },
+        { key: 'derivativeAudioStopTypeLabel', label: '衍生录音结束方式' }
+      ];
+      if (this.canCarryupVerificationCode) {
+        fields.push({ key: 'carryupVerificationCode', label: '到店验证码' });
+      }
+      return fields;
     }
   },
   watch: {
@@ -631,6 +658,7 @@ export default {
       canPushDeliveryActive: false, // 推送激活信息
       canCalculateDeliveryAmount: false, // 计算尾款
       canManualStopAudio: false, // 关闭录音
+      canCarryupVerificationCode: false, // 到店验证码
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -776,15 +804,6 @@ export default {
         { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }
       ],
-      appointmentFields: [
-        { key: 'appointmentTime', label: '预约提车时间' },
-        { key: 'appointmentDelayStatusLabel', label: '是否延期预约' },
-        { key: 'appointmentChangeCount', label: '预约变更次数' },
-        { key: 'appointmentOperationTime', label: '预约操作时间' },
-        { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReason', label: '预约超时原因' },
-        { key: 'userStoreTime', label: '用户到店时间' }
-      ],
       // 预约记录列配置
       appointmentRecordColumns: [
         { field: 'appointmentOperationTime', title: '预约操作时间', width: 200 },
@@ -868,6 +887,7 @@ export default {
       this.canPushDeliveryActive = has(`${this.moduleKey}-pushDeliveryActive`);
       this.canCalculateDeliveryAmount = has(`${this.moduleKey}-calculateDeliveryAmount`);
       this.canManualStopAudio = has(`${this.moduleKey}-manualStopAudio`);
+      this.canCarryupVerificationCode = has(`${this.moduleKey}-carryupVerificationCode`);
       // 跨模块权限：从 store 原始数据判断，绕过 mixin 的前缀过滤
       this.canRetailOrderPayRecordDelete = has('AISVR-retailOrderPayRecord-delete');
     },

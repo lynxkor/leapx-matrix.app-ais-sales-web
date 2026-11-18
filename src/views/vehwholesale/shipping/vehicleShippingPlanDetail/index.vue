@@ -274,6 +274,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import customViewMixin from '@/libs/mixins/customView';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import SwitchFlag from './SwitchFlag.vue';
@@ -305,7 +306,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -404,7 +405,7 @@ export default {
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 150 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 150 },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 180 },
-          { props: 'actualDeliveryWayLabel', label: '发运方式', visible: true, width: 150 },
+          { props: 'actualDeliveryWay', label: '发运方式', visible: true, width: 150 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 150 },
           { props: 'provinceName', label: '省份', visible: true, width: 120 },
           { props: 'cityName', label: '城市', visible: true, width: 120 },
@@ -730,6 +731,7 @@ export default {
       this.getData();
     },
     onReset () {
+      this.resetCustomView();
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
@@ -775,6 +777,8 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
       this.loading = true;
       this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
@@ -809,6 +813,32 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配(注入行级派生字段,与业务列表保持一致) ----
+    customViewListAdapter (records) {
+      return (records || []).map(item => {
+        return {
+          ...item,
+          drivingRangeName: item.vehicleMaterials?.drivingRangeName || '',
+          rangePowerName: item.vehicleMaterials?.rangePowerName || '',
+          exteriorName: item.vehicleMaterials?.exteriorName || '',
+          interiorName: item.vehicleMaterials?.interiorName || '',
+          wheelHubName: item.vehicleMaterials?.wheelHubName || '',
+          modelName: item.vehicleMaterials?.modelName || '',
+          modelId: item.vehicleMaterials?.modelId || '',
+          materialsDesc: item.vehicleMaterials?.materialsDesc || '',
+          materialsId: item.vehicleMaterials?.id || '',
+          drivingRangeId: item.vehicleMaterials?.drivingRangeId || '',
+          rangePowerId: item.vehicleMaterials?.rangePowerId || '',
+          exteriorId: item.vehicleMaterials?.exteriorId || '',
+          interiorId: item.vehicleMaterials?.interiorId || '',
+          wheelHubId: item.vehicleMaterials?.wheelHubId || '',
+          optionPackageName: item.vehicleMaterials?.optionPackageName || '',
+          optionPackageId: item.vehicleMaterials?.optionPackageId || '',
+          organizationName: item.financialOrganization?.organizationName || '',
+          deleteLoading: false
+        };
+      });
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {

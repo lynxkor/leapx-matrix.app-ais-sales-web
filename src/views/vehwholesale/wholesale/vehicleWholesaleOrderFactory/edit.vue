@@ -146,6 +146,18 @@
                       placeholder="请选择" clearable filterable
                       :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)" />
                   </el-form-item>
+                  <el-form-item label="资金校验开关：" prop="fundCheckFlagLabel">
+                    {{ form.fundCheckFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="未配车作废开关：" prop="unallocatedCancelFlagLabel">
+                    {{ form.unallocatedCancelFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="未结算释放资源开关：" prop="unsettledReleaseFlagLabel">
+                    {{ form.unsettledReleaseFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="按序配车开关：" prop="seqAllocateFlagLabel">
+                    {{ form.seqAllocateFlagLabel }}
+                  </el-form-item>
                   <!-- <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
                     <el-input placeholder="请输入" v-model="form.dealerWarehouseCode" clearable disabled />
                   </el-form-item> -->
@@ -259,6 +271,18 @@
                   </el-form-item>
                   <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                     {{ form.needAutoAllocateCarLabel }}
+                  </el-form-item>
+                  <el-form-item label="资金校验开关：" prop="fundCheckFlagLabel">
+                    {{ form.fundCheckFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="未配车作废开关：" prop="unallocatedCancelFlagLabel">
+                    {{ form.unallocatedCancelFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="未结算释放资源开关：" prop="unsettledReleaseFlagLabel">
+                    {{ form.unsettledReleaseFlagLabel }}
+                  </el-form-item>
+                  <el-form-item label="按序配车开关：" prop="seqAllocateFlagLabel">
+                    {{ form.seqAllocateFlagLabel }}
                   </el-form-item>
 
                   <el-form-item label="创建时间：" prop="createTime">
@@ -433,6 +457,12 @@
                   <el-form-item label="配车VIN码：" prop="vin">
                     <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`"
                       target="_blank">{{ form.vin }}</el-link>
+                  </el-form-item>
+                  <el-form-item label="是否特供车：" prop="isSpecialSupplyLabel">
+                    {{ form.isSpecialSupplyLabel }}
+                  </el-form-item>
+                  <el-form-item label="特供车标记：" prop="specialSupplyMarkLabel">
+                    {{ form.specialSupplyMarkLabel }}
                   </el-form-item>
                   <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
                     {{ form.firstSettleFailedTime }}

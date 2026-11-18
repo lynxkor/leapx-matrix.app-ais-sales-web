@@ -24,6 +24,14 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type" v-model="form.reservedType"
             placeholder="请选择" clearable filterable />
         </el-form-item>
+        <el-form-item label="是否特供车">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.isSpecialSupply"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="特供车标记">
+          <fetch-select :request="fetchOptions" enumCode="vw_special_supply_mark" v-model="form.specialSupplyMark"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
         <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
             unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
@@ -142,7 +150,7 @@
             filterable />
         </el-form-item>
       </template>
-      <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+      <page-search-action v-if="canList" v-model="show" is-expandable :view-scope="activeName" :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
     <div class="ais-active">
@@ -156,6 +164,9 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey + '-specialSupplyEdit'" size="small" @click="handleSpecialSupplyBatchEdit"
+        :disabled="selectionList.length === 0">特供车编辑</el-button>
+      <el-button v-permission="moduleKey + '-specialSupplyImport'" size="small" @click="handleSpecialSupplyImport">特供车导入</el-button>
       <el-button v-permission="moduleKey + '-batchEdit'" size="small" @click="handleEdit"
         :disabled="selectionList.length === 0">批量编辑</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
@@ -179,6 +190,21 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
+    <Upload :visible="specialSupplyUploadDialogVisible" :id="'vehicleVdcLedgerSpecialSupplyImport'" @close="handleSpecialSupplyUploadDialogClose" @getData="getData" />
+    <el-dialog :title="'特供车编辑（已选 ' + specialSupplyBatchIds.length + ' 辆）'" :visible.sync="specialSupplyEditVisible" width="420px" :close-on-click-modal="false">
+      <el-form ref="specialSupplyEditFormRef" :model="specialSupplyEditForm" label-width="120px">
+        <el-form-item label="是否特供车：" prop="isSpecialSupply" :rules="[{ required: true, message: '请选择是否特供车', trigger: 'change' }]">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="specialSupplyEditForm.isSpecialSupply" placeholder="请选择" clearable filterable @change="handleSpecialSupplyTypeChange" />
+        </el-form-item>
+        <el-form-item v-if="String(specialSupplyEditForm.isSpecialSupply) === '1'" label="特供车标记：" prop="specialSupplyMark" :rules="[{ required: true, message: '请选择特供车标记', trigger: 'change' }]">
+          <fetch-select :request="fetchOptions" enumCode="vw_special_supply_mark" v-model="specialSupplyEditForm.specialSupplyMark" placeholder="请选择" clearable filterable />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="specialSupplyEditVisible = false">取消</el-button>
+        <el-button size="small" type="primary" :loading="specialSupplyEditLoading" @click="confirmSpecialSupplyEdit">确定</el-button>
+      </div>
+    </el-dialog>
     <el-dialog title="批量更新允许锁单节点" :visible.sync="batchUpdateAllowLockNodeVisible" width="400px">
       <el-form label-width="120px">
         <el-form-item label="允许锁单节点：">
@@ -198,13 +224,14 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchUpdateAllowLockNode } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getList, deleteItem, enableItem, batchUpdateAllowLockNode, specialSupplyBatchEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import customViewMixin from '@/libs/mixins/customView';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import TagInput from '@/libs/components/TagInput';
@@ -225,6 +252,8 @@ const defaultForm = {
   logisticsReserved: '0',
   reserved: '',
   reservedType: '',
+  isSpecialSupply: '',
+  specialSupplyMark: '',
   allowWholesale: '',
   returnLabel: '',
   status: '1',
@@ -263,7 +292,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions, commonMixins],
+  mixins: [responsiveSearchForm, permissions, commonMixins, customViewMixin],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -289,6 +318,14 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      specialSupplyUploadDialogVisible: false,
+      specialSupplyEditVisible: false,
+      specialSupplyEditLoading: false,
+      specialSupplyEditForm: {
+        isSpecialSupply: '',
+        specialSupplyMark: ''
+      },
+      specialSupplyBatchIds: [],
       batchUpdateAllowLockNodeVisible: false,
       batchUpdateAllowLockNodeValue: null,
       erpInvoiceFilterMode: 'include',
@@ -330,6 +367,8 @@ export default {
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 240, sortable: true },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 180 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 160 },
           { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 120 },
           { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 160 },
@@ -451,6 +490,8 @@ export default {
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, sortable: true },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 160 },
+          { props: 'isSpecialSupplyLabel', label: '是否特供车', visible: true, width: 120 },
+          { props: 'specialSupplyMarkLabel', label: '特供车标记', visible: true, width: 140 },
           { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 140 },
           { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 120 },
           { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 200 },
@@ -602,11 +643,19 @@ export default {
         return;
       }
       const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
-      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
-      this.sortColumns = [{
+      // 按当前页签取对应列配置，避免低电量页签误用首页签的列定义
+      const option = this.activeName === 'lowBattery' ? this.optionDdl : this.optionObj;
+      const def = (option.dataProp || []).find(d => d.props === latest.field) || {};
+      const sort = (latest.order || '').toUpperCase();
+      const sortColumns = [{
         column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-        sort: (latest.order || '').toUpperCase()
+        sort
       }];
+      // 追加同方向的 id 排序，保证排序列值相同时分页结果稳定
+      if (!sortColumns.some(col => col.column === 'id')) {
+        sortColumns.push({ column: 'id', sort });
+      }
+      this.sortColumns = sortColumns;
       this.refreshTableData();
     },
     // 筛选模式切换时清空对应输入值
@@ -624,6 +673,68 @@ export default {
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
+    },
+    handleSpecialSupplyImport () {
+      this.specialSupplyUploadDialogVisible = true;
+    },
+    handleSpecialSupplyUploadDialogClose () {
+      this.specialSupplyUploadDialogVisible = false;
+    },
+    handleSpecialSupplyBatchEdit () {
+      if (this.selectionList.length === 0) {
+        this.$message.warning('请选择要编辑的车辆');
+        return;
+      }
+      // 全部阻断：任一行非 车辆下线(2)/VDC入库(3) 状态则整批不提交，披露不合规VIN
+      const invalidList = this.selectionList.filter(row =>
+        String(row.vehicleDeliveryStatus) !== '2' && String(row.vehicleDeliveryStatus) !== '3');
+      if (invalidList.length > 0) {
+        const vins = invalidList.map(row => row.vin).join('、');
+        this.$message.warning('仅车辆下线/VDC入库状态的车辆可编辑特供车，不合规VIN：' + vins);
+        return;
+      }
+      this.specialSupplyBatchIds = this.selectionList.map(item => item.id);
+      this.specialSupplyEditForm = {
+        isSpecialSupply: '',
+        specialSupplyMark: ''
+      };
+      this.specialSupplyEditVisible = true;
+      this.$nextTick(() => {
+        if (this.$refs.specialSupplyEditFormRef) {
+          this.$refs.specialSupplyEditFormRef.clearValidate();
+        }
+      });
+    },
+    handleSpecialSupplyTypeChange (val) {
+      if (String(val) !== '1') {
+        this.specialSupplyEditForm.specialSupplyMark = '';
+      }
+    },
+    confirmSpecialSupplyEdit () {
+      const form = this.specialSupplyEditForm;
+      if (form.isSpecialSupply === '' || form.isSpecialSupply === null || form.isSpecialSupply === undefined) {
+        this.$message.warning('请选择是否特供车');
+        return;
+      }
+      const isYes = String(form.isSpecialSupply) === '1';
+      if (isYes && !form.specialSupplyMark) {
+        this.$message.warning('请选择特供车标记');
+        return;
+      }
+      this.specialSupplyEditLoading = true;
+      specialSupplyBatchEdit({
+        ids: this.specialSupplyBatchIds,
+        isSpecialSupply: Number(form.isSpecialSupply),
+        specialSupplyMark: isYes ? form.specialSupplyMark : ''
+      }).then(() => {
+        this.$message.success('特供车编辑成功');
+        this.specialSupplyEditVisible = false;
+        this.getData();
+      }).catch(() => {
+        // 失败原因已由 axios 拦截器 toast
+      }).finally(() => {
+        this.specialSupplyEditLoading = false;
+      });
     },
     handleAdd () {
       this.$router.push({
@@ -649,6 +760,7 @@ export default {
       this.refreshTableData();
     },
     onReset () {
+      this.resetCustomView();
       if (this.activeName === 'full') {
         this.form = { ...defaultFormFull };
         this.erpInvoiceFilterMode = '';
@@ -675,9 +787,7 @@ export default {
         this.optionDdl.form.pageSize = pageSize;
       }
       this.sortColumns = [{ column: 'inbound_date_time', sort: 'DESC' }];
-      this.$nextTick(() => {
-        this.getData();
-      });
+      this.debouncedGetData();
     },
     exportExcel () {
       this.exportLoading = true;
@@ -713,6 +823,9 @@ export default {
       });
     },
     getData () {
+      // 视图锁定(有 activePresetId)时交给 mixin 走 executeQuery,否则走业务列表查询
+      if (this.fetchByCustomView()) return;
+
       const config = this.getActiveTabConfig();
 
       if (!config) {
@@ -738,6 +851,22 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    // ---- customViewMixin 字段适配 ----
+    // 本页有 3 个页签(full/homePage/lowBattery)对应 2 个表格对象:
+    // full、homePage 共用 optionObj,lowBattery 用 optionDdl。
+    // mixin 默认只认 optionObj,低电量页签下视图数据会写错表格,故按当前页签取对应分页对象。
+    _cvTableObj () {
+      const config = this.getActiveTabConfig();
+      return (config && config.pageKey === 'optionDdl') ? this.optionDdl : this.optionObj;
+    },
+    _cvPager () {
+      return this._cvTableObj().form;
+    },
+    _cvSetResult (records, total) {
+      const target = this._cvTableObj();
+      target.dataList = records;
+      target.total = total;
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
@@ -792,7 +921,7 @@ export default {
     // 刷新表格数据
     refreshTableData () {
       this.updateFormByActiveTab();
-      this.getData();
+      this.debouncedGetData();
     },
 
     // 根据活动标签页更新表单字段
@@ -870,7 +999,13 @@ export default {
       if (data.stockAgeLe === 0 || data.stockAgeLe === null || data.stockAgeLe === undefined || data.stockAgeLe === '') {
         delete data.stockAgeLe;
       }
-      data.sortColumns = this.sortColumns;
+      data.sortColumns = [...(this.sortColumns || [])];
+      if (data.sortColumns.length > 0 && !data.sortColumns.some(col => col.column === 'id')) {
+        data.sortColumns.push({ column: 'id', sort: data.sortColumns[data.sortColumns.length - 1].sort });
+      }
+      if (data.sortColumns.length === 0) {
+        data.sortColumns = [{ column: 'id', sort: 'DESC' }];
+      }
 
       // 处理ERP发票号筛选：根据筛选模式映射到不同后端字段
       delete data.erpInvoiceFilterMode;
@@ -997,7 +1132,7 @@ export default {
         this.form.status = 1;
       }
       this.$nextTick(() => {
-        this.getData();
+        this.debouncedGetData();
       });
       // this.onReset();
     },
