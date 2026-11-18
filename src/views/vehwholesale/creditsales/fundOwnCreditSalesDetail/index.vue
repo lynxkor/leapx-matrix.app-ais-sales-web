@@ -80,6 +80,19 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+        <el-form-item label="赊销时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.creditSalesTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
@@ -160,6 +173,7 @@ const defaultForm = {
   creator: '',
   createTime: [],
   repaymentTime: [],
+  creditSalesTime: [],
   status: 1,
   creditSalesDetailCodes: [],
 };
@@ -365,6 +379,7 @@ export default {
       this.optionObj.form.pageSize = pageSize;
       this.form.createTime = [];
       this.form.repaymentTime = [];
+      this.form.creditSalesTime = [];
       this.getData();
     },
     exportExcel () {
@@ -475,6 +490,13 @@ export default {
         if (this.form.repaymentTime.length > 1) {
           data.repaymentTimeStart = this.form.repaymentTime[0];
           data.repaymentTimeEnd = this.form.repaymentTime[1];
+        }
+      }
+      if (this.form.creditSalesTime) {
+        delete data.creditSalesTime;
+        if (this.form.creditSalesTime.length > 1) {
+          data.creditSalesTimeStart = this.form.creditSalesTime[0];
+          data.creditSalesTimeEnd = this.form.creditSalesTime[1];
         }
       }
 
