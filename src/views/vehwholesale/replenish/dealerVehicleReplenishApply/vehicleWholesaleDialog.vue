@@ -157,7 +157,7 @@
           <span>
           </span>
       </div> -->
-      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick" class="wholesale-tabs">
         <el-tab-pane label="现车批售" name="normal">
           <section class="common-section">
             <div class="common-section-body">
@@ -218,7 +218,8 @@
             </div>
           </section>
         </el-tab-pane>
-        <el-tab-pane label="特供车" name="special">
+        <el-tab-pane name="special">
+          <span slot="label" class="special-tab-label">特供车<i class="hot-badge">Hot</i></span>
           <section class="common-section">
             <div class="common-section-body">
               <div class="common-section-table">
@@ -838,5 +839,65 @@ export default {
 }
 ::v-deep .el-form-item__label {
   padding-right: 0;
+}
+
+// 厂端现车批售弹框：按钮式 tab（现车批售 / 特供车）
+.wholesale-tabs {
+  ::v-deep .el-tabs__header {
+    margin-bottom: 0;
+  }
+  // 隐藏默认下划线
+  ::v-deep .el-tabs__nav-wrap::after {
+    display: none;
+  }
+  ::v-deep .el-tabs__active-bar {
+    display: none;
+  }
+  ::v-deep .el-tabs__item {
+    height: 32px;
+    line-height: 30px;
+    padding: 0 20px;
+    margin-right: 12px;
+    border: 1px solid var(--leap-color-primary);
+    border-radius: 4px;
+    color: var(--leap-color-primary);
+    background: #fff;
+    font-weight: 500;
+    vertical-align: top;
+    &:hover {
+      color: var(--leap-color-primary);
+    }
+    // 选中态：绿色实心 + 白字
+    &.is-active {
+      color: #fff;
+      background: var(--leap-color-primary);
+      font-weight: 600;
+    }
+  }
+  // 特供车选中时文字一并转白，避免橙字压在绿底上看不清
+  ::v-deep .el-tabs__item.is-active .special-tab-label {
+    color: #fff;
+  }
+}
+// 特供车：橙红字 + 右上 Hot 角标
+.special-tab-label {
+  position: relative;
+  display: inline-block;
+  color: #f56c23;
+  .hot-badge {
+    position: absolute;
+    top: -13px;
+    right: -22px;
+    padding: 0 4px;
+    height: 14px;
+    line-height: 14px;
+    border-radius: 7px;
+    background: var(--leap-color-danger);
+    color: #fff;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    white-space: nowrap;
+  }
 }
 </style>
