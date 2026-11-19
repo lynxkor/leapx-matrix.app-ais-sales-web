@@ -13,9 +13,11 @@
       >
         <el-form-item label="整车仓库：">
           <el-select
-            v-model="form.warehouseId"
+            v-model="form.warehouseIds"
             clearable
             filterable
+            multiple
+            collapse-tags
             placeholder="请选择整车仓库"
             @change="filterTableData"
           >
@@ -33,9 +35,11 @@
         <template v-if="show">
         <el-form-item label="车系：">
           <el-select
-            v-model="form.seriesId"
+            v-model="form.seriesIds"
             clearable
             filterable
+            multiple
+            collapse-tags
             placeholder="请选择车系"
             @change="filterTableData"
           >
@@ -49,9 +53,11 @@
         </el-form-item>
         <el-form-item label="车型：">
           <el-select
-            v-model="form.modelId"
+            v-model="form.modelIds"
             clearable
             filterable
+            multiple
+            collapse-tags
             placeholder="请选择车型"
             @change="filterTableData"
           >
@@ -65,9 +71,11 @@
         </el-form-item>
           <el-form-item label="年款：">
             <el-select
-              v-model="form.yearTypeId"
+              v-model="form.yearTypeIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择年款"
               @change="filterTableData"
             >
@@ -81,9 +89,11 @@
           </el-form-item>
           <el-form-item label="外观：">
             <el-select
-              v-model="form.exteriorId"
+              v-model="form.exteriorIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择外观"
               @change="filterTableData"
             >
@@ -97,9 +107,11 @@
           </el-form-item>
           <el-form-item label="内饰：">
             <el-select
-              v-model="form.interiorId"
+              v-model="form.interiorIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择内饰"
               @change="filterTableData"
             >
@@ -113,9 +125,11 @@
           </el-form-item>
           <el-form-item label="轮毂：">
             <el-select
-              v-model="form.wheelHubId"
+              v-model="form.wheelHubIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择轮毂"
               @change="filterTableData"
             >
@@ -129,9 +143,11 @@
           </el-form-item>
           <el-form-item label="选装包：">
             <el-select
-              v-model="form.optionPackageId"
+              v-model="form.optionPackageIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择选装包"
               @change="filterTableData"
             >
@@ -352,15 +368,15 @@ import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply }
 import permissions from '@/libs/mixins/permissions';
 import FundAccountInfoDialog from './FundAccountInfoDialog.vue';
 const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
-  seriesId: '', // 车系ID
-  modelId: '', // 车型ID
-  yearTypeId: '', // 年款ID
-  exteriorId: '', // 外观ID
-  interiorId: '', // 内饰ID
-  wheelHubId: '', // 轮毂ID
-  warehouseId: '', // 整车仓库编码
-  optionPackageId: '', // 选装包ID
+  // TIPS:多选字段统一用复数命名，值为数组
+  seriesIds: [], // 车系ID
+  modelIds: [], // 车型ID
+  yearTypeIds: [], // 年款ID
+  exteriorIds: [], // 外观ID
+  interiorIds: [], // 内饰ID
+  wheelHubIds: [], // 轮毂ID
+  warehouseIds: [], // 整车仓库编码
+  optionPackageIds: [], // 选装包ID
   materialsDesc: '', // 物料描述
 };
 export default {
@@ -423,14 +439,14 @@ export default {
   computed: {
     filterFields () {
       return [
-        { key: 'warehouseId', label: '整车仓库：', optionsKey: 'warehouseList' },
-        { key: 'seriesId', label: '车系：', optionsKey: 'seriesList' },
-        { key: 'modelId', label: '车型：', optionsKey: 'modelList' },
-        { key: 'yearTypeId', label: '年款：', optionsKey: 'yearTypeList' },
-        { key: 'exteriorId', label: '外观：', optionsKey: 'exteriorList' },
-        { key: 'interiorId', label: '内饰：', optionsKey: 'interiorList' },
-        { key: 'wheelHubId', label: '轮毂：', optionsKey: 'wheelHubList' },
-        { key: 'optionPackageId', label: '选装包：', optionsKey: 'optionPackageList' },
+        { key: 'warehouseIds', label: '整车仓库：', optionsKey: 'warehouseList' },
+        { key: 'seriesIds', label: '车系：', optionsKey: 'seriesList' },
+        { key: 'modelIds', label: '车型：', optionsKey: 'modelList' },
+        { key: 'yearTypeIds', label: '年款：', optionsKey: 'yearTypeList' },
+        { key: 'exteriorIds', label: '外观：', optionsKey: 'exteriorList' },
+        { key: 'interiorIds', label: '内饰：', optionsKey: 'interiorList' },
+        { key: 'wheelHubIds', label: '轮毂：', optionsKey: 'wheelHubList' },
+        { key: 'optionPackageIds', label: '选装包：', optionsKey: 'optionPackageList' },
       ];
     },
     // visibleFilterFields () {
@@ -511,29 +527,30 @@ export default {
       const source = this.activeTab === 'special' ? this.specialSupplyOriginalData : this.originalTableData;
       let filteredData = [...source];
 
-      // 整车仓库用 warehouseName 判断
-      if (this.form.warehouseId) {
-        const warehouse = this.dropdownOptions.warehouseList.find(w => w.id === this.form.warehouseId);
-        if (warehouse) {
-          filteredData = filteredData.filter(item => item.warehouseName === warehouse.name);
-        }
+      // 整车仓库多选：由选中 id 反查 name，按 warehouseName 命中（表格行无 warehouseId）
+      if (this.form.warehouseIds && this.form.warehouseIds.length) {
+        const names = this.dropdownOptions.warehouseList
+          .filter(w => this.form.warehouseIds.includes(w.id))
+          .map(w => w.name);
+        filteredData = filteredData.filter(item => names.includes(item.warehouseName));
       }
 
-      // 下拉框过滤条件
+      // 下拉框过滤条件：formKey(复数数组) -> dataKey(行字段)，同字段 OR、字段间 AND
       const filters = {
-        seriesId: 'seriesId',
-        modelId: 'modelId',
-        yearTypeId: 'yearTypeId',
-        exteriorId: 'exteriorId',
-        interiorId: 'interiorId',
-        wheelHubId: 'wheelHubId',
-        optionPackageId: 'optionPackageId'
+        seriesIds: 'seriesId',
+        modelIds: 'modelId',
+        yearTypeIds: 'yearTypeId',
+        exteriorIds: 'exteriorId',
+        interiorIds: 'interiorId',
+        wheelHubIds: 'wheelHubId',
+        optionPackageIds: 'optionPackageId'
       };
 
-      // 应用下拉框筛选
+      // 应用下拉框多选筛选
       Object.entries(filters).forEach(([formKey, dataKey]) => {
-        if (this.form[formKey]) {
-          filteredData = filteredData.filter(item => item[dataKey] === this.form[formKey]);
+        const values = this.form[formKey];
+        if (values && values.length) {
+          filteredData = filteredData.filter(item => values.includes(item[dataKey]));
         }
       });
 
