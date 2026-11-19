@@ -157,8 +157,11 @@
           <span>
           </span>
       </div> -->
-      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-        <el-tab-pane label="现车批售" name="normal">
+      <div class="wholesale-tab-btns">
+        <el-button size="small" :class="{ 'is-tab-active': activeTab === 'normal' }" @click="switchTab('normal')">现车批售</el-button>
+        <el-button size="small" class="special-tab-btn" :class="{ 'is-tab-active': activeTab === 'special' }" @click="switchTab('special')">特供车<i class="hot-badge">Hot</i></el-button>
+      </div>
+      <div v-show="activeTab === 'normal'">
           <section class="common-section">
             <div class="common-section-body">
               <div class="common-section-table">
@@ -217,8 +220,8 @@
               </div>
             </div>
           </section>
-        </el-tab-pane>
-        <el-tab-pane label="特供车" name="special">
+      </div>
+      <div v-show="activeTab === 'special'">
           <section class="common-section">
             <div class="common-section-body">
               <div class="common-section-table">
@@ -277,8 +280,7 @@
               </div>
             </div>
           </section>
-        </el-tab-pane>
-      </el-tabs>
+      </div>
       <el-form
         ref="fundForm"
         :model="fundForm"
@@ -496,6 +498,10 @@ export default {
     handleFundTypeChange (val) {
       // 切换资金类型时清空已选金融机构，避免上个类型残留
       this.fundForm.financialOrganizationId = '';
+    },
+    switchTab (tab) {
+      this.activeTab = tab;
+      this.handleTabClick();
     },
     handleTabClick () {
       this.pagination.currentPage = 1;
@@ -838,5 +844,57 @@ export default {
 }
 ::v-deep .el-form-item__label {
   padding-right: 0;
+}
+
+// 厂端现车批售弹框：按钮式切换（现车批售 / 特供车）
+.wholesale-tab-btns {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  .el-button + .el-button {
+    margin-left: 12px;
+  }
+  .el-button {
+    &:hover {
+      color: var(--leap-color-primary);
+      border-color: var(--leap-color-primary);
+      background: #fff;
+    }
+    &.is-tab-active,
+    &.is-tab-active:hover {
+      color: #fff;
+      background: var(--leap-color-primary);
+      border-color: var(--leap-color-primary);
+      font-weight: 600;
+    }
+  }
+}
+// 特供车按钮：红字 + 右上 Hot 角标
+.special-tab-btn {
+  position: relative;
+  color: var(--leap-color-danger);
+  font-weight: 500;
+  &:hover {
+    color: var(--leap-color-danger);
+  }
+  &.is-tab-active,
+  &.is-tab-active:hover {
+    color: #fff;
+  }
+  .hot-badge {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    padding: 0 5px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 8px;
+    background: var(--leap-color-danger);
+    color: #fff;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    white-space: nowrap;
+  }
 }
 </style>
