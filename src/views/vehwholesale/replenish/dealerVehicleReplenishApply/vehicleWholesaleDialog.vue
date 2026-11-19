@@ -869,13 +869,13 @@ export default {
     }
   }
 }
-// 特供车按钮：橙红字 + 右上 Hot 角标
+// 特供车按钮：红字 + 右上 Hot 角标
 .special-tab-btn {
   position: relative;
-  color: #f56c23;
+  color: var(--leap-color-danger);
   font-weight: 500;
   &:hover {
-    color: #f56c23;
+    color: var(--leap-color-danger);
   }
   &.is-tab-active,
   &.is-tab-active:hover {
