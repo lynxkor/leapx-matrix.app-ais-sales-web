@@ -30,7 +30,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="物料描述：">
-          <el-input v-model="form.materialsDesc" clearable placeholder="请输入" @blur="filterTableData"/>
+          <tag-input v-model="form.materialsDescSet" placeholder="请输入" @input="filterTableData" />
         </el-form-item>
         <template v-if="show">
         <el-form-item label="车系：">
@@ -160,7 +160,7 @@
             </el-select>
           </el-form-item>
         </template>
-        <el-form-item label="">
+        <el-form-item label="" class="form-item-action">
           <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
           <el-button size="small" class="btn-reset" style="font-weight: 400;" @click="onReset">重置</el-button>
           <span style="padding-left: 10px;" class="icon-expand curPoint" @click="toggleShow">
@@ -367,6 +367,7 @@ import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import permissions from '@/libs/mixins/permissions';
 import FundAccountInfoDialog from './FundAccountInfoDialog.vue';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选字段统一用复数命名，值为数组
   seriesIds: [], // 车系ID
@@ -377,7 +378,7 @@ const defaultForm = {
   wheelHubIds: [], // 轮毂ID
   warehouseIds: [], // 整车仓库编码
   optionPackageIds: [], // 选装包ID
-  materialsDesc: '', // 物料描述
+  materialsDescSet: [], // 物料描述（多关键词）
 };
 export default {
   name: 'vehicleWholesaleDialog',
@@ -385,8 +386,8 @@ export default {
   },
   mixins: [permissions],
   components: {
-    FundAccountInfoDialog
-    // TagInput,
+    FundAccountInfoDialog,
+    TagInput
     // FetchSelect,
     // PageSearchAction
   },
@@ -554,12 +555,16 @@ export default {
         }
       });
 
-      // 应用物料描述模糊搜索
-      if (this.form.materialsDesc) {
-        const searchStr = this.form.materialsDesc.toLowerCase().trim();
-        filteredData = filteredData.filter(item =>
-          item.materialsDesc && item.materialsDesc.toLowerCase().includes(searchStr)
-        );
+      // 应用物料描述多关键词匹配（命中任一即保留，OR）
+      if (this.form.materialsDescSet && this.form.materialsDescSet.length) {
+        const keywords = this.form.materialsDescSet
+          .map(k => String(k).toLowerCase().trim())
+          .filter(Boolean);
+        if (keywords.length) {
+          filteredData = filteredData.filter(item =>
+            item.materialsDesc && keywords.some(k => item.materialsDesc.toLowerCase().includes(k))
+          );
+        }
       }
 
       if (this.activeTab === 'special') {
@@ -808,6 +813,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 查询表单 flex 布局 + 按钮组靠右（对齐全局 .page-common .ais-search-form / form-item-action 范式，弹框内需本文件自补）
+::v-deep .ais-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  ::v-deep .el-form-item.form-item-action {
+    margin-left: auto;
+    margin-top: auto;
+  }
+}
 .long_text {
   ::v-deep .el-form-item__label {
     line-height: 20px;
