@@ -530,7 +530,7 @@ export default {
           applyQty: '补货数量',
           modelName: '车型',
           warehouseName: '整车仓库',
-          inventoryStatus: '库存状态',
+          inventoryStatusLabel: '库存状态',
           materialsDesc: '物料描述',
           optionPackageName: '选装包'
         },
