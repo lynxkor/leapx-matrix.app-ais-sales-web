@@ -176,6 +176,7 @@
       <div class="wholesale-tab-btns">
         <el-button size="small" :class="{ 'is-tab-active': activeTab === 'normal' }" @click="switchTab('normal')">现车批售</el-button>
         <el-button size="small" class="special-tab-btn" :class="{ 'is-tab-active': activeTab === 'special' }" @click="switchTab('special')">特供车<i class="hot-badge">Hot</i></el-button>
+        <el-button size="small" class="wholesale-export-btn" :loading="exportLoading" @click="exportExcel">导出</el-button>
       </div>
       <div v-show="activeTab === 'normal'">
           <section class="common-section">
@@ -363,7 +364,8 @@
 <script>
 
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
-import { getEnum } from '@/api/common';
+import { getEnum, exportTable } from '@/api/common';
+import { downloadExcel } from '@/libs/utils';
 import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import permissions from '@/libs/mixins/permissions';
 import FundAccountInfoDialog from './FundAccountInfoDialog.vue';
@@ -397,6 +399,7 @@ export default {
       moduleKey: 'AISVW-dealerFundAccount',
       loading: false,
       submitLoading: false,
+      exportLoading: false,
       show: false,
       dialogVisible: false,
       form: {
@@ -502,6 +505,53 @@ export default {
     }
   },
   methods: {
+    // 厂端现车批售弹框导出：走通用导出按页拉取库存生成 xlsx，筛选条件与弹框一致
+    exportExcel () {
+      this.exportLoading = true;
+      // 前端表单字段 -> 后端分页查询字段（后端按 ID/编码过滤，物料描述关键词前端已筛、后端不支持故不带）
+      const reqParams = {
+        isSpecialSupply: this.activeTab === 'special' ? 1 : 0,
+        seriesIdList: this.form.seriesIds,
+        modelIds: this.form.modelIds,
+        yearTypeIds: this.form.yearTypeIds,
+        exteriorIds: this.form.exteriorIds,
+        interiorIds: this.form.interiorIds,
+        wheelHubIds: this.form.wheelHubIds,
+        warehouseCodeList: (this.form.warehouseIds || []).map(id => {
+          const w = (this.dropdownOptions.warehouseList || []).find(item => item.id === id);
+          return w ? w.warehouseCode || w.code || w.id : id;
+        })
+      };
+      exportTable({
+        businessType: '厂端现车批售',
+        dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/pagePlantWholesaleInStockInventoryForExport',
+        reqParams,
+        titleMap: {
+          applyQty: '补货数量',
+          modelName: '车型',
+          warehouseName: '整车仓库',
+          inventoryStatus: '库存状态',
+          materialsDesc: '物料描述',
+          optionPackageName: '选装包'
+        },
+        httpMethod: 'POST'
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, '厂端现车批售.xlsx');
+          } catch (error) {
+            this.$message({ type: 'error', message: '文件导出失败' });
+          }
+        } else {
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelTask', '_blank'),
+            { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
+          );
+        }
+      }).finally(() => {
+        this.exportLoading = false;
+      });
+    },
     handleSizeChange (val) {
       this.pagination.pageSize = val;
       this.pagination.currentPage = 1; // 切换每页显示数量时回到第一页
@@ -881,9 +931,14 @@ export default {
 .wholesale-tab-btns {
   display: flex;
   align-items: center;
+  margin-top: 12px;
   margin-bottom: 12px;
   .el-button + .el-button {
     margin-left: 12px;
+  }
+  // 导出按钮靠右，与 tab 按钮同一行
+  .wholesale-export-btn {
+    margin-left: auto;
   }
   .el-button {
     &:hover {
