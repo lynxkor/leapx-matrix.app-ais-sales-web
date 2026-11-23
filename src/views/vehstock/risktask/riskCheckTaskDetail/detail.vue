@@ -64,6 +64,8 @@
           <!-- 排查方法在主任务表 check_method，由后端 get 接口补查回显 -->
           <el-form-item label="排查方法：" class="form-item-full">{{ detail.checkMethod || '-' }}</el-form-item>
           <el-form-item label="排查说明：" class="form-item-full">{{ detail.checkResultNote || '-' }}</el-form-item>
+          <!-- 审核说明在审核记录表 audit_opinion，由后端 get 接口按 任务ID + VIN 补查回显 -->
+          <el-form-item label="审核说明：" class="form-item-full">{{ detail.auditOpinion || '-' }}</el-form-item>
         </el-form>
       </div>
     </section>
@@ -121,7 +123,8 @@ const EMPTY_DETAIL = {
   lockTime: '',
   checkTime: '',
   checkMethod: '',
-  checkResultNote: ''
+  checkResultNote: '',
+  auditOpinion: ''
 };
 
 export default {
