@@ -508,7 +508,7 @@ export default {
     // 厂端现车批售弹框导出：走通用导出按页拉取库存生成 xlsx，筛选条件与弹框一致
     exportExcel () {
       this.exportLoading = true;
-      // 前端表单字段 -> 后端分页查询字段（后端按 ID/编码过滤，物料描述关键词前端已筛、后端不支持故不带）
+      // 前端表单字段 -> 后端分页查询字段（后端按 ID/编码过滤，选装包按ID、物料描述按关键词在内存过滤，口径与弹框一致）
       const reqParams = {
         isSpecialSupply: this.activeTab === 'special' ? 1 : 0,
         seriesIdList: this.form.seriesIds,
@@ -517,6 +517,8 @@ export default {
         exteriorIds: this.form.exteriorIds,
         interiorIds: this.form.interiorIds,
         wheelHubIds: this.form.wheelHubIds,
+        optionPackageIds: this.form.optionPackageIds,
+        materialsDescSet: this.form.materialsDescSet,
         warehouseCodeList: (this.form.warehouseIds || []).map(id => {
           const w = (this.dropdownOptions.warehouseList || []).find(item => item.id === id);
           return w ? w.warehouseCode || w.code || w.id : id;
@@ -530,7 +532,7 @@ export default {
           applyQty: '补货数量',
           modelName: '车型',
           warehouseName: '整车仓库',
-          inventoryStatusLabel: '库存状态',
+          inventoryStatusText: '库存状态',
           materialsDesc: '物料描述',
           optionPackageName: '选装包'
         },
