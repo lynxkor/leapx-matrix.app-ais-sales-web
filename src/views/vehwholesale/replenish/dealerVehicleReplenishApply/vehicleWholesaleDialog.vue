@@ -208,16 +208,13 @@
                   </vxe-column>
                   <vxe-column field="modelName" title="车型" align="center" width="150" />
                   <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
-                  <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
+                  <vxe-column field="inventoryStatusText" title="库存状态" align="center" width="160">
                     <template v-slot="{ row }">
                       <span
                         :class="getInventoryStatusClass(row.inventoryStatus)"
-                        :title="getInventoryStatusText(row.inventoryStatus)"
+                        :title="row.inventoryStatusText"
                       >
-                        {{ getInventoryStatusText(row.inventoryStatus) }}
-                      </span>
-                      <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
-                        ({{ row.inventoryQty || 0 }})
+                        {{ row.inventoryStatusText }}
                       </span>
                     </template>
                   </vxe-column>
@@ -268,16 +265,13 @@
                   </vxe-column>
                   <vxe-column field="modelName" title="车型" align="center" width="150" />
                   <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
-                  <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
+                  <vxe-column field="inventoryStatusText" title="库存状态" align="center" width="160">
                     <template v-slot="{ row }">
                       <span
                         :class="getInventoryStatusClass(row.inventoryStatus)"
-                        :title="getInventoryStatusText(row.inventoryStatus)"
+                        :title="row.inventoryStatusText"
                       >
-                        {{ getInventoryStatusText(row.inventoryStatus) }}
-                      </span>
-                      <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
-                        ({{ row.inventoryQty || 0 }})
+                        {{ row.inventoryStatusText }}
                       </span>
                     </template>
                   </vxe-column>
@@ -435,7 +429,6 @@ export default {
         optionPackageList: []
       },
       settleAccountList: [],
-      stockStatusList: [],
       // 二级弹框：整车资金账户信息
       fundAccountDialogVisible: false
     };
@@ -693,23 +686,10 @@ export default {
         this.tableData = [...this.originalTableData];
         this.pagination.total = this.tableData.length;
         this.pagination.currentPage = 1;
-
-        // 获取库存状态枚举
-        await this.getStockStatusEnum();
       } catch (error) {
         console.error('加载数据失败:', error);
       } finally {
         this.loading = false;
-      }
-    },
-
-    async getStockStatusEnum () {
-      try {
-        const response = await getEnum('vw_stock_status');
-        this.stockStatusList = response || [];
-        console.log('stockStatusList:', this.stockStatusList);
-      } catch (error) {
-        console.error('获取库存状态枚举失败:', error);
       }
     },
 
@@ -837,16 +817,6 @@ export default {
       } finally {
         this.submitLoading = false;
       }
-    },
-
-    // 根据库存状态获取对应的文本
-    getInventoryStatusText (status) {
-      if (!this.stockStatusList || this.stockStatusList.length === 0) {
-        return status;
-      }
-
-      const statusItem = this.stockStatusList.find(item => item.code === status + '');
-      return statusItem ? statusItem.message : '';
     },
 
     // 根据库存状态获取对应的CSS类名
