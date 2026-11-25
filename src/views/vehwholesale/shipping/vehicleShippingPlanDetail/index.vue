@@ -740,6 +740,10 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      // 选中自定义视图时，视图条件需随导出传给后端（后端按 viewId 走 pageByCustomView）
+      if (this.activePresetId) {
+        reqParams.viewId = this.activePresetId;
+      }
       if (this.selectionList.length > 0) {
         const ids = this.selectionList.map(item => item.id) || [];
         reqParams.ids = ids;

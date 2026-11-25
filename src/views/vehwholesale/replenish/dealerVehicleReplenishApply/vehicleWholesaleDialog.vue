@@ -13,9 +13,11 @@
       >
         <el-form-item label="整车仓库：">
           <el-select
-            v-model="form.warehouseId"
+            v-model="form.warehouseIds"
             clearable
             filterable
+            multiple
+            collapse-tags
             placeholder="请选择整车仓库"
             @change="filterTableData"
           >
@@ -28,14 +30,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="物料描述：">
-          <el-input v-model="form.materialsDesc" clearable placeholder="请输入" @blur="filterTableData"/>
+          <tag-input v-model="form.materialsDescSet" placeholder="请输入" @input="filterTableData" />
         </el-form-item>
         <template v-if="show">
         <el-form-item label="车系：">
           <el-select
-            v-model="form.seriesId"
+            v-model="form.seriesIds"
             clearable
             filterable
+            multiple
+            collapse-tags
             placeholder="请选择车系"
             @change="filterTableData"
           >
@@ -49,9 +53,11 @@
         </el-form-item>
         <el-form-item label="车型：">
           <el-select
-            v-model="form.modelId"
+            v-model="form.modelIds"
             clearable
             filterable
+            multiple
+            collapse-tags
             placeholder="请选择车型"
             @change="filterTableData"
           >
@@ -65,9 +71,11 @@
         </el-form-item>
           <el-form-item label="年款：">
             <el-select
-              v-model="form.yearTypeId"
+              v-model="form.yearTypeIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择年款"
               @change="filterTableData"
             >
@@ -81,9 +89,11 @@
           </el-form-item>
           <el-form-item label="外观：">
             <el-select
-              v-model="form.exteriorId"
+              v-model="form.exteriorIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择外观"
               @change="filterTableData"
             >
@@ -97,9 +107,11 @@
           </el-form-item>
           <el-form-item label="内饰：">
             <el-select
-              v-model="form.interiorId"
+              v-model="form.interiorIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择内饰"
               @change="filterTableData"
             >
@@ -113,9 +125,11 @@
           </el-form-item>
           <el-form-item label="轮毂：">
             <el-select
-              v-model="form.wheelHubId"
+              v-model="form.wheelHubIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择轮毂"
               @change="filterTableData"
             >
@@ -129,9 +143,11 @@
           </el-form-item>
           <el-form-item label="选装包：">
             <el-select
-              v-model="form.optionPackageId"
+              v-model="form.optionPackageIds"
               clearable
               filterable
+              multiple
+              collapse-tags
               placeholder="请选择选装包"
               @change="filterTableData"
             >
@@ -144,7 +160,7 @@
             </el-select>
           </el-form-item>
         </template>
-        <el-form-item label="">
+        <el-form-item label="" class="form-item-action">
           <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
           <el-button size="small" class="btn-reset" style="font-weight: 400;" @click="onReset">重置</el-button>
           <span style="padding-left: 10px;" class="icon-expand curPoint" @click="toggleShow">
@@ -160,6 +176,7 @@
       <div class="wholesale-tab-btns">
         <el-button size="small" :class="{ 'is-tab-active': activeTab === 'normal' }" @click="switchTab('normal')">现车批售</el-button>
         <el-button size="small" class="special-tab-btn" :class="{ 'is-tab-active': activeTab === 'special' }" @click="switchTab('special')">特供车<i class="hot-badge">Hot</i></el-button>
+        <el-button size="small" class="wholesale-export-btn" :loading="exportLoading" @click="exportExcel">导出</el-button>
       </div>
       <div v-show="activeTab === 'normal'">
           <section class="common-section">
@@ -191,16 +208,13 @@
                   </vxe-column>
                   <vxe-column field="modelName" title="车型" align="center" width="150" />
                   <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
-                  <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
+                  <vxe-column field="inventoryStatusText" title="库存状态" align="center" width="160">
                     <template v-slot="{ row }">
                       <span
                         :class="getInventoryStatusClass(row.inventoryStatus)"
-                        :title="getInventoryStatusText(row.inventoryStatus)"
+                        :title="row.inventoryStatusText"
                       >
-                        {{ getInventoryStatusText(row.inventoryStatus) }}
-                      </span>
-                      <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
-                        ({{ row.inventoryQty || 0 }})
+                        {{ row.inventoryStatusText }}
                       </span>
                     </template>
                   </vxe-column>
@@ -251,16 +265,13 @@
                   </vxe-column>
                   <vxe-column field="modelName" title="车型" align="center" width="150" />
                   <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
-                  <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
+                  <vxe-column field="inventoryStatusText" title="库存状态" align="center" width="160">
                     <template v-slot="{ row }">
                       <span
                         :class="getInventoryStatusClass(row.inventoryStatus)"
-                        :title="getInventoryStatusText(row.inventoryStatus)"
+                        :title="row.inventoryStatusText"
                       >
-                        {{ getInventoryStatusText(row.inventoryStatus) }}
-                      </span>
-                      <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
-                        ({{ row.inventoryQty || 0 }})
+                        {{ row.inventoryStatusText }}
                       </span>
                     </template>
                   </vxe-column>
@@ -347,21 +358,23 @@
 <script>
 
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
-import { getEnum } from '@/api/common';
+import { getEnum, exportTable } from '@/api/common';
+import { downloadExcel } from '@/libs/utils';
 import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import permissions from '@/libs/mixins/permissions';
 import FundAccountInfoDialog from './FundAccountInfoDialog.vue';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
-  seriesId: '', // 车系ID
-  modelId: '', // 车型ID
-  yearTypeId: '', // 年款ID
-  exteriorId: '', // 外观ID
-  interiorId: '', // 内饰ID
-  wheelHubId: '', // 轮毂ID
-  warehouseId: '', // 整车仓库编码
-  optionPackageId: '', // 选装包ID
-  materialsDesc: '', // 物料描述
+  // TIPS:多选字段统一用复数命名，值为数组
+  seriesIds: [], // 车系ID
+  modelIds: [], // 车型ID
+  yearTypeIds: [], // 年款ID
+  exteriorIds: [], // 外观ID
+  interiorIds: [], // 内饰ID
+  wheelHubIds: [], // 轮毂ID
+  warehouseIds: [], // 整车仓库编码
+  optionPackageIds: [], // 选装包ID
+  materialsDescSet: [], // 物料描述（多关键词）
 };
 export default {
   name: 'vehicleWholesaleDialog',
@@ -369,8 +382,8 @@ export default {
   },
   mixins: [permissions],
   components: {
-    FundAccountInfoDialog
-    // TagInput,
+    FundAccountInfoDialog,
+    TagInput
     // FetchSelect,
     // PageSearchAction
   },
@@ -380,6 +393,7 @@ export default {
       moduleKey: 'AISVW-dealerFundAccount',
       loading: false,
       submitLoading: false,
+      exportLoading: false,
       show: false,
       dialogVisible: false,
       form: {
@@ -415,7 +429,6 @@ export default {
         optionPackageList: []
       },
       settleAccountList: [],
-      stockStatusList: [],
       // 二级弹框：整车资金账户信息
       fundAccountDialogVisible: false
     };
@@ -423,14 +436,14 @@ export default {
   computed: {
     filterFields () {
       return [
-        { key: 'warehouseId', label: '整车仓库：', optionsKey: 'warehouseList' },
-        { key: 'seriesId', label: '车系：', optionsKey: 'seriesList' },
-        { key: 'modelId', label: '车型：', optionsKey: 'modelList' },
-        { key: 'yearTypeId', label: '年款：', optionsKey: 'yearTypeList' },
-        { key: 'exteriorId', label: '外观：', optionsKey: 'exteriorList' },
-        { key: 'interiorId', label: '内饰：', optionsKey: 'interiorList' },
-        { key: 'wheelHubId', label: '轮毂：', optionsKey: 'wheelHubList' },
-        { key: 'optionPackageId', label: '选装包：', optionsKey: 'optionPackageList' },
+        { key: 'warehouseIds', label: '整车仓库：', optionsKey: 'warehouseList' },
+        { key: 'seriesIds', label: '车系：', optionsKey: 'seriesList' },
+        { key: 'modelIds', label: '车型：', optionsKey: 'modelList' },
+        { key: 'yearTypeIds', label: '年款：', optionsKey: 'yearTypeList' },
+        { key: 'exteriorIds', label: '外观：', optionsKey: 'exteriorList' },
+        { key: 'interiorIds', label: '内饰：', optionsKey: 'interiorList' },
+        { key: 'wheelHubIds', label: '轮毂：', optionsKey: 'wheelHubList' },
+        { key: 'optionPackageIds', label: '选装包：', optionsKey: 'optionPackageList' },
       ];
     },
     // visibleFilterFields () {
@@ -485,6 +498,55 @@ export default {
     }
   },
   methods: {
+    // 厂端现车批售弹框导出：走通用导出按页拉取库存生成 xlsx，筛选条件与弹框一致
+    exportExcel () {
+      this.exportLoading = true;
+      // 前端表单字段 -> 后端分页查询字段（后端按 ID/编码过滤，选装包按ID、物料描述按关键词在内存过滤，口径与弹框一致）
+      const reqParams = {
+        isSpecialSupply: this.activeTab === 'special' ? 1 : 0,
+        seriesIdList: this.form.seriesIds,
+        modelIds: this.form.modelIds,
+        yearTypeIds: this.form.yearTypeIds,
+        exteriorIds: this.form.exteriorIds,
+        interiorIds: this.form.interiorIds,
+        wheelHubIds: this.form.wheelHubIds,
+        optionPackageIds: this.form.optionPackageIds,
+        materialsDescSet: this.form.materialsDescSet,
+        warehouseCodeList: (this.form.warehouseIds || []).map(id => {
+          const w = (this.dropdownOptions.warehouseList || []).find(item => item.id === id);
+          return w ? w.warehouseCode || w.code || w.id : id;
+        })
+      };
+      exportTable({
+        businessType: '厂端现车批售',
+        dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/pagePlantWholesaleInStockInventoryForExport',
+        reqParams,
+        titleMap: {
+          applyQty: '补货数量',
+          modelName: '车型',
+          warehouseName: '整车仓库',
+          inventoryStatusText: '库存状态',
+          materialsDesc: '物料描述',
+          optionPackageName: '选装包'
+        },
+        httpMethod: 'POST'
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, '厂端现车批售.xlsx');
+          } catch (error) {
+            this.$message({ type: 'error', message: '文件导出失败' });
+          }
+        } else {
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelTask', '_blank'),
+            { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
+          );
+        }
+      }).finally(() => {
+        this.exportLoading = false;
+      });
+    },
     handleSizeChange (val) {
       this.pagination.pageSize = val;
       this.pagination.currentPage = 1; // 切换每页显示数量时回到第一页
@@ -511,38 +573,43 @@ export default {
       const source = this.activeTab === 'special' ? this.specialSupplyOriginalData : this.originalTableData;
       let filteredData = [...source];
 
-      // 整车仓库用 warehouseName 判断
-      if (this.form.warehouseId) {
-        const warehouse = this.dropdownOptions.warehouseList.find(w => w.id === this.form.warehouseId);
-        if (warehouse) {
-          filteredData = filteredData.filter(item => item.warehouseName === warehouse.name);
-        }
+      // 整车仓库多选：由选中 id 反查 name，按 warehouseName 命中（表格行无 warehouseId）
+      if (this.form.warehouseIds && this.form.warehouseIds.length) {
+        const names = this.dropdownOptions.warehouseList
+          .filter(w => this.form.warehouseIds.includes(w.id))
+          .map(w => w.name);
+        filteredData = filteredData.filter(item => names.includes(item.warehouseName));
       }
 
-      // 下拉框过滤条件
+      // 下拉框过滤条件：formKey(复数数组) -> dataKey(行字段)，同字段 OR、字段间 AND
       const filters = {
-        seriesId: 'seriesId',
-        modelId: 'modelId',
-        yearTypeId: 'yearTypeId',
-        exteriorId: 'exteriorId',
-        interiorId: 'interiorId',
-        wheelHubId: 'wheelHubId',
-        optionPackageId: 'optionPackageId'
+        seriesIds: 'seriesId',
+        modelIds: 'modelId',
+        yearTypeIds: 'yearTypeId',
+        exteriorIds: 'exteriorId',
+        interiorIds: 'interiorId',
+        wheelHubIds: 'wheelHubId',
+        optionPackageIds: 'optionPackageId'
       };
 
-      // 应用下拉框筛选
+      // 应用下拉框多选筛选
       Object.entries(filters).forEach(([formKey, dataKey]) => {
-        if (this.form[formKey]) {
-          filteredData = filteredData.filter(item => item[dataKey] === this.form[formKey]);
+        const values = this.form[formKey];
+        if (values && values.length) {
+          filteredData = filteredData.filter(item => values.includes(item[dataKey]));
         }
       });
 
-      // 应用物料描述模糊搜索
-      if (this.form.materialsDesc) {
-        const searchStr = this.form.materialsDesc.toLowerCase().trim();
-        filteredData = filteredData.filter(item =>
-          item.materialsDesc && item.materialsDesc.toLowerCase().includes(searchStr)
-        );
+      // 应用物料描述多关键词匹配（命中任一即保留，OR）
+      if (this.form.materialsDescSet && this.form.materialsDescSet.length) {
+        const keywords = this.form.materialsDescSet
+          .map(k => String(k).toLowerCase().trim())
+          .filter(Boolean);
+        if (keywords.length) {
+          filteredData = filteredData.filter(item =>
+            item.materialsDesc && keywords.some(k => item.materialsDesc.toLowerCase().includes(k))
+          );
+        }
       }
 
       if (this.activeTab === 'special') {
@@ -619,23 +686,10 @@ export default {
         this.tableData = [...this.originalTableData];
         this.pagination.total = this.tableData.length;
         this.pagination.currentPage = 1;
-
-        // 获取库存状态枚举
-        await this.getStockStatusEnum();
       } catch (error) {
         console.error('加载数据失败:', error);
       } finally {
         this.loading = false;
-      }
-    },
-
-    async getStockStatusEnum () {
-      try {
-        const response = await getEnum('vw_stock_status');
-        this.stockStatusList = response || [];
-        console.log('stockStatusList:', this.stockStatusList);
-      } catch (error) {
-        console.error('获取库存状态枚举失败:', error);
       }
     },
 
@@ -765,16 +819,6 @@ export default {
       }
     },
 
-    // 根据库存状态获取对应的文本
-    getInventoryStatusText (status) {
-      if (!this.stockStatusList || this.stockStatusList.length === 0) {
-        return status;
-      }
-
-      const statusItem = this.stockStatusList.find(item => item.code === status + '');
-      return statusItem ? statusItem.message : '';
-    },
-
     // 根据库存状态获取对应的CSS类名
     getInventoryStatusClass (status) {
       const statusStr = status + '';
@@ -791,6 +835,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 查询表单 flex 布局 + 按钮组靠右（对齐全局 .page-common .ais-search-form / form-item-action 范式，弹框内需本文件自补）
+::v-deep .ais-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  ::v-deep .el-form-item.form-item-action {
+    margin-left: auto;
+    margin-top: auto;
+  }
+}
 .long_text {
   ::v-deep .el-form-item__label {
     line-height: 20px;
@@ -850,9 +903,14 @@ export default {
 .wholesale-tab-btns {
   display: flex;
   align-items: center;
+  margin-top: 12px;
   margin-bottom: 12px;
   .el-button + .el-button {
     margin-left: 12px;
+  }
+  // 导出按钮靠右，与 tab 按钮同一行
+  .wholesale-export-btn {
+    margin-left: auto;
   }
   .el-button {
     &:hover {
